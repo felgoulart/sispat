@@ -1,0 +1,2653 @@
+package integ.smartquestion;
+
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
+import java.util.Map;
+//import java.util.ResourceBundle;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
+import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
+//import appl.bean.CadLangBean;
+//import appl.bean.ExcelUtils;
+import appl.bean.copyDirectory;
+//import appl.bean.CadastroBean.State;
+import appl.bean.ExcelUtils;
+
+import appl.data.Asset;
+import appl.data.IXAtivoFixo;
+import appl.data.IXAtivoFixoAtualiza;
+import appl.data.Impld;
+import appl.data.Implg;
+import appl.data.Invty;
+import appl.data.Obimg;
+import appl.data.Param;
+import wins.libs.DatabaseUtils;
+//import wins.libs.LoginException;
+import wins.libs.data.DataObject;
+//import wins.libs.utils.HttpHelpers;
+//import wins.libs.utils.TipoDeArquivo;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+
+/**
+ * Processo de integração entre Sispat e SmartQuestion
+ * 
+ * @author Wendel Silvério
+ */
+public class IntegrationJobAtivoFixo implements Job {
+        public ArrayList propCDTTList = new ArrayList() ;     // Frame Cols ArrayList
+
+	public String appsx = "apps."; // MRS Qtd de Atendimentos sem Erro no Processamento  
+	//public String appsx = ""; // Qtd de Atendimentos sem Erro no Processamento
+
+	
+	//	private static Logger log = Logger.getLogger(IntegrationJob.class.getName());
+
+    /* 
+	SELECT * FROM MRS_FA_ATDM_SQ_HEADERS a WHERE
+	   STAT_ATDM <> 'Pendente'
+	   and a.cd_ativo is not null
+	   --and a.cd_ativo is not null
+	   and REGEXP_LIKE(a.cd_ativo, '[0-9]')  
+	   and a.cd_ativo <> '0'   
+	   and a.NU_ATDM = '973'
+	;
+
+	SELECT CAMPO_FORM, VL_RSPT FROM MRS_FA_ATDM_SQ_RSPT WHERE 
+	ID_ATDM='110994' AND VL_RSPT IS NOT NULL
+	   and exists (select 1 from MRS_IA_INTF_SIST c where
+	   upper(trim(c.intf_sist_extn)) = upper(trim(campo_form)))   
+    */
+	public String tabsvf;
+	public Integer msgqtx; // Message Window line Counter. Used by
+	public Integer msgqt; // Message Window line Counter. Used by
+	private String tabs_vf;  
+	public String mesg_var = "";
+	public String linex;
+    public int ckk;
+	public String fileUploaded= "";
+    public String[] content = new String[2000];    // Text file content
+    public ArrayList col_id_list = new ArrayList() ;     // Frame Cols ArrayList
+    public int importErrorFlag;
+    public Integer xmesg_rc;
+    public boolean resultMessage;
+
+    
+    private String batch_id;
+    private String batch_id_vc;
+    private String atvfx_cdx;
+    private String atvfx_cd;
+    private String atvfx_cd_vc;
+    private String atvfx_cd_plaqueta;
+    private String atvfx_cd_plaqueta_vc;
+    private String atvfx_cd_pai;
+    private String atvfx_cd_pai_vc;
+    private String atvfx_cd_invty_ultm;
+    private String atvfx_cd_invty_ultm_desc;
+    private String atvfx_cd_invty_ultm_vc;
+    private String atvfx_tp_cfasttp;
+    private String typeCats;
+    private String atvfx_tp_cfasttp_vc;
+    private String atvfx_tp_propriedade;
+    private String atvfx_tp_propriedade_vc;
+    private Date atvfx_dt_criacao;
+    private String atvfx_dt_criacao_vc;
+    private Date atvfx_dt_ult_atualizacao;
+    private String atvfx_dt_ult_atualizacao_vc;
+    private Date atvfx_dt_baixa;
+    private String atvfx_dt_baixa_vc;
+
+    //private Date atvfx_dt_baixa_corr;
+    //private String atvfx_dt_baixa_corr_vc;
+    
+    private String atvfx_nm_proprietario;
+    private String atvfx_nm_proprietario_vc;
+    private String atvfx_cd_centro_custo;
+    private String atvfx_cd_centro_custo_vc;
+    private String atvfx_st;
+    private String atvfx_st_vc;
+    private String atvfx_cd_category;
+    private String atvfx_cd_category_vc;
+    private String atvfx_cd_ctg_sub_grp;
+    private String atvfx_cd_ctg_sub_grp_vc;
+    private String atvfx_cd_ctg_det;
+    private String atvfx_cd_ctg_det_vc;
+    private String atvfx_ds;
+    private String atvfx_ds_vc;
+    private String atvfx_cd_ue;
+    private String atvfx_cd_ue_vc;
+    private String atvfx_cd_pconta;
+    private String atvfx_cd_pconta_vc;
+    private String atvfx_cd_cls;
+    private String atvfx_cd_cls_vc;
+    private BigDecimal atvfx_vl_custo_original;
+    private String atvfx_vl_custo_original_str;
+    private String atvfx_vl_custo_original_vc;
+    private BigDecimal atvfx_vl_custo_atual;
+    private String atvfx_vl_custo_atual_str;
+    private String atvfx_vl_custo_atual_vc;
+    private String atvfx_ds_localizacao;
+    private String atvfx_ds_localizacao_vc;
+    private String atvfx_ds_logradouro;
+    private String atvfx_ds_logradouro_vc;
+    private String atvfx_ds_complemento;
+    private String atvfx_ds_complemento_vc;
+    private String atvfx_ds_municipio;
+    private String atvfx_ds_municipio_vc;
+    private String atvfx_cd_uf;
+    private String atvfx_cd_uf_vc;
+    private String atvfx_cd_patio;
+    private String atvfx_cd_patio_vc;
+    private String atvfx_km;
+    private String atvfx_km_vc;
+    private String atvfx_nu_nota_fiscal_compra;
+    private String atvfx_nu_nota_fiscal_compra_vc;
+    private String atvfx_nm_fornecedor;
+    private String atvfx_nm_fornecedor_vc;
+    private String atvfx_cd_projeto;
+    private String atvfx_cd_projeto_vc;
+    private String atvfx_cd_tarefa;
+    private String atvfx_cd_tarefa_vc;
+    private String flds_vf_ref;
+    
+//---------------------------    
+	private final String SQL_SQ_HEADERS1 = "SELECT * FROM "+appsx+"MRS_FA_ATDM_SQ_HEADERS a WHERE ";
+	//private static final String SQL_SQ_HEADERS1 = "SELECT * FROM MRS_FA_ATDM_SQ_HEADERS a WHERE ";
+
+	private final String SQL_SQ_HEADERS2 = "a.STAT_ATDM = 'Conferido' ";
+	//private static final String SQL_SQ_HEADERS2 = "a.STAT_ATDM == 'Conferido' OR a.STAT_ATDM == 'Pendente' ";
+	private final String SQL_SQ_HEADERS3 = "and a.cd_ativo is not null ";
+	private final String SQL_SQ_HEADERS4 = "and REGEXP_LIKE(a.cd_ativo, '[0-9]') ";
+	private final String SQL_SQ_HEADERS5 = "and a.cd_ativo <> '0' ";
+	private final String SQL_SQ_HEADERS = SQL_SQ_HEADERS1 + SQL_SQ_HEADERS2 + SQL_SQ_HEADERS3 + SQL_SQ_HEADERS4 + SQL_SQ_HEADERS5; 
+	
+	private static final String SISPAT_IMAGES_FOLDERNAME="sispat_mrs_images";
+	
+	private static File sispatImagesRoot;
+	private static Integer deltaMinutesParam;
+	
+	private IntegrationLog iLog = new IntegrationLog();
+
+	public Integer kk_atd_ok_prc = 0; // Qtd de Atendimentos sem Erro no Processamento
+	public Integer kk_atd_err_prc = 0; // Qtd de Atendimentos com Erro no Processamento
+	public Integer kk_err_atd = 0;  // Qtd de Erros no Atendimento
+	public Integer kk_ok_atd = 0;  // Qtd de Oks no Atendimento
+
+	public HashMap<String, Integer> kk_err_atd_map = new HashMap<String, Integer>();
+	public HashMap<String, Integer> kk_ok_atd_map = new HashMap<String, Integer>();
+
+    public ArrayList assetList = new ArrayList() ;   // croosBrowser wdpsList Array List
+
+	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		try {
+			sync();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sync() throws SQLException {
+		iLog.mode(IntegrationMode.Automatic);
+		Connection oracleConnection = DatabaseUtils.getOracleConnection();
+		PreparedStatement pstmt = oracleConnection.prepareStatement(SQL_SQ_HEADERS + " and CREATION_DATE >= SYSDATE-INTERVAL '" + deltaMinutesParam.toString() + "' MINUTE order by to_number(a.nu_atdm) asc " );
+		loadCovers(null, null, pstmt);
+	}
+
+	public void sync(String nuAtdm) throws SQLException, IOException, ParseException, IntegrationJobException {
+		iLog.mode(IntegrationMode.ManualAtdm);
+		loadSheet(nuAtdm);
+	}
+	
+    // LoadSheet------------------------------------
+    //public void loadSheet() throws LoginException, SQLException {  
+	public void loadSheet(String nuAtdm) throws SQLException, IOException {  
+		//iLog.begin("AFixo");
+    	//getSession().setAttribute("goBackBean", null);
+		Connection con55 = DatabaseUtils.getConnection();
+        Calendar today = Calendar.getInstance();
+        Integer yy = today.get(Calendar.YEAR );
+        String yyx = yy.toString();
+        Integer mm = today.get(Calendar.MONTH) + 1;
+        String mmx = mm.toString();
+        if (mmx.length() == 1 ) { mmx = "0"+mmx;  }
+        Integer dd = today.get(Calendar.DAY_OF_MONTH );
+        String ddx = dd.toString();
+        if (ddx.length() == 1 ) { ddx = "0"+ddx;  }
+        Integer hh = today.get(Calendar.HOUR_OF_DAY);
+        String hhx = hh.toString();
+        if (hhx.length() == 1 ) { hhx = "0"+hhx;  }
+        Integer mn = today.get(Calendar.MINUTE);
+        String mnx = mn.toString();
+        if (mnx.length() == 1 ) { mnx = "0"+mnx;  }
+        String datex = yyx + mmx + ddx + "-" + hhx + mnx;
+        batch_id = datex;
+        batch_id = batch_id.substring(2,batch_id.length() );
+       String valuex ="";  Number valueNumb = 0; Long valueLong = null;
+       BigDecimal valueDec = null; Integer valueNum = null;
+       String src = ""; String dst = "";
+       linex = ""; int ttFoundFlag = 0; importErrorFlag = 0;
+       content[ckk] = ">>>> SispatGeo - Relatório de Atualização em Lote"; ckk = ckk + 1;
+       content[ckk] = ""; ckk = ckk + 1;
+       ttFoundFlag = 0;
+       Integer kkrec = 0; Integer kkread = 0; 
+       fileUploaded = nuAtdm;
+       try {
+    	   String impDirFile = "C:\\sispat_mrs_imports"+"\\AFixo"+"\\" + fileUploaded;   
+           src = impDirFile;
+           //fileUploaded = fileUploaded.replace(".xl", "-"+batch_id+".xl") ;
+           fileUploaded = fileUploaded.substring(0,fileUploaded.indexOf("--"))+".xls";    
+           dst = "C:\\sispat_mrs_imports\\AtivoFixo"+"\\" + fileUploaded;
+           String[][] matrix = ExcelUtils.load(new File(impDirFile), "Plan1");
+           String xxx = matrix[0][1]; 
+           if (xxx == null) {
+              // mesg_var = getMessageByKey("msg_line0MustContainTitles");
+              return;
+           }
+           // Gera Lista de titulos não declarados na Planilha
+           int xx = 0; int error = 0;   int kkrecx = 0;  
+           for (int rowIndex = 1; rowIndex < matrix.length; rowIndex++) {
+                propCDTTList.clear(); linex = " ";
+               atvfx_cd = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("AtivoFixoCod") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'AtivoFixoCod',  "; error = 1;}
+               
+               atvfx_cd_plaqueta = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Plaqueta") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Plaqueta',  "; error = 1;}
+               
+               atvfx_cd_pai = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Pai") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Pai',  "; error = 1;}
+               
+               atvfx_cd_invty_ultm = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("UVistoria") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'UVistoria',  "; error = 1;}
+               
+               atvfx_tp_cfasttp = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Tipo") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Tipo',  "; error = 1;}
+               
+               atvfx_tp_propriedade = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("TipoPropriedade") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'TipoPropriedade',  "; error = 1;}
+               
+               atvfx_dt_criacao = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("DataCriacao") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'DataCriacao',  "; error = 1;}
+               
+               atvfx_dt_ult_atualizacao = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("DataUltAtualizacao") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'DataUltAtualizacao',  "; error = 1;}
+               
+               atvfx_dt_baixa = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("DataBaixa") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'DataBaixa',  "; error = 1;}
+
+               //atvfx_dt_baixa_corr = null; xx = 0;
+               //for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+               //    if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+               //    else if (matrix[0][colIndexx].equals("DataBaixaCorrigida") ) { xx = 1;}
+               //}
+               //if (xx == 0) {linex = linex + "'DataBaixaCorrigida',  "; error = 1;}
+
+               atvfx_nm_proprietario = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("NomeProprietario") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'NomeProprietario',  "; error = 1;}
+               
+               atvfx_cd_centro_custo = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("CentroCusto") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'CentroCusto',  "; error = 1;}
+               
+               atvfx_st = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("StatusAtivo") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'StatusAtivo',  "; error = 1;}
+               
+               atvfx_cd_category = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Categoria") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Categoria',  "; error = 1;}
+               
+               atvfx_cd_ctg_sub_grp = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("SubGrupoCategoria") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'SubGrupoCategoria',  "; error = 1;}
+               
+               atvfx_cd_ctg_det = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("DetalheCategoria") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'DetalheCategoria',  "; error = 1;}
+               
+               atvfx_ds = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("AtivoFixoDesc") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'AtivoFixoDesc',  "; error = 1;}
+               
+               atvfx_cd_ue = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("U.E.") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'U.E.',  "; error = 1;}
+               
+               atvfx_cd_pconta = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Conta") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Conta',  "; error = 1;}
+               
+               atvfx_cd_cls = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("CLS") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'CLS',  "; error = 1;}
+               
+               atvfx_vl_custo_original = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("CustoOriginal") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'CustoOriginal',  "; error = 1;}
+               
+               atvfx_vl_custo_atual = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("CustoAtual") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'CustoAtual',  "; error = 1;}
+               
+               atvfx_ds_localizacao = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Localizacao") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Localizacao',  "; error = 1;}
+               
+               atvfx_ds_logradouro = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Logradouro") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Logradouro',  "; error = 1;}
+               
+               atvfx_ds_complemento = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Complemento") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Complemento',  "; error = 1;}
+               
+               atvfx_ds_municipio = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Municipio") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Municipio',  "; error = 1;}
+               
+               atvfx_cd_uf = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("UF") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'UF',  "; error = 1;}
+               
+               atvfx_cd_patio = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Patio") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Patio',  "; error = 1;}
+               
+               atvfx_km = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("KM") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'KM',  "; error = 1;}
+               
+               atvfx_nu_nota_fiscal_compra = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("NotaFiscalReceb") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'NotaFiscalReceb',  "; error = 1;}
+               
+               atvfx_nm_fornecedor = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Fornecedor") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Fornecedor',  "; error = 1;}
+               
+               atvfx_cd_projeto = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Projeto") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Projeto',  "; error = 1;}
+               
+               atvfx_cd_tarefa = null; xx = 0;
+               for (int colIndexx = 0; colIndexx < matrix[0].length; colIndexx++) {
+                   if (matrix[0][colIndexx] == null ) { xx = 2; linex = linex + "'Titulo NULO'"; error = 1;}
+                   else if (matrix[0][colIndexx].equals("Tarefa") ) { xx = 1;}
+               }
+               if (xx == 0) {linex = linex + "'Tarefa',  "; error = 1;}
+               
+               // Aipresenta Lista de titulos não declarados na Planilha
+               if ( error == 1 ) {
+                   iLog.begin("AFixo#");
+            	   linex = "Atenção! Titulos de Colunas não encontrados: " + linex + " Corrija e Reprocesse" ;
+                   content[ckk] = linex;; ckk = ckk + 1;
+                   String uploadErrorFile = "Sispat_ErrosImportação_IXLocoDesemp_" + datex;
+                   //iLog.end(DateIni, DateEnd,  kk_atd_ok_prc, kk_atd_err_prc);
+            	   iLog.logAtdmError(linex, "-----", null);
+                   iLog.message(linex);
+                   iLog.closeAtdm();
+                   iLog.end(null, null,  kk_atd_ok_prc, kk_atd_err_prc);
+                   mesg_var = linex; xmesg_rc = 777; 
+                   return;
+               }
+               // Inicializa todas variaveis da Tabela
+               atvfx_cd = null;
+               atvfx_cd_plaqueta = null;
+               atvfx_cd_pai = null;
+               atvfx_cd_invty_ultm = null;
+               atvfx_tp_cfasttp = null;
+               atvfx_tp_propriedade = null;
+               atvfx_dt_criacao = null;
+               atvfx_dt_ult_atualizacao = null;
+               atvfx_dt_baixa = null;
+               //atvfx_dt_baixa_corr = null;
+               atvfx_nm_proprietario = null;
+               atvfx_cd_centro_custo = null;
+               atvfx_st = null;
+               atvfx_cd_category = null;
+               atvfx_cd_ctg_sub_grp = null;
+               atvfx_cd_ctg_det = null;
+               atvfx_ds = null;
+               atvfx_cd_ue = null;
+               atvfx_cd_pconta = null;
+               atvfx_cd_cls = null;
+               atvfx_vl_custo_original = null;
+               atvfx_vl_custo_atual = null;
+               atvfx_ds_localizacao = null;
+               atvfx_ds_logradouro = null;
+               atvfx_ds_complemento = null;
+               atvfx_ds_municipio = null;
+               atvfx_cd_uf = null;
+               atvfx_cd_patio = null;
+               atvfx_km = null;
+               atvfx_nu_nota_fiscal_compra = null;
+               atvfx_nm_fornecedor = null;
+               atvfx_cd_projeto = null;
+               atvfx_cd_tarefa = null;
+               typeCats = "";
+               kk_err_atd = 0;  // Inicializa Contador de erros de um Registro 
+               if (rowIndex == 1) {
+                   iLog.begin("AFixo#"+fileUploaded);
+               }
+               for (int colIndex = 0; colIndex < matrix[rowIndex].length; colIndex++) {
+       	          //System.out.println(matrix[rowIndex][colIndex]);
+                   ttFoundFlag = 0;
+
+                   // Titulos de Colunas
+                   if ( matrix[0][colIndex] == null  ) {
+                        continue;
+                   }
+                   if ( matrix[0][colIndex].contains("NULL")  ) {
+                        matrix[rowIndex][colIndex] = null;
+                        continue;
+                   }
+
+                   // Valores de Colunas de cada Linha
+                   if (matrix[0][colIndex].equals("Tipo") ) {
+                   } else
+                   if ( matrix[rowIndex][colIndex] == null  ) {
+                        continue;
+                   }
+                   if (matrix[0][colIndex].equals("Tipo") ) {
+                   } else
+                   if ( matrix[rowIndex][colIndex].contains("NULL")  ) {
+                        matrix[rowIndex][colIndex] = null;
+                        continue;
+                   }
+
+                   try {
+
+                   // Carrega Colunas de cada linhas da planilha
+                   if (matrix[0][colIndex].equals("AtivoFixoCod") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd-AtivoFixoCod");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       //if (valuex.length() == 5) {
+                       //   valuex = "0" + valuex;
+                       //}
+                       //if (valuex != null) {
+                       //    atvfx_cd = valuex;
+                       //}
+                       //if (valuex.contains("946619")) {
+                       //   kk_err_atd = 1;
+                       //}
+                       atvfx_cdx = valuex;
+                       atvfx_cd = valuex;
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_cd = valuex;
+                       } else {
+                           typeCats = typeCats + "Coluna AtivoFixoCod requer # ";
+                           //kk_err_atd = 1;
+                       }                           
+                       // Exclui Ativos que possam ter sido incluídos com um Zero na Frente
+                       String zero_atvfx_cd = "0" + atvfx_cd;
+                       try {
+                    	   PreparedStatement ps_file = con55.prepareStatement("delete from IXAtivoFixo where atvfx_cd = ? ");
+                           ps_file.setString(1, zero_atvfx_cd);
+                           ps_file.executeUpdate();   
+                           ps_file.close();
+                       } catch ( Exception ex ) {
+                       } finally {   }
+
+                       if ( atvfx_cd.contains(".") && atvfx_cd.contains("E")) { 
+                           int startEX =  atvfx_cd.indexOf("E");
+                           String Zeroes = "00000000000000000";
+                           String LX =  atvfx_cd.substring(startEX+1, atvfx_cd.length());
+                           int LXN = Integer.parseInt(LX) + 1;  // Total Length
+                           
+                           String EX = atvfx_cd.substring(startEX, atvfx_cd.length()); // Capture EX  
+                           atvfx_cd = atvfx_cd.replace(EX, "");   // Remove EX
+                           atvfx_cd = atvfx_cd.replace(".", "");  // Remove "."
+                           int LXX = atvfx_cd.length();           // Length after edition
+                           int lXDIF = LXN - LXX;                 // Difference between Total EX Length - Edited Length
+                           String Zeroesx = Zeroes.substring(0,lXDIF); // Get Zeroes needed to complete
+                           atvfx_cd = atvfx_cd + Zeroesx; // Complete Code with Zeroes
+                       }
+                       
+                       String batch_idx = batch_id;  //@@@ Código de Processamento  // Chave do LOG 
+
+                       //IXAtivoFixoAtualiza IXAtivoFixoAtualizax = new IXAtivoFixoAtualiza(atvfx_cd);    
+                       //IXAtivoFixoAtualizax.loadUfmv(this);
+                       //IXAtivoFixoAtualizax.setTableAlias("IXATIVOFIXOATUALIZA_IXATIVOFIXOATUALIZA");
+                       //IXAtivoFixoAtualizax.load(con55);
+                       //IXAtivoFixoAtualizax.saveToBean(this);
+
+                       //loadDesc();
+                       //loadFieldBean();
+                       batch_id = batch_idx;
+                   } else // end of if 
+                   
+                   if (matrix[0][colIndex].equals("Plaqueta") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_plaqueta-Plaqueta");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_cd_plaqueta = valuex;
+                       } else {
+                           typeCats = typeCats + "Coluna Plaqueta requer # ";
+                       }                           
+                       if ( atvfx_cd_plaqueta.contains(".") && atvfx_cd_plaqueta.contains("E")) { 
+                           int startEX =  atvfx_cd_plaqueta.indexOf("E");
+                           String Zeroes = "00000000000000000";
+                           String LX =  atvfx_cd_plaqueta.substring(startEX+1, atvfx_cd_plaqueta.length());
+                           int LXN = Integer.parseInt(LX) + 1;  // Total Length
+                           
+                           String EX = atvfx_cd_plaqueta.substring(startEX, atvfx_cd_plaqueta.length()); // Capture EX  
+                           atvfx_cd_plaqueta = atvfx_cd_plaqueta.replace(EX, "");   // Remove EX
+                           atvfx_cd_plaqueta = atvfx_cd_plaqueta.replace(".", "");  // Remove "."
+                           int LXX = atvfx_cd_plaqueta.length();           // Length after edition
+                           int lXDIF = LXN - LXX;                 // Difference between Total EX Length - Edited Length
+                           String Zeroesx = Zeroes.substring(0,lXDIF); // Get Zeroes needed to complete
+                           atvfx_cd_plaqueta = atvfx_cd_plaqueta + Zeroesx; // Complete Code with Zeroes
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Pai") ) {   
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_pai-Pai");
+                       valuex = valuex.trim();
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_cd_pai = valuex;
+                       } else {
+                           typeCats = typeCats + "Coluna Pai requer # ";
+                       }                           
+                       if ( atvfx_cd_pai.contains(".") && atvfx_cd_pai.contains("E")) { 
+                           int startEX =  atvfx_cd_pai.indexOf("E");
+                           String Zeroes = "00000000000000000";
+                           String LX =  atvfx_cd_pai.substring(startEX+1, atvfx_cd_pai.length());
+                           int LXN = Integer.parseInt(LX) + 1;  // Total Length
+                           
+                           String EX = atvfx_cd_pai.substring(startEX, atvfx_cd_pai.length()); // Capture EX  
+                           atvfx_cd_pai = atvfx_cd_pai.replace(EX, "");   // Remove EX
+                           atvfx_cd_pai = atvfx_cd_pai.replace(".", "");  // Remove "."
+                           int LXX = atvfx_cd_pai.length();           // Length after edition
+                           int lXDIF = LXN - LXX;                 // Difference between Total EX Length - Edited Length
+                           String Zeroesx = Zeroes.substring(0,lXDIF); // Get Zeroes needed to complete
+                           atvfx_cd_pai = atvfx_cd_pai + Zeroesx; // Complete Code with Zeroes
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("UVistoria") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_invty_ultm-UVistoria");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_cd_invty_ultm = valuex;  //@@@ Deve ser pego da Tabel wbrl_asset  
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Tipo") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_tp_cfasttp-Tipo");
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex == null) { valuex = "";}    
+                       valuex = valuex.trim();
+                       if (atvfx_cd.contains("946619")) {
+                    	   kk_err_atd = 1;
+                       }
+                       if (valuex.length() == 0 ) {
+                           // If no value assume type 'AC'  
+                    	   valuex = "AC";
+                    	   atvfx_tp_cfasttp = valuex.toUpperCase();; //@@@ Deve ser pego da Tabel wbrl_asset
+                    	   //typeCats = "Tp: Null conv. para: AC";                        	   iLog.logAtdmError(typeCats, atvfx_cd, null);
+                       } else
+                       if (valuex != null) {
+                    	   atvfx_tp_cfasttp = valuex.toUpperCase();; //@@@ Deve ser pego da Tabel wbrl_asset
+                       }
+
+                       // Verifica Tipo do Ativo como definodo na Ultima Vistoria  
+                       String lastSurveyAssetType = loadLastSurveyType(atvfx_cd);  
+                       //if (lastSurveyAssetType != null && lastSurveyAssetType.equals("AC")) {
+                       if ( lastSurveyAssetType != null && !lastSurveyAssetType.equals(atvfx_tp_cfasttp)) {
+                           // Atuliza Tipo da Ultima Vistoria com Tipo do Ativo Fixo
+                    	   String lastSurveyAssetId = loadLastSurveyId(atvfx_cd);
+                           int startxx = lastSurveyAssetId.lastIndexOf("-") - 2;   
+                           int endxx = lastSurveyAssetId.length();                
+                           String invty_ultm = lastSurveyAssetId.substring(startxx, endxx); 
+                           Connection conAsset =  DatabaseUtils.getConnection();
+                           try {
+                               //String sqlup = "update WBRL_ASSET set asset_tp_cfasttp = ? asset_cd_cfinvty = ?  where asset_id = ?";
+                        	   String sqlup = "update WBRL_ASSET set asset_tp_cfasttp = ? where asset_id = ?";
+                               PreparedStatement ps_asset = conAsset.prepareStatement(sqlup);
+                               ps_asset.setString(1, atvfx_tp_cfasttp);
+                               //ps_asset.setString(2, invty_ultm);
+                               ps_asset.setString(2, lastSurveyAssetId);
+                               ps_asset.executeUpdate();
+                               ps_asset.close();
+                               } catch (Exception e) {
+                                   //String message = e.getMessage();
+                                   iLog.logAtdmError(e.getMessage(), atvfx_cd, "");
+                               } finally {
+                                   DatabaseUtils.releaseConnection(conAsset);
+                               }
+                               typeCats = "Tp:"+lastSurveyAssetType + " de Ultm. Vist. conv. para: "+ atvfx_tp_cfasttp + " do Ativo Fixo";
+                               lastSurveyAssetType = atvfx_tp_cfasttp;
+                       } else
+                       if (lastSurveyAssetType != null && !atvfx_tp_cfasttp.equals(lastSurveyAssetType))  {
+                           // Se Tipo do Ativo for Diferente do Tipo da Ultm Vistoria 
+                    	   String codfx = loadCodfByKey("ASTTP", atvfx_tp_cfasttp);                       
+                           if (codfx.contains("xtra") ) { // Se Codf do Tipo Extra assume Tipo da Vistoria e Emite Log
+                    	       typeCats = "Tp Extra:"+atvfx_tp_cfasttp + " conv. para: "+ lastSurveyAssetType + " da Ultm. Vist."; 
+                               atvfx_tp_cfasttp = lastSurveyAssetType;
+                           } else 
+                           // Validate atvfx_tp_cfasttp against COFG ASTTP
+                           if (codfx.equals("false") ) {  // Se Codf Invalido assume 'AC' e emite Log
+                               typeCats = "Tp:"+atvfx_tp_cfasttp + " Inválido e conv. para: AC ";    
+                               atvfx_tp_cfasttp = "AC"; 
+                           } else
+                           if (atvfx_tp_cfasttp.equals("AC") ) {
+                               typeCats = "Tp: Inválido e conv. para: AC "; 
+                           } 
+                       } else
+                       if (atvfx_tp_cfasttp.equals("AC"))  {
+                           typeCats = "Tp: Inválido e conv. para: AC "; 
+                       } else {
+                           String codfxx = loadCodfByKey("ASTTP", atvfx_tp_cfasttp);                       
+                           if (codfxx.equals("false") ) {
+                               typeCats = "Tp:"+atvfx_tp_cfasttp + " Inválido e conv. para: AC ";    
+                               atvfx_tp_cfasttp = "AC"; 
+                           }                       
+                       }                       //VG        lg=pt_BR  ds=Vagão     
+                   } else // end of if 
+
+                   if (matrix[0][colIndex].equals("TipoPropriedade") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_tp_propriedade-TipoPropriedade");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_tp_propriedade = valuex.toUpperCase();;
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("DataCriacao") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_dt_criacao-DataCriacao");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_dt_criacao = (Date) ConvertUtils.lookup(Date.class).convert(Date.class,valuex);
+                       }
+                   } else // end of if 
+
+                   if (matrix[0][colIndex].equals("DataUltAtualizacao") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_dt_ult_atualizacao-DataUltAtualizacao");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_dt_ult_atualizacao = (Date) ConvertUtils.lookup(Date.class).convert(Date.class,valuex);
+                       }
+                   } else  // end of if 
+
+                   if (matrix[0][colIndex].equals("DataBaixa") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_dt_baixa-DataBaixa");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_dt_baixa = (Date) ConvertUtils.lookup(Date.class).convert(Date.class,valuex);
+                       }
+                   } else // end of if 
+                   //if (matrix[0][colIndex].equals("DataBaixaCorrigida") ) {
+                   //    ttFoundFlag = 1;
+                   //    propCDTTList.add("atvfx_dt_baixa_corr-DataBaixaCorrigida");
+                   //    valuex = matrix[rowIndex][colIndex];
+                   //    if (valuex != null) {
+                   //        atvfx_dt_baixa = (Date) ConvertUtils.lookup(Date.class).convert(Date.class,valuex);
+                   //    }
+                   //} // end of if 
+                   if (matrix[0][colIndex].equals("NomeProprietario") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_nm_proprietario-NomeProprietario");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_nm_proprietario = valuex.toUpperCase();;
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("CentroCusto") ) {  
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_centro_custo-CentroCusto");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_cd_centro_custo = valuex.toUpperCase();
+                       } else {
+                           typeCats = typeCats + "Coluna CentroCusto requer # ";
+                       }                           
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("StatusAtivo") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_st-StatusAtivo");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_st = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Categoria") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_category-Categoria");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_cd_category = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("SubGrupoCategoria") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_ctg_sub_grp-SubGrupoCategoria");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_cd_ctg_sub_grp = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("DetalheCategoria") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_ctg_det-DetalheCategoria");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_cd_ctg_det = valuex.toUpperCase();
+                       }
+                       // Carrega tipo de bem com base em Categoria  
+                       //atvfx_tp_cfasttp = "AC";  // A Classificar
+    
+   					   atvfx_cd_category = atvfx_cd_category.toUpperCase();
+   					   atvfx_cd_ctg_sub_grp = atvfx_cd_ctg_sub_grp.toUpperCase();
+   					   atvfx_cd_ctg_det = atvfx_cd_ctg_det.toUpperCase();
+                       
+                       if (atvfx_tp_cfasttp.contains("AXC")) {
+                    	   typeCats = typeCats + "Cat/Sub/Det:"+atvfx_cd_category+"/"+atvfx_cd_ctg_sub_grp+"/"+atvfx_cd_ctg_det; 
+                    	   if (atvfx_cd_category.contains("TERRENOS") && atvfx_cd_ctg_sub_grp.contains("TERRENOS") && atvfx_cd_ctg_det.contains("TERRENOS")) { 
+                               atvfx_tp_cfasttp = "AC";
+                           }
+                           if (atvfx_cd_category.contains("MATERIAL RODANTE") && atvfx_cd_ctg_sub_grp.contains("LOCOMOTIVAS") && atvfx_cd_ctg_det.contains("LOCOMOTIVAS USADAS")) { 
+                               atvfx_tp_cfasttp = "LC";
+                           }
+                           if (atvfx_cd_category.contains("MATERIAL RODANTE") && atvfx_cd_ctg_sub_grp.contains("LOCOMOTIVAS") && atvfx_cd_ctg_det.contains("LOCOMOTIVAS NOVAS")) { 
+                               atvfx_tp_cfasttp = "LC";
+                           }
+                           if (atvfx_cd_category.contains("MATERIAL RODANTE") && atvfx_cd_ctg_sub_grp.contains("VAGOES") && atvfx_cd_ctg_det.contains("VAGOES")) { 
+                               atvfx_tp_cfasttp = "VG";
+                           }
+                           if (atvfx_cd_category.contains("MATERIAL RODANTE") && atvfx_cd_ctg_sub_grp.contains("CARROS DE PASSAGEIROS") && atvfx_cd_ctg_det.contains("CARROS DE PASSAGEIROS")) { 
+                               atvfx_tp_cfasttp = "VG";
+                           }
+                           if (atvfx_cd_category.contains("MATERIAL RODANTE") && atvfx_cd_ctg_sub_grp.contains("LOCOMOTIVAS") && atvfx_cd_ctg_det.contains("LOCOMOTIVAS ELETRICAS")) { 
+                               atvfx_tp_cfasttp = "LC";
+                           }
+                           if (atvfx_cd_category.contains("MATERIAL RODANTE") && atvfx_cd_ctg_sub_grp.contains("LOCOMOTIVAS") && atvfx_cd_ctg_det.contains("LOCOMOTIVAS A DIESEL")) { 
+                               atvfx_tp_cfasttp = "LC";
+                           }
+                           if (atvfx_cd_category.contains("MATERIAL RODANTE") && atvfx_cd_ctg_sub_grp.contains("LOCOMOTIVAS") && atvfx_cd_ctg_det.contains("LOCOMOTIVAS A VAPOR")) { 
+                              atvfx_tp_cfasttp = "LC";
+                           }
+                           // Obras de Arte              	   
+                           if (atvfx_cd_category.contains("OBRAS DE ARTE") && atvfx_cd_ctg_sub_grp.contains("OBRAS DE ARTE") && atvfx_cd_ctg_det.contains("OBRAS DE ARTE")) { 
+                               atvfx_tp_cfasttp = "AC";
+                           }
+                           if (atvfx_cd_category.contains("OBRAS DE ARTE") && atvfx_cd_ctg_sub_grp.contains("TUNEL") && atvfx_cd_ctg_det.contains("TUNEL")) { 
+                               atvfx_tp_cfasttp = "TU";
+                           }
+                           if (atvfx_cd_category.contains("OBRAS DE ARTE") && atvfx_cd_ctg_sub_grp.contains("VIADUTO") && atvfx_cd_ctg_det.contains("VIADUTO")) { 
+                               atvfx_cd_ctg_det = "PS";
+                           }
+                           if (atvfx_cd_category.contains("OBRAS DE ARTE") && atvfx_cd_ctg_sub_grp.contains("PONTE") && atvfx_cd_ctg_det.contains("PONTE")) { 
+                               atvfx_tp_cfasttp = "PT";
+                           }
+                           if (atvfx_cd_category.contains("OBRAS DE ARTE") && atvfx_cd_ctg_sub_grp.contains("PONTILHAO") && atvfx_cd_ctg_det.contains("PONTILHAO")) { 
+                               atvfx_tp_cfasttp = "PT";
+                           }
+                           if (atvfx_cd_category.contains("OBRAS DE ARTE") && atvfx_cd_ctg_sub_grp.contains("PASSARELA") && atvfx_cd_ctg_det.contains("PASSARELA")) { 
+                               atvfx_tp_cfasttp = "PS";
+                           }
+                           if (atvfx_cd_category.contains("OBRAS DE ARTE") && atvfx_cd_ctg_sub_grp.contains("PASSAGEM EM NIVEL") && atvfx_cd_ctg_det.contains("PASSAGEM EM NIVEL")) { 
+                               atvfx_tp_cfasttp = "PN";
+                           }
+                           // IMOVEIS              	   
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("IMOVEIS") && atvfx_cd_ctg_det.contains("EDIFICIOS E DEPENDENCIAS")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("ESTACAO") && atvfx_cd_ctg_det.contains("ESTACAO")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("EDIFICIOS ADMINISTRATIVOS") && atvfx_cd_ctg_det.contains("EDIFICIOS ADMINISTRATIVOS")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("OFICINAS MECANICAS") && atvfx_cd_ctg_det.contains("OFICINAS MECANICAS")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("OUTRAS OFICINAS") && atvfx_cd_ctg_det.contains("OUTRAS OFICINAS")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("ARMAZEM") && atvfx_cd_ctg_det.contains("ARMAZEM")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("INSTL.ENERGIA, SINALIZACO E TELECOM") && atvfx_cd_ctg_det.contains("INSTL.ENERGIA, SINALIZACO E TELECOM")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("EDIF. DE APOIO") && atvfx_cd_ctg_det.contains("EDIF. DE APOIO")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("POSTO DE ABASTECIMENTO") && atvfx_cd_ctg_det.contains("POSTO DE ABASTECIMENTO")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("CASA DE PERNOITE") && atvfx_cd_ctg_det.contains("CASA DE PERNOITE")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("CASA DE EMPREGADOS") && atvfx_cd_ctg_det.contains("CASA DE EMPREGADOS")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("CAIXA") && atvfx_cd_ctg_sub_grp.contains("GUA") && atvfx_cd_ctg_det.contains("CAIXA") && atvfx_cd_ctg_det.contains("GUA") ) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("OUTRAS EDIFICACOES") && atvfx_cd_ctg_det.contains("OUTRAS EDIFICACOES")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           // INSTALACOES              	   
+                           if (atvfx_cd_category.contains("INSTALACOES") && atvfx_cd_ctg_sub_grp.contains("INSTALACOES - OPERACIONAIS") && atvfx_cd_ctg_det.contains("INST. FIXAS DE ENERGIA ELETRICA")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("INSTALACOES") && atvfx_cd_ctg_sub_grp.contains("INSTALACOES - OPERACIONAIS") && atvfx_cd_ctg_det.contains("OUTRAS INSTALACOES FIXAS")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           if (atvfx_cd_category.contains("SUPERESTRUTURA DE VIA PERMANENTE") && atvfx_cd_ctg_sub_grp.contains("SUPERESTRUTURA DE VIA PERMANENTE") && atvfx_cd_ctg_det.contains("PATIOS")) { 
+                               atvfx_tp_cfasttp = "AC";
+                           }
+                           if (atvfx_cd_category.contains("IMOVEIS") && atvfx_cd_ctg_sub_grp.contains("EDIFICIOS E DEPENDENCIAS") && atvfx_cd_ctg_det.contains("USO FUTURO")) { 
+                               atvfx_tp_cfasttp = "ED";
+                           }
+                           // Carrega tipo de bem com base em Categoria - FIM  
+                       }
+                   } else // end of if 
+                   
+                   if (matrix[0][colIndex].equals("AtivoFixoDesc") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_ds-AtivoFixoDesc");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_ds = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("U.E.") ) {   
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_ue-U.E.");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_cd_ue = valuex.toUpperCase();
+                       } else {
+                           typeCats = typeCats + "Coluna U.E. requer # ";
+                       }                           
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Conta") ) {    
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_pconta-Conta");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("-") > 0) {
+                    	   atvfx_cd_pconta = valuex.toUpperCase();
+                       } else {
+                           typeCats = typeCats + "Coluna Conta requer Descritivo depois de '-' ";
+                       }                           
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("CLS") ) {  
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_cls-CLS");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("-") > 0) {
+                    	   atvfx_cd_cls = valuex.toUpperCase();
+                       } else {
+                           typeCats = typeCats + "Coluna CLS requer Descritivo depois de '-' ";
+                       }                           
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("CustoOriginal") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_vl_custo_original-CustoOriginal");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_vl_custo_original = convertDecimal(valuex);
+                       }                           
+                   } else // end of if 
+
+                   if (matrix[0][colIndex].equals("CustoAtual") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_vl_custo_atual-CustoAtual");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_vl_custo_atual = convertDecimal(valuex);
+                       }
+                   } else  // end of if 
+
+                   if (matrix[0][colIndex].equals("Localizacao") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_ds_localizacao-Localizacao");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_ds_localizacao = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Logradouro") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_ds_logradouro-Logradouro");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_ds_logradouro = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Complemento") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_ds_complemento-Complemento");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_ds_complemento = valuex.toUpperCase();
+                       } else {
+                           typeCats = typeCats + "Coluna Complemento requer # ";
+                       }                           
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Municipio") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_ds_municipio-Municipio");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_ds_municipio = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("UF") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_uf-UF");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_cd_uf = valuex.toUpperCase();
+                           if (atvfx_cd_uf.contains("aaaMINAS")) { atvfx_cd_uf = "MG";}  
+                           else if (atvfx_cd_uf.contains("PAULO")) { atvfx_cd_uf = "SP";}  
+                           else if (atvfx_cd_uf.contains("RITO SANTO")) { atvfx_cd_uf = "ES";}  
+                           else if (atvfx_cd_uf.contains("JANEIRO")) { atvfx_cd_uf = "RJ";}  
+                           else if (atvfx_cd_uf.contains("RJ")) { atvfx_cd_uf = "RJ";}  
+                           else if (atvfx_cd_uf.contains("SP")) { atvfx_cd_uf = "SP";}  
+                           else if (atvfx_cd_uf.contains("ES")) { atvfx_cd_uf = "ES";}  
+                           else if (atvfx_cd_uf.contains("MG")) { atvfx_cd_uf = "MG";}  
+                           else {
+					           //kk_err_atd = kk_err_atd + 1; // Contador de Erros de Rregistro 
+					           //throw new LineValidationException("ER - Valor de UF: '"+valuex+"' não encontrado na regra de conversão' ");
+                               kk_err_atd = kk_err_atd + 1; // Contador de Erros de Rregistro 
+                               kk_atd_err_prc = kk_atd_err_prc + 1;
+                               typeCats = "UF Invãlida: "+ valuex;
+                        	   iLog.logAtdmError(typeCats, atvfx_cd, null);
+                           }
+                       }
+                   } else // end of if 
+
+                   if (matrix[0][colIndex].equals("Patio") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_patio-Patio");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_cd_patio = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("KM") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_km-KM");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_km = valuex;
+                       }
+                   } else // end of if 
+
+                   if (matrix[0][colIndex].equals("NotaFiscalReceb") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_nu_nota_fiscal_compra-NotaFiscalReceb");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_nu_nota_fiscal_compra = valuex;
+                       } else {
+                           typeCats = typeCats + "Coluna NotaFiscalReceb requer # ";
+                       }                           
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Fornecedor") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_nm_fornecedor-Fornecedor");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null) {
+                           atvfx_nm_fornecedor = valuex.toUpperCase();
+                       }
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Projeto") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_projeto-Projeto");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_cd_projeto = valuex.toUpperCase();
+                       } else {
+                           typeCats = typeCats + "Coluna Projeto requer # ";
+                       }                           
+                   } else // end of if 
+                       
+                   if (matrix[0][colIndex].equals("Tarefa") ) {   
+                       ttFoundFlag = 1;
+                       propCDTTList.add("atvfx_cd_tarefa-Tarefa");
+                       valuex = matrix[rowIndex][colIndex];
+                       valuex = valuex.trim();
+                       if (valuex != null && valuex.indexOf("#") == 0) {
+                           valuex = valuex.substring(1, valuex.length());
+                           atvfx_cd_tarefa = valuex.toUpperCase();
+                       } else {
+                           typeCats = typeCats + "Coluna Tarefa requer # ";
+                       }                           
+                   }  // end of if 
+                   //if (ttFoundFlag == 0 && rowIndex == 1 ) {
+                   //   content[ckk] = ">>>> Título de Coluna não Encontrada: "+matrix[0][colIndex];
+                   //   ckk = ckk + 1; importErrorFlag = 1; continue;
+                   //}
+                   //} catch (LineValidationException e) {
+                   //    //if ( kk_err_atd > 0) {kk_atd_err_prc = kk_atd_err_prc + 1;} // Se Erros de Registro  > 0, conte Registro cp,p errado
+                   //    iLog.logAtdmError(e.getMessage(), atvfx_cd, null);
+    	           //    //iLog.logAtdmError(e.getMessage(), asset_nu, asset.getAsset_nu_atdm());
+                   //    //iLog.logAtdmError(e.getMessage(), assetSmqt.getAsset_nu(), assetSmqt.getAsset_nu_atdm());
+                   } catch (Exception ex) {
+        	           iLog.logAtdmError(ex.getMessage(), "aa"+atvfx_cdx, null);
+                   } finally {
+	               }
+
+                   continue; // Next Column
+               } // b
+               if (typeCats.length() > 0 ) {
+                   if (typeCats.contains("de Ultm. Vist. conv. para")) {
+                       iLog.logAtdmOk(typeCats, atvfx_cdx, null);
+                   } else {
+                       kk_err_atd = 1;
+                       iLog.logAtdmError(typeCats, "bb"+atvfx_cdx, null);
+                   }
+               }
+               IXAtivoFixoAtualiza IXAtivoFixoAtualizax = new IXAtivoFixoAtualiza(atvfx_cd);    
+               boolean loaded = IXAtivoFixoAtualizax.load(con55);
+
+               if ( kk_err_atd > 0) {
+            	   kk_atd_err_prc = kk_atd_err_prc + 1;  // Se Erros de Registro  > 0, conte Registro cp,p errado
+                   continue; // Next Row
+               } else {
+            	   kk_atd_ok_prc = kk_atd_ok_prc + 1;  // Se Erros de Registro  > 0, conte Registro cp,p errado
+               }
+
+               if (atvfx_cd != null ) {IXAtivoFixoAtualizax.setAtvfx_cd(atvfx_cd);}  
+               if (atvfx_cd_plaqueta != null) {IXAtivoFixoAtualizax.setAtvfx_cd_plaqueta(atvfx_cd_plaqueta);}
+               if (atvfx_cd_pai != null) {IXAtivoFixoAtualizax.setAtvfx_cd_pai(atvfx_cd_pai);}
+               if (atvfx_cd_invty_ultm != null) {IXAtivoFixoAtualizax.setAtvfx_cd_invty_ultm(atvfx_cd_invty_ultm);}
+
+               if (atvfx_tp_cfasttp != null) {IXAtivoFixoAtualizax.setAtvfx_tp_cfasttp(atvfx_tp_cfasttp);}
+
+               if (atvfx_tp_propriedade != null) {IXAtivoFixoAtualizax.setAtvfx_tp_propriedade(atvfx_tp_propriedade);}
+               if (atvfx_dt_criacao != null) {IXAtivoFixoAtualizax.setAtvfx_dt_criacao(atvfx_dt_criacao);}
+               if (atvfx_dt_ult_atualizacao != null) {IXAtivoFixoAtualizax.setAtvfx_dt_ult_atualizacao(atvfx_dt_ult_atualizacao);}
+               if (atvfx_dt_baixa != null) {IXAtivoFixoAtualizax.setAtvfx_dt_baixa(atvfx_dt_baixa);}
+               //if (atvfx_dt_baixa_corr != null) {IXAtivoFixoAtualizax.setAtvfx_dt_baixa_corr(atvfx_dt_baixa_corr);}
+               if (atvfx_nm_proprietario != null) {IXAtivoFixoAtualizax.setAtvfx_nm_proprietario(atvfx_nm_proprietario);}
+               if (atvfx_nm_proprietario != null) {IXAtivoFixoAtualizax.setAtvfx_nm_proprietario(atvfx_nm_proprietario);}
+               if (atvfx_cd_centro_custo != null) {IXAtivoFixoAtualizax.setAtvfx_cd_centro_custo(atvfx_cd_centro_custo);}
+               if (atvfx_st != null) {IXAtivoFixoAtualizax.setAtvfx_st(atvfx_st);}
+               if (atvfx_cd_category != null) {IXAtivoFixoAtualizax.setAtvfx_cd_category(atvfx_cd_category);}
+               if (atvfx_cd_ctg_sub_grp != null) {IXAtivoFixoAtualizax.setAtvfx_cd_ctg_sub_grp(atvfx_cd_ctg_sub_grp);}
+               if (atvfx_cd_ctg_det != null) {IXAtivoFixoAtualizax.setAtvfx_cd_ctg_det(atvfx_cd_ctg_det);}
+               if (atvfx_ds != null) {IXAtivoFixoAtualizax.setAtvfx_ds(atvfx_ds);}
+               if (atvfx_cd_ue != null) {IXAtivoFixoAtualizax.setAtvfx_cd_ue(atvfx_cd_ue);}
+               if (atvfx_cd_pconta != null) {IXAtivoFixoAtualizax.setAtvfx_cd_pconta(atvfx_cd_pconta);}
+               if (atvfx_cd_cls != null) {IXAtivoFixoAtualizax.setAtvfx_cd_cls(atvfx_cd_cls);}
+               if (atvfx_vl_custo_original != null) {IXAtivoFixoAtualizax.setAtvfx_vl_custo_original(atvfx_vl_custo_original);}
+               if (atvfx_vl_custo_atual != null) {IXAtivoFixoAtualizax.setAtvfx_vl_custo_atual(atvfx_vl_custo_atual);}
+               if (atvfx_ds_localizacao != null) {IXAtivoFixoAtualizax.setAtvfx_ds_localizacao(atvfx_ds_localizacao);}
+               if (atvfx_ds_logradouro != null) {IXAtivoFixoAtualizax.setAtvfx_ds_logradouro(atvfx_ds_logradouro);}
+               if (atvfx_ds_complemento != null) {IXAtivoFixoAtualizax.setAtvfx_ds_complemento(atvfx_ds_complemento);}
+               if (atvfx_ds_municipio != null) {IXAtivoFixoAtualizax.setAtvfx_ds_municipio(atvfx_ds_municipio);}
+               if (atvfx_cd_uf != null) {IXAtivoFixoAtualizax.setAtvfx_cd_uf(atvfx_cd_uf);}
+               if (atvfx_cd_patio != null) {IXAtivoFixoAtualizax.setAtvfx_cd_patio(atvfx_cd_patio);}
+               if (atvfx_km != null) {IXAtivoFixoAtualizax.setAtvfx_km(atvfx_km);}
+               if (atvfx_nu_nota_fiscal_compra != null) {IXAtivoFixoAtualizax.setAtvfx_nu_nota_fiscal_compra(atvfx_nu_nota_fiscal_compra);}
+               if (atvfx_nm_fornecedor != null) {IXAtivoFixoAtualizax.setAtvfx_nm_fornecedor(atvfx_nm_fornecedor);}
+               if (atvfx_cd_projeto != null) {IXAtivoFixoAtualizax.setAtvfx_cd_projeto(atvfx_cd_projeto);}
+               if (atvfx_cd_tarefa != null) {IXAtivoFixoAtualizax.setAtvfx_cd_tarefa(atvfx_cd_tarefa);}
+               IXAtivoFixoAtualizax.setBatch_id(batch_id);
+                             
+			   //  Carrega e Ultima Vistoria do Sispat, incluino o seu tipo (asset_cfasttp)
+               //System.out.println("XXX>>>>> Carrega e Atualiza Assets - asset_nu: "+asset_nu+" kkk: "+kkk.toString());
+               Asset assetx = new Asset("");
+               //assetx = loadLastSurvey(atvfx_cd, "000" );   // Carrega todos os dados da ultima vistoria do Bem
+			   assetx = loadLastSurvey(atvfx_cd, "000");   // Carrega todos os dados da ultima vistoria do Bem
+
+               String asset_id = assetx.getAsset_id(); 
+			   String asset_tp = assetx.getAsset_tp_cfasttp(); 
+               if ( asset_id != null )  {
+                   // Carregando Ultima Vistoria e Tipo (se necessário) de Bem -------------------
+                   int starty = asset_id.lastIndexOf("-") - 2;   
+                   int endy = asset_id.length();                
+                   atvfx_cd_invty_ultm = asset_id.substring(starty, endy); 
+                   IXAtivoFixoAtualizax.setAtvfx_cd_invty_ultm(atvfx_cd_invty_ultm);
+                   IXAtivoFixoAtualizax.setAtvfx_tp_cfasttp(asset_tp);
+               }
+
+    	       System.out.println("Linha: "+rowIndex+" BP: "+atvfx_cd);
+               
+               //Integer totrows = matrix.length;
+               //Integer rowindexx = rowIndex
+               //getSession().setAttribute("logstatus", "ATIVO");  
+
+               if (loaded ) {
+            	   IXAtivoFixoAtualizax.update(con55);
+               } else {
+            	   ///IXAtivoFixoAtualizax.update(con55);
+            	   IXAtivoFixoAtualizax.save(con55);
+               }
+               // String debugxxxx = ""; 
+               kkread = rowIndex;
+               if ( rowIndex == 0 ) {
+                   content[ckk] = "   "; ckk = ckk + 1; continue; 
+               } 
+               String ret = "";
+               //ret = doAlterarImports(); 
+               kkrec = kkrec + 1; 
+                   DatabaseUtils.releaseConnection(con55);
+           } // c
+        } catch (IOException e) {
+    	     // TODO Auto-generated catch block
+    	     e.printStackTrace();
+          //mesg_var = getMessageByKey("msg_noSpreadSheetPlan1");
+          return;
+        }
+        content[ckk] = "Total de Linhas Lidas: "+kkread+" Total de Linhas Importadas: "+kkrec;
+		//iLog.end(DateIni, DateEnd,  kk_atd_ok_prc, kk_atd_err_prc);
+		//iLog.end(DateIni, DateEnd,  kkread, 0);    jjjj
+		iLog.closeAtdm();
+		//if(isEmpty) {
+		//	iLog.message("Nenhum Atendimento pronto para importar! ");
+		//}
+		iLog.end(null, null,  kk_atd_ok_prc, kk_atd_err_prc);
+
+        ckk = ckk + 1;
+        fileUploaded = "";
+        try {
+            if (importErrorFlag == 1) {
+            		String uploadErrorFile = "Sispat_ErrosImportação_IXAtivoFixoAtualiza_" + datex;
+            		HttpHelpers.enviarArquivo(content, uploadErrorFile, TipoDeArquivo.CSV);
+            }
+        } catch (IOException e) {
+    	     // TODO Auto-generated catch block
+    	     e.printStackTrace();
+          //mesg_var = getMessageByKey("msg_noSpreadSheetPlan1");
+          return;
+        }
+        //copyDirectory copy = new  copyDirectory(src, dst, "");  
+		//File filedel = new File(src);
+		//filedel.delete();
+        xmesg_rc = 777;
+        //mesg_var = getMessageByKey("msg_dataImpoted");
+    } // d
+
+	/**
+	 * Carregamento dos dados da Capa (Oracle)
+	 *  
+	 * @return 
+	 * @throws SQLException 
+	 * @throws IOException 
+	 * @throws IntegrationJobException 
+	 */
+    private void loadCovers(Date DateIni, Date DateEnd, PreparedStatement preparedStatement) throws SQLException {
+		
+		iLog.begin("aaa");
+        Integer kkk = 0; 
+        kk_atd_ok_prc = 0; // Qtd de Atendimentos sem Erro no Processmento  
+        kk_atd_err_prc = 0; // Qtd de Atendimentos com Erro no Processmento  
+
+        String campottvar = "";	 String campottfixo = ""; String valorx = "";	
+		boolean isEmpty = true; String asset_nu = "";
+
+		String asset_id = "";
+
+		String asset_cd_cfinvty_new = "";
+		String asset_cd_cfinvty_ultm = "";
+		String asset_nu_atdm_new = ""; 
+		String asset_nu_atdm_ultm = ""; 
+		
+		String letranova = "";
+
+		ResultSet rs = preparedStatement.executeQuery();
+		//Connection concover =  DatabaseUtils.getConnection();
+		Connection oracleConnectionX = DatabaseUtils.getOracleConnection();
+		Connection oracleConnectionH = DatabaseUtils.getOracleConnection();
+
+		// Carrega ************** Capas na AssetSmqt 
+		int kka = 1;
+		List<String> assetIdList = new ArrayList<String>();
+		List<Asset> assetList = new ArrayList<Asset>();
+		List<String> assetIdAtdmList = new ArrayList<String>();
+		HashMap<String, Asset> assetMap = new HashMap<String, Asset>(); //zz
+		HashMap<String, Asset> assetNewMap = new HashMap<String, Asset>(); //zz
+
+		//Asset assetSmqt = new Asset("");
+
+		while (rs.next()) {
+			Asset assetSmqt = new Asset("");
+
+            // iLog.setErrorLines(false);
+			isEmpty = false;
+			//Asset assetSmqt = null; // = null;
+			String atvfx_cd_invty_ultm = "";
+			// Ler Capas - Para Revisão de Bira /
+
+				// Carrega Identificadores de Atendimento
+				String id_atdm = rs.getString("ID_ATDM");
+				//Asset assetSmqt = new Asset(id_atdm);
+				assetSmqt.setAsset_id_atdm(id_atdm);
+
+				String asset_nu_atdmx = rs.getString("NU_ATDM"); // novo
+
+				
+				//Connection oracleConnectionE = DatabaseUtils.getOracleConnection();
+	            // Arualiza Tabela de Header com status de lido
+	            try {
+	            	String sqlup_ora = "update    "+appsx+"MRS_FA_ATDM_SQ_HEADERS set LAST_UPDATE_DATE=SYSDATE, SIST_DEST_LIDO = ?  where NU_ATDM = ?";
+	            	PreparedStatement ps_header = oracleConnectionX.prepareStatement(sqlup_ora);
+	                String status = "S";
+	            		ps_header.setString(1, status);
+	                    ps_header.setString(2, asset_nu_atdmx);
+	            		ps_header.executeUpdate();
+	            		//kkkLidos = kkkLidos + 1;
+	            		//System.out.println("XXX>>>>> Qtd de Atualizaçoes do Header: "+kkkLidos.toString());
+	            		ps_header.close();
+	            } catch (Exception e) {
+	                String message = e.getMessage();
+	            	//iLog.logAtdmError(e.getMessage(), asset_nu, asset.getAsset_nu_atdm());
+	            } finally {
+	            }
+				
+				String zeros = "0000";
+                String zerosfill = "";
+                int ll = asset_nu_atdmx.length();
+				if (ll < 4) {
+					zerosfill = zeros.substring(0,4 - ll);     
+					asset_nu_atdmx = zerosfill + asset_nu_atdmx;  
+				}
+				//assetSmqt.setAsset_nu_atdm(rs.getString("NU_ATDM"));
+				assetSmqt.setAsset_nu_atdm(asset_nu_atdmx);
+
+				asset_nu = rs.getString("CD_ATIVO");
+				assetSmqt.setAsset_nu(asset_nu);
+
+		//		iLog.openAtdm(assetSmqt.getAsset_nu_atdm(), assetSmqt.getAsset_nu());
+
+				// Tratamento de Parcela de Bem
+				assetSmqt.setAsset_cd_hierarquico("000");
+
+				kkk = kkk + 1;
+				System.out.println("XXX>>>>> asset_id_atdm: "+assetSmqt.getAsset_id_atdm()+" kkk: "+kkk.toString());
+				
+				String creation_date = rs.getString("CREATION_DATE"); // novo
+				assetSmqt.setAsset_ds_creation_date(creation_date);
+
+				if ( asset_nu.equals("3200422") ) {
+					String aaaa = "";
+				}
+                // Cria Nova Vistoria com base na Data de Inicio da  Vistoria
+                //asset_cd_cfinvty_new = new SimpleDateFormat("yy").format(assetSmqt.getAsset_di_atdm_str()) + "-1";
+                asset_cd_cfinvty_new = new SimpleDateFormat("yy").format(rs.getDate("DT_INIC")) + "-1";
+				assetSmqt.setAsset_cd_cfinvty(asset_cd_cfinvty_new);
+
+                // Carrega detalhes da Nova Vistoria do Bem                   				
+				assetSmqt.setAsset_cd_perito(rs.getString("MATL_USUA"));
+				assetSmqt.setAsset_cd_auxiliar("");
+				assetSmqt.setAsset_dt_vistoria(rs.getTimestamp("DT_INIC"));
+				assetSmqt.setAsset_nu_doc_inspecao("");
+
+                Date asset_di_atdm = rs.getTimestamp("DT_INIC");             // novo     
+				assetSmqt.setAsset_di_atdm(asset_di_atdm);
+                Date asset_df_atdm = rs.getTimestamp("DT_FIM");              // novo    
+				assetSmqt.setAsset_df_atdm(asset_df_atdm);
+
+                String asset_cd_ponto_atdm = rs.getString("PONTO_ATDM");     // novo  
+				assetSmqt.setAsset_cd_ponto_atdm(asset_cd_ponto_atdm);
+	            String asset_cd_stat_atdm = rs.getString("STAT_ATDM");       // novo  
+				assetSmqt.setAsset_cd_stat_atdm(asset_cd_stat_atdm);           
+	            String asset_cd_tipo_vsta = rs.getString("TIPO_VSTA");       // novo  
+				assetSmqt.setAsset_cd_tipo_vsta(asset_cd_tipo_vsta);
+	            String asset_cd_sist_orig = rs.getString("SIST_ORIG");       // novo  
+				assetSmqt.setAsset_cd_sist_orig(asset_cd_sist_orig);
+				 
+				// Carrega Lat Lon
+				String asset_vl_ltde = rs.getString("LTDE");                   
+                if (asset_vl_ltde == null) { asset_vl_ltde = "0";}
+				assetSmqt.setAsset_vl_ltde(asset_vl_ltde);
+	            String asset_vl_lgtd = rs.getString("LGTD");                   
+                if (asset_vl_lgtd == null) { asset_vl_lgtd = "0";}
+	            assetSmqt.setAsset_vl_lgtd(asset_vl_lgtd);
+
+	            assetIdList.add(id_atdm);     
+	            //assetList.add(assetSmqt);  ///*******************
+				assetMap.put(id_atdm, assetSmqt);
+				assetSmqt = null;
+			    //assetSmqt = assetMap.get("5956");
+
+				//String zzz1 = ""; String zzz2 = ""; String zzz3 = "";    
+	    		//zzz1 = assetSmqt.getAsset_nu();
+	    		//zzz2 = assetSmqt.getAsset_nu_atdm();
+	    		//zzz3 = assetSmqt.getAsset_id_atdm();  
+	    		// assetSmqt.getsetAsset_cd_perito();
+
+		}
+		//Asset assetSmqt = new Asset("");
+		//assetSmqt = null;
+		//assetSmqt = assetMap.get("5956");
+
+		Map<String, String> ttvarfixo = loadTitles(); 
+		Map<String, String> codfSqDePara = loadCodf();
+
+		// ************** Carrega Linhas no assetSmqt e Valida Codfs
+		String id_atdmc = ""; kkk = 0;  int kkkx = 0;
+       	String id_atdmx = "";
+    	String id_atdmx_anterior = "";
+        int kkn = 0;
+    	ListIterator assetIdList_itr = assetIdList.listIterator();
+    	//assetSmqt = null;
+    	assetList.clear();
+
+    	//DatabaseUtils.releaseOracleConnection(oracleConnection);
+		Connection oracleConnectionz = DatabaseUtils.getOracleConnection();
+    	while (assetIdList_itr.hasNext()  ) {
+        	id_atdmc = ((String) (assetIdList_itr.next()));
+        	kkk = kkk + 1; // kkkx = kkkx + 1;
+			//System.out.println("XXX>>>>> Carrega Linhas - asset_id_atdm: "+assetSmqt.getAsset_id_atdm()+" kkk: "+kkk.toString());
+        	String valor = "";
+        	// Processa todas Linhas da Capa		
+
+        	//DatabaseUtils.releaseConnection(oracleConnection);
+    		//Connection oracleConnectionz = DatabaseUtils.getOracleConnection();
+
+        	String sql1 = "SELECT ID_ATDM, CAMPO_FORM, VL_RSPT FROM "+appsx+"MRS_FA_ATDM_SQ_RSPT WHERE VL_RSPT IS NOT NULL AND ID_ATDM = ?";
+        	String sql2 = " and exists (select 1 FROM "+appsx+"MRS_IA_INTF_SIST c where";
+        	String sql3 = " upper(trim(c.intf_sist_extn)) = upper(trim(campo_form))) order by to_number(id_atdm) asc   ";
+        	String sql  = sql1 + sql2 + sql3; 
+
+        	PreparedStatement pstmt2 = oracleConnectionz.prepareStatement(sql);
+    		pstmt2.setString(1, id_atdmc); 
+        	ResultSet rsl = pstmt2.executeQuery();
+            int kl = 0;  int sz  = rsl.getFetchSize(); 
+            //String zzz1 = ""; String zzz2 = "";   String zzz3 = ""; 
+    		Asset assetSmqt = new Asset("");
+    		assetSmqt = null;
+    		//assetSmqt = assetMap.get("5956");
+            assetSmqt = assetMap.get(id_atdmc) ;
+			//System.out.println("XXX>>>>> Carrega Linhas - asset_id_atdm: "+assetSmqt.getAsset_id_atdm()+" kkk: "+kkk.toString());
+			System.out.println("XXX>>>>> Carrega Linhas - asset_nu: "+assetSmqt.getAsset_nu()+" kkk: "+kkk.toString());
+
+			//iLog.openAtdm(asset_nu_atdm_new, asset_nu);
+			iLog.openAtdm(assetSmqt.getAsset_nu_atdm(), assetSmqt.getAsset_nu());
+			kk_err_atd = 0; 
+			while (rsl.next()) {
+                kl = kl + 1; 
+        		id_atdmx = rsl.getString("ID_ATDM");  // Titulo Variavel
+    			//System.out.println("XXX>>>>> asset_id_atdm: "+id_atdmc+" kkn: "+kkk.toString());
+                /* 
+        		if (!id_atdmx.equals(id_atdmx_anterior)) {
+        		//if (!id_atdmx.equals(id_atdmx_anteror) || kl == sz ) {
+                    if (kkn > 0) { 
+                    	assetList.add(assetSmqt);
+                    	//if (kkkx == 50 ) {
+                		//	System.out.println("XXX>>>>> asset_id_atdm: "+id_atdmc+" kkn -------- : "+kkk.toString());
+                    	//	assetList.clear(); kkn = 0; kkkx = 0;
+                        //}
+                    }
+        			assetSmqt = assetMap.get(id_atdmx) ;
+        		}	
+                */
+
+        		//kkn = kkn +1;
+        		//id_atdmx_anterior = id_atdmx; 
+        		
+        		// Conversão e Carrgamento de Titulo Padrão
+        		campottvar = rsl.getString("CAMPO_FORM");  // Titulo Variavel
+        		campottfixo = ttvarfixo.get(campottvar);
+        		
+        		try {
+					valor = clobToString(rsl.getClob("VL_RSPT")).trim();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} // Titulo Fixo, usado para De/Para Ref Campo de Asset
+		
+        		try {
+        			//if(campottfixo == null || campottfixo.isEmpty()) {
+					//kk_err_atd = kk_err_atd + 1; 
+					//throw new LineValidationException("Não encontrado na Tabela de Tradução de Titulos"); //  MRS_IA_INTF_SIST
+				    //}
+			
+				// Para Revisão de Bira / Sidney--------------------------------------------------------------------------------------------------------------------------------
+                if (campottfixo.equals("Parcela")) { // (Notificar GGRI)  Campo Novo !
+                    assetSmqt.setAsset_cd_hierarquico(valor);  
+                } else    
+       			if (campottfixo.equals("ACAO")) { // (Notificar GGRI)  Campo Novo !
+					assetSmqt.setAsset_tp_acao(valor);  
+				} else    
+				if (campottfixo.equals("AREA_RESPONSAVEL")) { //(Gerência Geral de Relações Institucionais) Campo Novo 
+					assetSmqt.setAsset_cd_area_resp(valor);  
+				} else 
+				if (campottfixo.equals("CENTRO_CUSTO")) {
+					assetSmqt.setAsset_cd_ccusto(valor);
+				} else 
+				if (campottfixo.equals("COBERTURA")) {// ?? (Demolido) cf=COBTR LA-laje, TC-telha cermica, TF-telha de fibro cimento, TV-telha de vidro, TM-telha metálica, SC-sem cobertura, OU-outros, TA-telhado de argila, TT-telhado de amianto
+					//assetSmqt.setAsset_tp_cobertura(codfSqDePara.get("COBTR-" + valor));
+					String  xxx = codfSqDePara.get("COBTR-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'COBTR' ");
+					} else {
+						assetSmqt.setAsset_tp_cobertura(xxx); 
+					}
+				} else 
+				if (campottfixo.equals("ENERGIA_ELETRICA")) { // OK  (Não) cf=GENYN  S-Sim, N-Não
+					//asset.setAsset_in_luz_cfgenyn(codfSqDePara.get("SNNID-" + valor));
+					String  xxx = codfSqDePara.get("SNNID-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'SNNID' ");
+					} else {
+						assetSmqt.setAsset_in_luz_cfgenyn(xxx); 
+					}
+				} else 
+				if (campottfixo.equals("TELEFONIA")) {// OK  (Não) cf=GENYN S-Sim, N-Não
+					//assetSmqt.setAsset_in_telefonia(codfSqDePara.get("SNNID-" + valor));
+					String  xxx = codfSqDePara.get("SNNID-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'SNNID' ");
+					} else {
+						assetSmqt.setAsset_in_telefonia(xxx); 
+					}
+				} else 
+				if (campottfixo.equals("AGUA")) { // OK (Não) cf=GENYN S-Sim, N-Não
+					//assetSmqt.setAsset_in_agua_cfgenyn(codfSqDePara.get("SNNID-" + valor));
+					String  xxx = codfSqDePara.get("SNNID-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'SNNID' ");
+					} else {
+						assetSmqt.setAsset_in_agua_cfgenyn(xxx); 
+					}
+				} else
+				if (campottfixo.equals("ESTRUTURA")) { // ?? (Demolido) cf=TIPES  AL-Alvenaria, CO-Concreto, MA-Madeira, ME-Metálica, MI-Mista, OU-Outros
+					//assetSmqt.setAsset_tp_estrutura(codfSqDePara.get("TIPES-" + valor));
+					String  xxx = codfSqDePara.get("TIPES-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'TIPES' ");
+					} else {
+						assetSmqt.setAsset_tp_estrutura(xxx); 
+					}
+				} else
+				if (campottfixo.equals("LOCALIZACAO_ZONAL")) { // ?? (Urbana) cf=LOCZO UR-Urbano, RU-Rural
+					//asset.setAsset_cd_zona_cflczon(codfSqDePara.get("LOCZO-" + valor));
+					String  xxx = codfSqDePara.get("LOCZO-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'LOCZO' ");
+					} else {
+						assetSmqt.setAsset_cd_zona_cflczon(xxx); 
+					}
+				} else
+				if (campottfixo.equals("NBP")) {  // Carregando este dado a partir da Capa
+				    // assetSmqt.setAsset_nu(valor); 
+				} else  
+				if (campottfixo.equals("NBP_ESTAMPADO")) { // ?? (false) confirmar ?????  
+					//assetSmqt.setAsset_in_bp_estampado(valor); 
+					if (valor.contains("true")) {valor = "S";} else {valor = "N";} 
+					assetSmqt.setAsset_in_placa_nbp(valor); 
+				} else
+				if (campottfixo.equals("NOME_PATIO")) {// ?? (Sarzedo)   
+					assetSmqt.setAsset_nm_patio_ferroviario(valor);
+				} else 
+				if (campottfixo.equals("OBSERVACAO")) { //  (Sanitário ficava no mesmo terreno...)
+					assetSmqt.setAsset_ob(valor);
+				} else        
+				if (campottfixo.equals("OBSERVACAO_PATIO")) {// (teste)  Campo Novo no SispatGeo 
+					assetSmqt.setAsset_ob_patio(valor); // Observação do Patio  Observação de Patio  
+				} else
+				if (campottfixo.equals("PAREDES")) {// ?? (Demolido) cf=RVIPD  TA-Tijolo aparente. EM-Emboço, RE-Reboço, PI-Pintura, CE-Cerâmica, MA-Madeira, MM-Mármore, GR-Granito, NA-Não se aplica 
+					//assetSmqt.setAsset_tp_revest_int_parede(codfSqDePara.get("RVIPD-" + valor));
+					String  xxx = codfSqDePara.get("RVIPD-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'RVIPD' ");
+					} else {
+						assetSmqt.setAsset_tp_revest_int_parede(xxx); 
+					}
+				} else 
+				if (campottfixo.equals("PISO")) {// ?? (Demolido) cf=RVIPS  CI-cimento, CE-cermica, MM-mrmore, GR-granito, MA-madeira, BO-borracha, OU-outros
+					//assetSmqt.setAsset_tp_revest_int_piso(codfSqDePara.get("RVIPS-" + valor));
+					String  xxx = codfSqDePara.get("RVIPS-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'RVIPS' ");
+					} else {
+						assetSmqt.setAsset_tp_revest_int_piso(xxx); 
+					}
+				} else 
+				if (campottfixo.equals("PORTAS")) {// ?? (Demolido) cf=GENST  BE-Bom estado, DF-Danificado, IN-Inexistente, NA-Não se aplica, NI-Não informado 
+					//assetSmqt.setAsset_tp_porta(codfSqDePara.get("PORTA-" + valor));
+					String  xxx = codfSqDePara.get("PORTA-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'PORTA' ");
+					} else {
+						assetSmqt.setAsset_tp_porta(xxx); 
+					}
+				} else 
+				if (campottfixo.equals("JANELAS")) { // ?? (Demolido) cf=GENST  BE-Bom estado, DF-Danificado, IN-Inexistente, NA-Não se aplica, NI-Não informado
+					//assetSmqt.setAsset_tp_janela(codfSqDePara.get("JANEL-" + valor));
+					String  xxx = codfSqDePara.get("JANEL-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'JANEL' ");
+					} else {
+						assetSmqt.setAsset_tp_janela(xxx); 
+					}
+				} else 
+					//if (campottfixo.equals("POSICAO_QUILOMETRICA")) {  // ?? (601+273)
+				if (campottfixo.equals("POSICAO_QUILOMETRICA")) {  // ?? (601+273)
+					valor = valor.replace("+", ",");  
+					valor = valor.replace(".", ",");  
+					valor = valor.replace(" ", "");  
+
+					// Valores de teste
+					//valor = "0";
+					//valor = "3-1";
+					//valor = "300";
+					//valor = "300,";
+					//valor = "300,0";  // ok
+					//valor = "0,0";  // ok
+
+					//if(Pattern.matches("\\d+\\+\\d+|\\d+", valor)) {
+					if( Pattern.matches("[0-9]{1,5}[,]{1,1}[0-9]{1,3}", valor)) {
+						assetSmqt.setAsset_km_ini(convertDecimal(valor));
+ 					} else {
+    					//throw new LineValidationException("Valor Incompativel!");
+ 						BigDecimal cc = new BigDecimal("-1");  
+    					assetSmqt.setAsset_km_ini(cc);  
+    					kk_err_atd = kk_err_atd + 1; 
+    					throw new LineValidationException("ER - Valor de Posição Quilométrica Incompativel: "+valor );
+ 					}
+
+				} else     
+				if (campottfixo.equals("SITUACAO")) {// ?? (Demolido)     
+					//assetSmqt.setAsset_st_cfsitbm(codfSqDePara.get("SQSIT-" + valor));
+					String  xxx = codfSqDePara.get("SQSIT-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'SQSIT' ");
+					} else {
+						assetSmqt.setAsset_st_cfsitbm(xxx); 
+					}
+				} else 
+				if (campottfixo.equals("TIPO")) {// Se colocar "XTIPO" processament acelera e da erro de conexão     
+					//assetSmqt.setAsset_tp_cfasttp?????(codfSqDePara.get("ASTTP???-" + valor));
+					String asset_tp_smartq = valor;;
+					assetSmqt.setAsset_tp_smartq(asset_tp_smartq);
+					String categ_cd_detsubgrupo = valor;
+					String asset_tp_cfasttp = null;
+				} else 
+				if (campottfixo.equals("TIPO_PROPRIEDADE")) {// ?? (Arrendado) cf=TPPRP  PP-Próprio, AR-Arrendado, BA-BenfArrendado, LS-Leasing, FS-FISI, RF-BemNOPRFFSA, IT-Intangível, OI-Outros Investimentos, DV-AtivoDispVenda, BT-BenfBemTerceiros
+					//assetSmqt.setAsset_tp_propriedade(codfSqDePara.get("TPPRP-"+valor));
+					String  xxx = codfSqDePara.get("TPPRP-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'TPPRP' ");
+					} else {
+						assetSmqt.setAsset_tp_propriedade(xxx); 
+					}
+				} else
+				if (campottfixo.equals("TRECHO_FERROVIARIO")) {// ?? (Ramal do Paraopeba) cf=TRCHO"  FDA-FERROVIA DO AÇO, RDM-RAMAL DE MANGARATIBA, VBM-VARIANTE BRISAMAR, TLN-TERCEIRA LINHA, LDC-LINHA DO CENTRO, SPL-LINHA SÃO PAULO
+					//assetSmqt.setAsset_cd_trecho(codfSqDePara.get("TRCHO-"+valor));    // Verificar com Bira
+					String  xxx = codfSqDePara.get("TRCHO-" + valor);
+					if ( xxx == null) {
+						kk_err_atd = kk_err_atd + 1; 
+						throw new LineValidationException("ER - Valor: '"+valor+"' não encontrado na tabela de conversão da Codf 'TRCHO' ");
+					} else {
+						assetSmqt.setAsset_cd_trecho(xxx); 
+					}
+				} else
+				if (campottfixo.equals("DESCRICAO_ATIVO")) {
+					assetSmqt.setAsset_ds(valor);
+				} else
+				if (campottfixo.contains("FOTOGRAFIA")) { // Convert and load Image to /sispat_mrs_images
+					//asset_cd_cfinvty_new.String images = assetSmqt.getAsset_ds_images();
+                    //images = images + ","+valor;
+					//assetSmqt.setAsset_ds_images(images);
+				} else
+				if (campottfixo.equals("VISTORIA")) { // Deprecado pelo tratamento feito readCovers
+	                asset_cd_cfinvty_new = valor;
+					assetSmqt.setAsset_cd_cfinvty(valor);
+					assetSmqt.setAsset_id(assetSmqt.getAsset_nu() + "-000-" + assetSmqt.getAsset_cd_cfinvty());
+				} else 
+					break;
+        		} catch (LineValidationException e) {
+
+    				// Arualiza Tabela de Header com status de lido
+    	            try {
+    	            	String sqlup_ora = "update    "+appsx+"MRS_FA_ATDM_SQ_HEADERS set LAST_UPDATE_DATE=SYSDATE, SIST_DEST_LIDO = ?  where NU_ATDM = ?";
+    	            	PreparedStatement ps_header = oracleConnectionH.prepareStatement(sqlup_ora);
+    	                String status = "E";
+    	            		ps_header.setString(1, status);
+    	            		Integer atd = Integer.parseInt(assetSmqt.getAsset_nu_atdm()); 
+                            String atdx = atd.toString();
+                            ps_header.setString(2, atdx);
+    	            		ps_header.executeUpdate();
+    	            		ps_header.close();
+    	            		DatabaseUtils.releaseOracleConnection(oracleConnectionH);
+    	            		//System.out.println("XXX>>>>> Qtd de Atualizaçoes do Header: "+kkkLidos.toString());
+    	            } catch (Exception ex) {
+    	                //String message = e.getMessage();
+    	            	iLog.logAtdmError(ex.getMessage(), null, null);
+    	            } finally {
+    	            }
+        			
+        			iLog.logAtdmError(e.getMessage(), assetSmqt.getAsset_nu(), assetSmqt.getAsset_nu_atdm());
+        			continue;
+        		}
+        	} // While  rs
+            String zzz1 = ""; String zzz2 = ""; String zzz3 = "";    
+    		zzz1 = assetSmqt.getAsset_nu();
+    		zzz2 = assetSmqt.getAsset_nu_atdm();
+    		zzz3 = assetSmqt.getAsset_id_atdm();
+    		// assetSmqt.getsetAsset_cd_perito();
+            if ( zzz2.equals("1509") ) {
+            	String debugfff = "";
+            }
+            if ( zzz2.equals("1513") ) {
+            	String debugfffaa = "";
+            }
+    		
+    		kk_err_atd_map.put(id_atdmc, kk_err_atd);  
+    		kk_ok_atd_map.put(id_atdmc, kk_ok_atd);  
+    		assetList.add(assetSmqt);
+            rsl.close();
+        	pstmt2.close();
+           	DatabaseUtils.releaseOracleConnection(oracleConnectionz); // N]ap Funciona da Excede max cursores
+    	} // While assetList 
+
+    	 
+    	//oracleConnection.close();   //zzzzzzzzzzzzz
+    	//DatabaseUtils.releaseOracleConnection(oracleConnection);
+
+    	//oracleConnectionz.close();
+    	DatabaseUtils.releaseOracleConnection(oracleConnectionz);
+    	
+        // Carrega ************** Assets para Atualização
+        String atvfx_cd_invty_ultm = "";
+        Asset asset = new Asset("");
+		//Connection concover =  DatabaseUtils.getConnection();
+        kkk = 0; assetIdList.clear();   Integer kkkLidos = 0;
+    	ListIterator assetList_itr = assetList.listIterator();
+        while (assetList_itr.hasNext()  ) {
+    		Connection concover =  DatabaseUtils.getConnection();
+    		Asset assetSmqt = new Asset("");
+    		assetSmqt = ((Asset) (assetList_itr.next()));
+			kkk = kkk + 1; 
+			//System.out.println("XXX>>>>> Carrega e Atualiza Assets - asset_id_atdm: "+assetSmqt.getAsset_id_atdm()+" kkk: "+kkk.toString());
+			asset_nu = assetSmqt.getAsset_nu(); 
+            id_atdmx = assetSmqt.getAsset_id_atdm();
+        	asset_nu_atdm_new = assetSmqt.getAsset_nu_atdm();
+        	
+            kk_err_atd = kk_err_atd_map.get(id_atdmx);  
+            kk_ok_atd =  kk_ok_atd_map.get(id_atdmx);  
+
+            System.out.println("XXX>>>>> Carrega e Atualiza Assets - asset_nu: "+asset_nu+" kkk: "+kkk.toString());
+            
+        	try {
+				//asset_nu = assetSmqt.getAsset_nu(); 
+                ///* 
+                if (kkk == 428) {  
+                	String debughc = "";
+                }
+        		if (asset_nu.equals("3000518")) {
+                	String debugh = "";
+                }
+        		if( !new IXAtivoFixo(asset_nu).load(concover)) {
+					//iLog.logAtdmError("Bp '" + asset_nu + "' não encontrado no Ativo Fixo!", asset_nu);
+					//continue;
+					kk_err_atd = kk_err_atd + 1; 
+					int kkkkx = kkk;
+					//if ( kk_err_atd == 0) {kk_atd_ok_prc = kk_atd_ok_prc + 1;} 
+					if ( kk_err_atd > 0) {kk_atd_err_prc = kk_atd_err_prc + 1;} 
+					throw new NbpNotFoundException("ER - Bp '" + asset_nu + "' não encontrado no Ativo Fixo!");
+				}
+				// Not used  Carrega e Ultima Vistoria do Sispat, incluino o seu tipo (asset_cfasttp)
+				asset = loadLastSurvey(asset_nu, assetSmqt.getAsset_cd_hierarquico());   // Carrega todos os dados da ultima vistoria do Bem
+            	asset_nu_atdm_ultm = asset.getAsset_nu_atdm();
+                if (asset_nu_atdm_ultm == null) {
+            		asset_nu_atdm_ultm = "0";
+            		asset.setAsset_nu_atdm("0");
+            	}                     
+                asset_id = asset.getAsset_id(); 
+                if ( asset_id != null )  {
+
+                	// Carreha Ultimo Atendimento   asset.getAsset_nu_atdm
+                	//asset_nu_atdm_ultm = asset.getAsset_nu_atdm();
+
+                	// Carregando Vistoria de Bem -------------------
+                	// Carrega Vistoria de Bem a partir de asset_id da Ultima Vistoria
+    				if ( asset_nu.equals("3200422") ) {
+    					String aaaa = "";
+    				}
+                	int starty = asset_id.lastIndexOf("-") - 2;   
+                	int endy = asset_id.length();                
+                	asset_cd_cfinvty_ultm = asset_id.substring(starty, endy); 
+                	asset_cd_cfinvty_new = assetSmqt.getAsset_cd_cfinvty(); 
+                	
+                	letranova =  ""; 
+                	if (asset_cd_cfinvty_ultm != null) { 
+                		int start = asset_cd_cfinvty_ultm.length() - 1;
+                		int end = asset_cd_cfinvty_ultm.length();
+                		String asset_cd_cfinvty_letra = asset_cd_cfinvty_ultm.substring(start, end); 
+                		String letras = "abcdefghijklmnopqrstuvxz0";
+                		int letran = letras.indexOf(asset_cd_cfinvty_letra); 
+                		if (letran < 0) { letran = 0;}
+                		//letranova =  letras.substring(letran+1, letran+2); 
+                		letranova =  letras.substring(letran, letran+1); 
+                	}
+                }
+
+        		// Cria Nova Vistoria se já não existir
+				if ( assetSmqt.getAsset_nu().equals("3200422") ) {
+					String aaaa = "";
+				}
+                asset.setAsset_di_atdm(assetSmqt.getAsset_di_atdm());
+                asset.setAsset_df_atdm(assetSmqt.getAsset_df_atdm());
+
+				Invty invty = new Invty(asset_cd_cfinvty_new);
+				invty.load(concover);  // carga de asset_tp_cfasttp esta implicita 
+                String invtx = invty.getInvty_nm(); 
+                if ( invtx == null ) {   // Crua Nova Vistoria
+                	invty.setInvty_cd(asset_cd_cfinvty_new)  ;
+                	invty.setInvty_tp("VA");
+                	invty.setInvty_nm(asset_cd_cfinvty_new + "Criada pela Importação do SmartQuestion");
+                	invty.setInvty_dt(rs.getDate("DT_INIC"))    ;
+                	invty.setInvty_tp_vg("X");
+                	invty.setInvty_tp_lc("X");
+                	invty.setInvty_tp_lr("X");
+                	invty.setInvty_tp_dp("X");
+                	invty.setInvty_tp_dc("X");
+                	invty.setInvty_tp_pn("X");
+                	invty.setInvty_tp_ps("X");
+                	invty.setInvty_tp_pi("X");
+                	invty.setInvty_tp_pt("X");
+                	invty.setInvty_tp_tu("X");
+                	invty.setInvty_tp_vd("X");
+                	invty.setInvty_tp_bu("X");
+                	invty.setInvty_tp_ed("X");
+                	invty.setInvty_tp_tp("X");
+                	invty.setInvty_tp_tl("X");
+                	invty.save(DatabaseUtils.getConnection());
+                }
+
+                // Se novo Atendimento for o mesmo da Ultima Vistoria de Bem, não atualiza Chave e letra (sq) e  
+                int  asset_nu_atdm_new_nb = Integer.parseInt(assetSmqt.getAsset_nu_atdm());
+                int  asset_nu_atdm_ultm_nb = Integer.parseInt(asset.getAsset_nu_atdm());
+
+                if (asset_nu_atdm_new_nb < asset_nu_atdm_ultm_nb) {
+					kk_err_atd = kk_err_atd + 1; 
+					if ( kk_err_atd == 0) {kk_atd_ok_prc = kk_atd_ok_prc + 1;} 
+					if ( kk_err_atd > 0) {kk_atd_err_prc = kk_atd_err_prc + 1;} 
+					throw new NbpNotFoundException("ER - Reprocessamento do Bp '" + asset_nu + "' com nr. de atendimento: "+asset_nu_atdm_new_nb +" inferior ao último: "+asset_nu_atdm_ultm_nb+" já cadastrado !");
+                	//continue;
+                } else
+                // if (asset_nu_atdm_new.equals(asset_nu_atdm_ultm)) {} else {
+                if (asset_nu_atdm_new_nb == asset_nu_atdm_ultm_nb) {
+                	
+                } else {
+                	//Se Nova Vistoria não estiver na tabela de Asset, carrega ela e inicializa o sq alfa com "branco"
+                	if (asset_cd_cfinvty_ultm  == null ) { asset_cd_cfinvty_ultm = ""; }
+                	if (! asset_cd_cfinvty_ultm.contains(asset_cd_cfinvty_new)) {
+                		asset.setAsset_cd_cfinvty(asset_cd_cfinvty_new);
+                		letranova = "";
+                	}
+                	asset.setAsset_id(asset_nu +"-"+assetSmqt.getAsset_cd_hierarquico()+"-"+asset_cd_cfinvty_new+letranova); //  asset_cd_cfinvty informado pelo Bira 
+                	asset.setAsset_cd_hierarquico(assetSmqt.getAsset_cd_hierarquico()); //  
+                	asset_id = asset_nu +"-"+assetSmqt.getAsset_cd_hierarquico()+"-"+asset_cd_cfinvty_new+letranova;
+                }
+
+                // Arualiza Ativo Fixo com a [Ultima Vistoria do Bem, obitida do asset_id da Ultima Vistoria do Bem
+                int startx = asset_id.lastIndexOf("-") - 2;  
+                int endx = asset_id.length();                
+                atvfx_cd_invty_ultm = asset_id.substring(startx, endx); 
+                try {
+                    String sqlup = "update IXAtivoFixo set atvfx_cd_invty_ultm = ?  where atvfx_cd = ?";
+        			PreparedStatement ps_atvfx = concover.prepareStatement(sqlup);
+        	        ps_atvfx.setString(1, atvfx_cd_invty_ultm);
+        	        ps_atvfx.setString(2, asset_nu);
+        	        ps_atvfx.executeUpdate();
+        	        ps_atvfx.close();
+                } catch (Exception e) {
+                    //String message = e.getMessage();
+                	iLog.logAtdmError(e.getMessage(), asset_nu, "");
+                } finally {
+                }
+
+                //asset.setAsset_cd_cfinvty(assetSmqt.getAsset_cd_cfinvty()); // Verificar
+                //String zzz = atvfx_cd_invty_ultm;
+                //String vvv = "";
+                //zzz = zzz.substring(zzz.length() - 1,zzz.length());
+                //if (zzz.indexOf("abcdefghijklmnopqrstuvzw") >= 0 ) {
+                //    vvv = atvfx_cd_invty_ultm.substring(0,atvfx_cd_invty_ultm.length() - 1);
+                //    asset.setAsset_cd_cfinvty(vvv); // Verificar
+                //} else {
+                //    asset.setAsset_cd_cfinvty(atvfx_cd_invty_ultm); // Verificar
+                //}
+
+                asset.setAsset_cd_cfinvty(asset_cd_cfinvty_new); // Verificar
+                
+                // Carregando Identificadores de Atendimento
+                asset.setAsset_id_atdm(assetSmqt.getAsset_id_atdm());
+                asset.setAsset_nu_atdm(assetSmqt.getAsset_nu_atdm());
+
+                // Carrega detalhes da Nova Vistoria do Bem                   				
+				asset.setAsset_cd_perito(assetSmqt.getAsset_cd_perito());
+				asset.setAsset_cd_auxiliar("");
+				asset.setAsset_dt_vistoria(assetSmqt.getAsset_dt_vistoria());
+				asset.setAsset_nu_doc_inspecao("");
+
+                asset.setAsset_cd_ponto_atdm(assetSmqt.getAsset_cd_ponto_atdm());
+                asset.setAsset_cd_stat_atdm(assetSmqt.getAsset_cd_stat_atdm());
+                asset.setAsset_cd_tipo_vsta(assetSmqt.getAsset_cd_tipo_vsta());
+                asset.setAsset_cd_sist_orig(assetSmqt.getAsset_cd_sist_orig());
+
+				// Carrega Lat Lon
+                
+                asset.setAsset_vl_ltde(assetSmqt.getAsset_vl_ltde());
+                asset.setAsset_vl_lgtd(assetSmqt.getAsset_vl_lgtd());
+				// Carrega Lat Lon Nas Tabelas Gwo
+               
+                Double latitude = Double.parseDouble(asset.getAsset_vl_ltde());
+				Double longitude = Double.parseDouble(asset.getAsset_vl_lgtd());
+
+				//String acx = asset.getAsset_ns_vlaux();
+				//if (acx == null) { acx = "";}  
+				//if (acx.contains("AC")  && asset_nu_atdm_new_nb == asset_nu_atdm_ultm_nb )  {
+				//	kk_ok_atd = kk_ok_atd + 1; // Count OKs
+				//	iLog.logAtdmOk("Ok - Alerta: Tipo de bp '" + tp_cfasttp + "' inexistente para visualização GEO!", bp, nat);
+					//if(latitude == null || longitude == null) {} else {
+                	//	saveGeo(asset.getAsset_nu(), asset.getAsset_nu_atdm(), asset.getAsset_tp_cfasttp(), longitude, latitude);
+                    //	asset.setAsset_ns_vlaux(" "); // A Classificar
+                	//	asset.setGeo_vx("1");   
+                	//}
+                //}
+
+                if (asset_nu_atdm_new_nb == asset_nu_atdm_ultm_nb) {} else {
+                	if(latitude == null || longitude == null) {} else {
+                		saveGeo(asset.getAsset_nu(), asset.getAsset_nu_atdm(), asset.getAsset_tp_cfasttp(), longitude, latitude);
+                		asset.setGeo_vx("1");   
+                	}
+                }
+                	
+				asset.setAsset_tp_acao(assetSmqt.getAsset_tp_acao());  
+				asset.setAsset_cd_area_resp(assetSmqt.getAsset_cd_area_resp());  
+				asset.setAsset_cd_ccusto(assetSmqt.getAsset_cd_ccusto());  
+				asset.setAsset_cd_area_resp(assetSmqt.getAsset_cd_area_resp());  
+				asset.setAsset_tp_cobertura(assetSmqt.getAsset_tp_cobertura());  
+				asset.setAsset_in_luz_cfgenyn(assetSmqt.getAsset_in_luz_cfgenyn());  
+				asset.setAsset_in_telefonia(assetSmqt.getAsset_in_telefonia());  
+				asset.setAsset_in_agua_cfgenyn(assetSmqt.getAsset_in_agua_cfgenyn());  
+				asset.setAsset_tp_estrutura(assetSmqt.getAsset_tp_estrutura());  
+				asset.setAsset_cd_zona_cflczon(assetSmqt.getAsset_cd_zona_cflczon());  
+				asset.setAsset_in_placa_nbp(assetSmqt.getAsset_in_placa_nbp());  
+				asset.setAsset_nm_patio_ferroviario(assetSmqt.getAsset_nm_patio_ferroviario());  
+				asset.setAsset_ob(assetSmqt.getAsset_ob());  
+				asset.setAsset_ob_patio(assetSmqt.getAsset_ob_patio());  
+				asset.setAsset_tp_revest_int_parede(assetSmqt.getAsset_tp_revest_int_parede());  
+				asset.setAsset_tp_revest_int_piso(assetSmqt.getAsset_tp_revest_int_piso());  
+				asset.setAsset_tp_porta(assetSmqt.getAsset_tp_porta());  
+				asset.setAsset_tp_janela(assetSmqt.getAsset_tp_janela());  
+				asset.setAsset_km_ini(assetSmqt.getAsset_km_ini());  
+				asset.setAsset_st_cfsitbm(assetSmqt.getAsset_st_cfsitbm());  
+				asset.setAsset_tp_propriedade(assetSmqt.getAsset_tp_propriedade());  
+				asset.setAsset_cd_trecho(assetSmqt.getAsset_cd_trecho());  
+				asset.setAsset_ds(assetSmqt.getAsset_ds());  
+
+				asset.setAsset_tp_propriedade(assetSmqt.getAsset_tp_propriedade());  
+
+				// Atualiza Contador de Atedimentos sem e com Erros no Processamento,
+				// se houver erros no Atendimento (kk_err_atd)  
+	    		kk_err_atd_map.put(id_atdmx, kk_err_atd);  
+	    		kk_ok_atd_map.put(id_atdmx, kk_ok_atd);  
+
+	    		kk_err_atd = kk_err_atd_map.get(id_atdmx);
+	    		kk_ok_atd = kk_ok_atd_map.get(id_atdmx);
+
+	    		int kkkkx = kkk;
+				if ( kk_err_atd == 0) {kk_atd_ok_prc = kk_atd_ok_prc + 1;} 
+				if ( kk_err_atd > 0) {kk_atd_err_prc = kk_atd_err_prc + 1;} 
+
+                // Atualiza ************ dados de uma Vistoria do Ben
+				if(asset != null) {
+                    // Se Asset já existir  remove e insere. Se não existir apenas Insere   
+					//List<? extends DataObject> assetsFound = asset.find(DatabaseUtils.getConnection(), "asset_id", asset.getAsset_id());
+					List<? extends DataObject> assetsFound = asset.find(concover, "asset_id", asset.getAsset_id());
+					if (assetsFound != null && !assetsFound.isEmpty()) {
+						asset.delete(concover);
+					}
+					//asset.save(DatabaseUtils.getConnection()); 
+					asset.save(concover);
+					assetIdAtdmList.add(asset.getAsset_id_atdm()+"-"+asset.getAsset_id());  // Registra Liata de Asstes Gravados
+					assetNewMap.put(asset.getAsset_id_atdm(),asset);
+					//System.out.println("  asset_nu_atdm: "+asset_nu_atdm_new+" kkk: "+kkk.toString());
+				}
+
+				// Exclui imagens de um Bem para inseri-los novamenete
+                try {
+                    PreparedStatement ps_file = concover.prepareStatement("delete from wbrl_obimg where obimg_id = ? ");
+                    ps_file.setString(1, asset.getAsset_id());
+                    ResultSet rs_file = ps_file.executeQuery();
+                    rs_file.close();
+                    ps_file.close();
+                } catch ( Exception ex ) {
+                } finally {   }
+
+			    //concover.close();   
+		    	DatabaseUtils.releaseConnection(concover);
+        	} catch (SQLException e) {
+        		iLog.logAtdmError(e.getMessage(), asset_nu, assetSmqt.getAsset_nu_atdm()) ;
+			//} catch (IOException e) {
+			//	iLog.logAtdmError(e.getMessage(), asset_nu);
+			} catch (NbpNotFoundException e) {   // -------------------------
+
+				// Arualiza Tabela de Header com status de lido
+	            try {
+	            	String sqlup_ora = "update    "+appsx+"MRS_FA_ATDM_SQ_HEADERS set LAST_UPDATE_DATE=SYSDATE, SIST_DEST_LIDO = ?    where NU_ATDM = ?";
+	            	PreparedStatement ps_header = oracleConnectionH.prepareStatement(sqlup_ora);
+	                String status = "E";
+	            		ps_header.setString(1, status);
+                        Integer atd = Integer.parseInt(asset_nu_atdm_new); 
+                        String atdx = atd.toString();
+                        ps_header.setString(2, atdx);
+	            		ps_header.executeUpdate();
+	            		ps_header.close();
+	            		kkkLidos = kkkLidos + 1;
+	            		DatabaseUtils.releaseOracleConnection(oracleConnectionH);
+	            		//System.out.println("XXX>>>>> Qtd de Atualizaçoes do Header: "+kkkLidos.toString());
+	            } catch (Exception ex) {
+	                //String message = e.getMessage();
+	            	iLog.logAtdmError(ex.getMessage(), asset_nu, asset.getAsset_nu_atdm());
+	            } finally {
+	            }
+				
+				iLog.logAtdmError(e.getMessage(), asset_nu, assetSmqt.getAsset_nu_atdm());
+				//iLog.setAtdmLogType(AtdmLogType.BN);
+			} finally {
+				if (kk_ok_atd == 0) {
+					iLog.logAtdmOk("Ok  ", asset_nu, assetSmqt.getAsset_nu_atdm());
+				}
+			}
+			//iLog.closeAtdm();  llllllllllllllllllllllllllllllllllllllllllllllllll
+        }    
+        
+
+        // Salva Imagens dos Bens Omseridps / Atalizados
+    	ListIterator assetIdAtdmList_itr = assetIdAtdmList.listIterator();   kkk = 0; 
+        while (assetIdAtdmList_itr.hasNext()  ) {
+        	String zzz  = ((String) (assetIdAtdmList_itr.next()));
+        	id_atdmx = zzz.substring(0,zzz.indexOf("-")); 
+			kkk = kkk + 1; 
+			System.out.println("XXX>>>>> Carrega e Gera Imagens - asset_id_atdm: "+id_atdmx+" kkk: "+kkk.toString());
+        	String asset_idx = zzz.substring(zzz.indexOf("-")+1,zzz.length());   
+            asset = assetNewMap.get(id_atdmx);
+            try {
+        		Connection conImages =  DatabaseUtils.getConnection();  
+
+        		String SqlVist = "SELECT CAMPO_FORM, VL_RSPT FROM "+appsx+"MRS_FA_ATDM_SQ_RSPT WHERE VL_RSPT IS NOT NULL AND ID_ATDM = ? and CAMPO_FORM = 'Fotografia'";
+        		//String SqlVist = "SELECT CAMPO_FORM, VL_RSPT FROM apps.MRS_FA_ATDM_SQ_RSPT WHERE VL_RSPT IS NOT NULL AND ID_ATDM = ? and CAMPO_FORM = 'Fotografia'";
+        		Connection oracleConnection_i = DatabaseUtils.getOracleConnection();
+        		PreparedStatement ps_filev = oracleConnection_i.prepareStatement(SqlVist);
+    			ps_filev.setString(1, id_atdmx);
+    			ResultSet rs_filev = ps_filev.executeQuery();
+    			while (rs_filev.next()) {
+    				valorx = clobToString(rs_filev.getClob("VL_RSPT")).trim(); // Titulo Fixo, usado para De/Para Ref Campo de Asset
+    			
+    				
+	            	String sispatImagesPath = sispatImagesRoot.getAbsolutePath() + File.separator + SISPAT_IMAGES_FOLDERNAME + "-" + asset.getAsset_cd_cfinvty() + File.separator;
+	            	
+	            	File sispatImagesFolder = new File(sispatImagesPath);
+	            	if(!sispatImagesFolder.exists()) {
+	            		sispatImagesFolder.mkdirs();
+	            	}
+	
+	            	Integer nextObimg_sq = nextObimg_sq(asset_idx);
+	            	
+					//String filename = asset.getAsset_id() + "_" + nextObimg_sq + ".jpg"; 
+					String filename = asset_idx + "_" + nextObimg_sq + ".jpg"; 
+					
+					stringToImage(valorx, new File(sispatImagesPath + filename));
+	            	Obimg obimg = new Obimg();
+	            	obimg.setObimg_id(asset_idx);
+	            	
+					//List<? extends DataObject> obimgsFound = obimg.find(DatabaseUtils.getConnection(), "obimg_id", asset.getAsset_id());
+	            	//List<? extends DataObject> obimgsFound = obimg.find(conunages, "obimg_id", asset.getAsset_id());
+	            	List<? extends DataObject> obimgsFound = obimg.find(conImages, "obimg_id", asset_idx);
+	            	
+	            	//if (obimgsFound != null && !obimgsFound.isEmpty()) {
+					//obimg.delete(DatabaseUtils.getConnection());
+					//obimg.delete(conline);
+					//}
+	            	
+	            	asset.setImag_vx("1");
+	            	obimg.setObimg_nm_file(filename);
+					obimg.setObimg_sq(nextObimg_sq);
+	            	obimg.setObimg_ds("incluido via SmartQuestion");
+	            	obimg.setObimg_ct(asset.getAsset_tp_cfasttp());
+	            	obimg.setObimg_vc("0");
+	            	obimg.setTabs_vf("000000000000000000000000000000");
+	            	obimg.setRecd_ts(Calendar.getInstance().getTime());
+					//obimg.save(DatabaseUtils.getConnection()); 
+					obimg.save(conImages); 
+					asset.update(conImages);
+    			}
+    			rs_filev.close();
+    			ps_filev.close();
+    	    	//oracleConnection_i.close();
+        		DatabaseUtils.releaseOracleConnection(oracleConnection_i);
+        		DatabaseUtils.releaseConnection(conImages);
+        	} catch (Exception e) {
+                String message = e.getMessage();
+    		} finally {
+    		}
+    		//DatabaseUtils.releaseConnection(concover);
+        }        
+		iLog.closeAtdm();
+
+		if(isEmpty) {
+			iLog.message("Nenhum Atendimento pronto para importar! ");
+		}
+		iLog.end(DateIni, DateEnd,  kk_atd_ok_prc, kk_atd_err_prc);
+
+        
+    } // Mthod End
+
+	private void saveGeo(String bp, String nat, String tp_cfasttp, Double longitude, Double latitude) throws SQLException {
+		List<String> tpGeoExistentes = Arrays.asList("BU","DP", "ED", "LP", "PI", "PN", "PS", "PT", "TL", "TP", "TU");
+
+		if(tpGeoExistentes.contains(tp_cfasttp)) {
+			String bpparcela = bp + "000";
+			String sql = "INSERT INTO MRS_GEO_" + tp_cfasttp + " (BP, BPPARCELA, GEOMETRY) VALUES (" + bp + ", " + bpparcela + ", geometry::STGeomFromText('POINT (" + longitude + " " + latitude + ")', 4618))";
+    		Connection congeo =  DatabaseUtils.getConnection();
+			Statement stmt = congeo.createStatement();
+			stmt.execute(sql);
+			stmt.close();
+	    	DatabaseUtils.releaseConnection(congeo);
+		} else {
+			kk_ok_atd = kk_ok_atd + 1; // Count OKs
+			iLog.logAtdmOk("Ok - Alerta: Tipo de bp '" + tp_cfasttp + "' inexistente para visualização GEO!", bp, nat);
+		}
+	}
+    /**
+	 * Carregando Titulo Var/Fixo em Hash Map (Oracle)
+	 * @return 
+	 * @throws SQLException 
+	 */
+	private Map<String, String> loadTitles() throws SQLException {
+		Map<String,String> ttvarfixo = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+		
+		Statement stmt = DatabaseUtils.getOracleConnection().createStatement();
+
+		ResultSet rs = stmt.executeQuery("Select INTF_SIST_MRS, INTF_SIST_EXTN FROM "+appsx+"MRS_IA_INTF_SIST");  
+		//ResultSet rs = stmt.executeQuery("Select INTF_SIST_MRS, INTF_SIST_EXTN FROM MRS_IA_INTF_SIST"); 
+
+		while (rs.next()) {
+			String ttvar = rs.getString("INTF_SIST_EXTN"); // Titulo Variavel
+			String ttfixo = rs.getString("INTF_SIST_MRS"); // Titulo Fixo para Identificação do Campo da Tabela Asset
+			ttvarfixo.put(ttvar, ttfixo);
+		}
+		
+		return ttvarfixo;
+	}
+	
+	/**
+	 * Carregando Codf SQL De/Para (SQL SERVER)
+	 * @return 
+	 * @throws SQLException 
+	 */
+	private Map<String, String> loadCodf() throws SQLException {
+		Map<String, String> codfSqDePara = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+		Connection conCodf = DatabaseUtils.getConnection();
+
+		Statement stmt = conCodf.createStatement();
+		ResultSet rs = stmt.executeQuery("Select codf_tp, codf_id, codf_supid from Codf where codf_supid like '%MRSSQ-%'");
+		while (rs.next()) {
+			String codf_tp = rs.getString("codf_tp");
+			String codf_id = rs.getString("codf_id");
+			String codf_supid = rs.getString("codf_supid");
+			//int start = codf_supid.indexOf("<") + 1;
+			//int end = codf_supid.indexOf(">");
+			int start = codf_supid.indexOf("SQ-") + 3;
+			int end = codf_supid.length();
+            String codf_id_mrs = codf_supid.substring(start, end);
+			
+			if (start < 0 || end < 0) {
+    			System.out.println("codf_tp: "+codf_tp+" codf_id: "+codf_id+" codf_supid: "+codf_supid);
+            } else {
+            	codfSqDePara.put(codf_tp + "-" + codf_id_mrs, codf_id);
+            }
+        }
+		DatabaseUtils.releaseConnection(conCodf);
+		return codfSqDePara;
+	}
+
+	/**
+	 * Carregando Codf SQL by Key (SQL SERVER)
+	 * @return 
+	 * @throws SQLException 
+	 */
+	private String loadCodfByKey(String type, String id) throws SQLException {
+        String result = "false";
+        String codf_ds = "";
+        Connection conCodf = DatabaseUtils.getConnection();
+		String sqlcodf = "Select codf_ds from Codf where codf_tp = ?  AND codf_id = ?";
+		PreparedStatement ps = conCodf.prepareStatement(sqlcodf);
+		ps.setString(1, type);
+		ps.setString(2, id);
+        ResultSet rs = ps.executeQuery();  
+		boolean ok = false;
+		ok = rs.next();
+		if (ok) {
+			result = rs.getString("codf_ds");
+        }
+		DatabaseUtils.releaseConnection(conCodf);
+		return result;
+	}
+
+	private Integer nextObimg_sq(String asset_id) throws SQLException {
+		Integer lastsq = 0;
+		Connection connection = DatabaseUtils.getConnection();
+		String sql = "SELECT MAX(OBIMG_SQ) FROM WBRL_OBIMG WHERE OBIMG_ID=?";
+		PreparedStatement pstmt3 = connection.prepareStatement(sql);
+		pstmt3.setString(1, asset_id);
+		ResultSet rs = pstmt3.executeQuery();
+		if (rs.next()) {
+			lastsq = rs.getInt(1);
+		}
+		DatabaseUtils.releaseConnection(connection);
+		return lastsq + 1;
+	}
+
+	private String clobToString(Clob clob) throws SQLException, IOException {
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = new BufferedReader(clob.getCharacterStream());
+		String line;
+		while (null != (line = br.readLine())) {
+			sb.append(line);
+		}
+		br.close();
+		
+		return sb.toString();
+	}
+
+	private void stringToImage(String str, File file) throws SQLException, IOException {
+        
+		byte[] data = DatatypeConverter.parseBase64Binary(str);
+        
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(data));
+        if(image != null) {
+        	ImageIO.write(image, file.getName().substring(file.getName().lastIndexOf(".")+1), file);
+        } else {
+			throw new SQLException("Não foi possível gerar a imagem '" + file.getAbsolutePath() + "'");
+        }
+        
+	}
+
+	
+	/**
+	 * Carregando o ASSET com o INVTY mais recente (SQL Server)
+	 * 
+	 * @param asset_nu
+	 * @throws SQLException 
+	 */
+	private String loadLastSurveyx(String asset_nu, String parcela) throws SQLException  {
+		Connection connection = DatabaseUtils.getConnection();
+		String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=? AND ASSET_CD_HIERARQUICO = ? ";  
+		//String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=?";  
+		
+		PreparedStatement pstmtx = connection.prepareStatement(sql);
+		pstmtx.setString(1, asset_nu);
+		//pstmtx.setString(2, parcela);
+		
+		ResultSet rsls = pstmtx.executeQuery();
+		String assetId = null; //String assetTp = null;
+		String assetTp = null; //String assetTp = null;
+		if (rsls.next()) {
+			assetId = rsls.getString(1);
+			//assetTp = rs.getString("asset_tp_cfasttp");
+		}
+
+		DatabaseUtils.releaseConnection(connection);
+        return assetId;
+	}
+
+	private String loadLastSurveyxx(String asset_nu, String asset_nu_atdm) throws SQLException  {
+		Connection connection = DatabaseUtils.getConnection();
+		//String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=? AND ASSET_CD_HIERARQUICO = ? ";  
+		String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=? AND ASSET_NU_ATDM=?   ";  
+		
+		PreparedStatement pstmtx = connection.prepareStatement(sql);
+		pstmtx.setString(1, asset_nu);
+		pstmtx.setString(2, asset_nu_atdm);
+		
+		ResultSet rsls = pstmtx.executeQuery();
+		String assetId = null; //String assetTp = null;
+		String assetTp = null; //String assetTp = null;
+		if (rsls.next()) {
+			assetId = rsls.getString(1);
+			//assetTp = rs.getString("asset_tp_cfasttp");
+		}
+
+		DatabaseUtils.releaseConnection(connection);
+        return assetId;
+	}
+
+	private String loadLastSurveyType(String asset_nu) throws SQLException  {
+		Connection connection = DatabaseUtils.getConnection();
+		//String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=? AND ASSET_CD_HIERARQUICO = ? ";  
+		String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=?";  
+		PreparedStatement pstmtx = connection.prepareStatement(sql);
+		pstmtx.setString(1, asset_nu);
+		ResultSet rsls = pstmtx.executeQuery();
+		String assetId = null; //String assetTp = null;
+		String assetTp = null; //String assetTp = null;
+		if (rsls.next()) {
+			assetId = rsls.getString(1);
+		}
+		String sqltp = "SELECT ASSET_TP_CFASTTP FROM WBRL_ASSET WHERE ASSET_ID=?";  
+		PreparedStatement pstmty = connection.prepareStatement(sqltp);
+		pstmty.setString(1, assetId);
+		ResultSet rstp = pstmty.executeQuery();
+		if (rstp.next()) {
+			assetTp = rstp.getString("asset_tp_cfasttp");
+		}
+		
+		DatabaseUtils.releaseConnection(connection);
+        return assetTp;
+	}
+	private String loadLastSurveyId(String asset_nu) throws SQLException  {
+		Connection connection = DatabaseUtils.getConnection();
+		//String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=? AND ASSET_CD_HIERARQUICO = ? ";  
+		String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=?";  
+		PreparedStatement pstmtx = connection.prepareStatement(sql);
+		pstmtx.setString(1, asset_nu);
+		ResultSet rsls = pstmtx.executeQuery();
+		String assetId = null; //String assetTp = null;
+		if (rsls.next()) {
+			assetId = rsls.getString(1);
+		}
+		DatabaseUtils.releaseConnection(connection);
+        return assetId;
+	}
+	
+	/**
+	 * Carregando o ASSET com o INVTY mais recente (SQL Server)
+	 * 
+	 * @param asset_nu
+	 * @throws SQLException 
+	 */
+	private Asset loadLastSurvey(String asset_nu, String parcela) throws SQLException  {
+		Connection connection = DatabaseUtils.getConnection();
+		//String sql = "SELECT TOP 1 ASSET_ID FROM WBRL_ASSET WHERE ASSET_NU=? ORDER BY ASSET_CD_CFINVTY DESC";
+		//String sql = "SELECT MAX ASSET_ID FROM WBRL_ASSET WHERE ASSET_NU=? --ORDER BY ASSET_ID";
+		//String sql = "SELECT MAX ASSET_ID FROM WBRL_ASSET WHERE ASSET_NU=? ";
+		//String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=? ";  
+		String sql = "SELECT MAX(ASSET_ID) FROM WBRL_ASSET WHERE ASSET_NU=? AND ASSET_CD_HIERARQUICO = ? ";  
+		
+		PreparedStatement pstmtx = connection.prepareStatement(sql);
+		pstmtx.setString(1, asset_nu);
+		pstmtx.setString(2, parcela);
+		
+		ResultSet rsls = pstmtx.executeQuery();
+		String assetId = null; //String assetTp = null;
+		String assetTp = null; //String assetTp = null;
+		if (rsls.next()) {
+			assetId = rsls.getString(1);
+			//assetTp = rs.getString("asset_tp_cfasttp");
+		}
+
+		Asset asset = new Asset(assetId);
+		if(assetId != null) {
+			asset.load(connection);  // carga de asset_tp_cfasttp esta implicita 
+		} else {
+			//asset.setAsset_tp_cfasttp("AC"); // A Classificar
+        	//asset.setAsset_ns_vlaux("AC"); // A Classificar
+			//asset.setAsset_tp_cfasttp(asset_tp_cfasttp); // A Classificar   zzzzzz
+        	//asset.setAsset_ns_vlaux(asset_tp_cfasttp); // A Classificar
+		}
+		asset.setAsset_nu(asset_nu);
+        String xxaaa =  asset.getAsset_tp_cfasttp(); 
+		String xaaaxaaa =  asset.getAsset_id(); 
+
+		DatabaseUtils.releaseConnection(connection);
+        return asset;
+	}
+
+	public static void setDeltaMinutesParam(Integer deltaMinutesParam) {
+		//IntegrationJob.deltaMinutesParam = deltaMinutesParam;
+	}
+
+	public static void setSispatImagesRoot(File sispatImagesRoot) {
+	    //  IntegrationJob.sispatImagesRoot = sispatImagesRoot;
+	}
+
+    public BigDecimal convertDecimal(String value) {
+        int pos = value.indexOf(",") + 1;
+        if (pos == value.length() ) {
+            value = value + "0";
+        }
+        String ret;
+        if (value.equals("")) {
+            value = null;
+            return null;
+        }
+        Locale locale = new Locale("pt", "BR");
+//        if(locale.equals(new Locale("pt", "BR"))) {
+//        	String str1 = value.replace(".", "*");
+//            String str2 = str1.replace(",", "&");  
+
+//            String str3 = str2.replace("*", ",");
+//            str3 = str2.replace("-", ",");
+//            str3 = str2.replace("&", ".");
+//            //ret = str3.replace("&", ".");
+//            ret = str3;
+//        } else {
+//            String str1 = value.replace(",", "*");
+//            String str2 = str1.replace(".", "&");
+
+//            String str3 = str2.replace("*", ",");
+//            str3 = str2.replace("-", ",");
+//            str3 = str2.replace("&", ".");
+//            //ret = str3.replace("&", ".");
+//            ret = str3;
+//        }
+        ret = value;
+        ret = ret.replace(",", ".");
+        ret = ret.replace("-", ".");
+        return (BigDecimal) ConvertUtils.lookup(BigDecimal.class).convert(BigDecimal.class, ret);
+    }
+
+    public String doAlterarImports() throws SQLException, ValidatorException { // @save
+        //setState(State.ALTERANDO);
+        Connection con = DatabaseUtils.getConnection();
+        if (tabs_vf == null) { tabs_vf = tabsvf;} 
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("updt"),getLoginInfo().getUserx_id_role());
+            msgqt = 0; mesg_var = ""; // 111023
+/*
+            if (!valRecd_ts(con)) { // @save Validate Lock via time stamp
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("valrecd_ts");
+                //return doMessage();
+                return "success";
+            } else if (!validate(con)) { // @save validate all fields
+                validateAll = 0;
+                xmesg_rc = 999;
+                if (mesg_var.length() == 0 ) { // 111023
+                	mesg_var = getMessageByKey("unsuccessfull_validate");
+                }
+                //return doMessage();
+                return "success";
+            }
+*/
+            if (resultMessage == false) {
+                // 100511   addErrorMessageByKey("msg_branco");
+            }
+            //updateRecdTs(); // @save update time stamp for lock control
+            //DataObject dao = (DataObject) getDataClass().newInstance(); // @save
+            //dao = setTableAliasBean(dao); // @save  jjjj
+            //dao.loadFromBean(this); // @save load dao with data from bean
+            //doBeforeUpdate(con, dao);    // @save
+            //dao.update(con); // @save update record
+            //dao.update(con); // @save update record
+            
+            
+            //           boolean test = dao.load(con);   // @save
+            //String pkx = dao.pks
+ //           dao.saveToBean(this); // @save Restore saved data to bean to get recd_ts in correct format
+
+            //pkmap = dao.getMapFields();
+            //String linex = pkmap.toString();
+        	//linex = dao.getMapFields().toString();
+
+            //String propx = ""; String propCD = "";  String propTT= "";
+     	    //ListIterator propCDTTIterator = propCDTTList.listIterator();
+            //while (propCDTTIterator.hasNext()) {
+            //    propx = ((String) (propCDTTIterator.next()));
+            //    propCD = propx.substring(0,propx.indexOf("-"));
+            //    propTT = propx.substring(propx.indexOf("-"),propx.length());
+            //    linex = linex.replace(propCD, propTT);
+            //}
+            //mesg_var = getMessageByKey("success_alterar");
+   //     	if (!test) { 
+                if (linex != null ) {
+                	content[ckk] = ">>>> Registro a ser Atualizado não existe na Base de Dados";
+                	mesg_var = content[ckk];
+                	ckk = ckk + 1;
+                	content[ckk] = linex;
+                	ckk = ckk + 1;
+                	content[ckk] = "  ";
+                	ckk = ckk + 1;
+                	importErrorFlag = 1;
+                }
+     //       }
+            con.commit(); 
+            DatabaseUtils.releaseConnection(con);
+            //addErrorMessageByKey("success_alterar");
+            xmesg_rc = 0;
+            //return doMessage();
+            return "success";
+        //} catch (IllegalAccessException ex) {
+        //    ex.printStackTrace();
+        //    return "failed";
+        //} catch (InstantiationException ex) {
+        //    ex.printStackTrace();
+        //    return "failed";
+        } catch (SQLException ex){
+        	//return SQLExceptionError(ex, con);
+        	//mesg_var = getMessageByKey("sql_error3");
+        	if (linex != null ) {
+            	importErrorFlag = 1;
+        		content[ckk] = ">>>> Erro:"+ex.toString();
+        		ckk = ckk + 1;
+        		content[ckk] = linex;
+        		ckk = ckk + 1;
+        		content[ckk] = "   ";
+        		ckk = ckk + 1;
+            }
+        	//System.out.println(getClass() + ": "+ex.toString());
+            //log.error(getClass() + ": "+ex.toString());
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+}	
+	
+	

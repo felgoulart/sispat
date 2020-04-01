@@ -1,0 +1,10 @@
+[PropertyInfo]
+componentType,String,false,false, , ,true,<default>
+reference,String,false,false,reference,reference,true,<default>
+refKeyField,String,false,false,refKeyField,refKeyField,true,<default>
+refDescField,String,false,false,refDescField,refDescField,true,<default>
+[IconNames]
+
+
+
+

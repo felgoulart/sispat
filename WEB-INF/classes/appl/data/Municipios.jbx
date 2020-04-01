@@ -1,0 +1,10 @@
+[PropertyInfo]
+tableName,String,false,false, , ,true,<default>
+muni_id,Integer,false,false,muni_id,muni_id,true,<default>
+muni_nm,String,false,false,muni_nm,muni_nm,true,<default>
+muni_ufCd,String,false,false,muni_ufCd,muni_ufCd,true,<default>
+[IconNames]
+
+
+
+

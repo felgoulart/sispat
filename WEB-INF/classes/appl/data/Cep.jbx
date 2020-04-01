@@ -1,0 +1,18 @@
+[PropertyInfo]
+bai_no,String,false,false, , ,false,<default>
+bai_nu,String,false,false, , ,false,<default>
+cep,String,false,false,cep,cep,true,<default>
+loc_no,String,false,false, , ,false,<default>
+loc_nu,String,false,false, , ,false,<default>
+log_complemento,String,false,false, , ,false,<default>
+log_no,String,false,false, , ,false,<default>
+log_no_com_tipo,String,false,false, , ,false,<default>
+log_tipo_log,String,false,false, , ,false,<default>
+tableName,String,false,false, , ,true,<default>
+uf_nm,String,false,false, , ,false,<default>
+ufe_sg,String,false,false, , ,false,<default>
+[IconNames]
+
+
+
+

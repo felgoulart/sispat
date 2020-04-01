@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PjausPaaittvSearch" pageWidth="10364" pageHeight="595" orientation="Landscape" columnWidth="2024" leftMargin="10" rightMargin="10" topMargin="0" bottomMargin="0" resourceBundle="ApplicationResources_pt_BR">
+<property name="ireport.scriptlethandling" value="0"/>
+<property name="ireport.encoding" value="UTF-8"/>
+<property name="ireport.zoom" value="1.0"/>
+<property name="ireport.x" value="0"/>
+<property name="ireport.y" value="0"/>
+<import value="java.util.*"/>
+<import value="net.sf.jasperreports.engine.*"/>
+<import value="net.sf.jasperreports.engine.data.*"/>
+<parameter name="p_locale" class="java.lang.String"/>
+<parameter name="pjaus_nu_pasta" class="java.lang.String"/>
+<parameter name="pjaus_nu_base_dados" class="java.lang.String"/>
+<parameter name="pjaus_cd_proprio_pj" class="java.lang.String"/>
+<parameter name="pjaus_st" class="java.lang.String"/>
+<parameter name="pjaus_id_solicitante" class="java.lang.String"/>
+<parameter name="pjaus_in_ocup_area_terc" class="java.lang.String"/>
+<parameter name="pjaus_tp_investimento" class="java.lang.String"/>
+<parameter name="pjaus_in_parc_fixa" class="java.lang.String"/>
+<queryString>
+    <![CDATA[SELECT * FROM PjausPaaittvSearch_lov ($P{p_locale}, $P{pjaus_nu_pasta}, $P{pjaus_nu_base_dados}, $P{pjaus_cd_proprio_pj}, $P{pjaus_st}, $P{pjaus_id_solicitante}, $P{pjaus_in_ocup_area_terc}, $P{pjaus_tp_investimento}, $P{pjaus_in_parc_fixa})]]>
+</queryString>
+<field name="pjaus_tp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_id" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_nu_pasta" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_nu_base_dados" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_cd_proprio_pj" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_st" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_st_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_id_solicitante" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_in_ocup_area_terc" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_in_ocup_area_terc_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_tp_investimento" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_tp_investimento_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_vl_contrato" class="java.math.BigDecimal"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_in_parc_fixa" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjaus_in_parc_fixa_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="imag_vx" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="file_vx" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="obdocpj_vx" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="pjhsp_vx" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<title>
+  <band height="75" splitType="Stretch">
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Transparent" x="0" y="6" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/> </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "pjauspaaittv_TT" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Transparent" x="1824" y="6" width="80" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Center"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/> </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "label_issue" )]]></textFieldExpression> </textField>
+  <textField pattern="dd/MM/yyyy HH:mm:ss"  isBlankWhenNull="true">
+    <reportElement key="textField" mode="Transparent" x="1904" y="6" width="127" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Center"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.util.Date">
+    <![CDATA[new Date()]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="0" y="42" width="160" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_id_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="160" y="42" width="64" height="15" backcolor="#6699FF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_nu_pasta_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="224" y="42" width="100" height="15" backcolor="#6699FF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_nu_base_dados_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="324" y="42" width="82" height="15" backcolor="#6699FF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_cd_proprio_pj_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="406" y="42" width="200" height="15" backcolor="#6699FF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_st_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="606" y="42" width="96" height="15" backcolor="#6699FF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_id_solicitante_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="702" y="42" width="142" height="15" backcolor="#6699FF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_in_ocup_area_terc_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="844" y="42" width="216" height="15" backcolor="#6699FF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_tp_investimento_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1060" y="42" width="142" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_vl_contrato_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1202" y="42" width="104" height="15" backcolor="#6699FF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjaus_in_parc_fixa_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1306" y="42" width="12" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_imag_vx_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1318" y="42" width="12" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_file_vx_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1330" y="42" width="12" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_obdocpj_vx_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1342" y="42" width="12" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "PjausPaaittv_pjhsp_vx_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="160" y="60" width="64" height="15" backcolor="#CACAFF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{pjaus_nu_pasta}]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="224" y="60" width="100" height="15" backcolor="#CACAFF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{pjaus_nu_base_dados}]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="324" y="60" width="82" height="15" backcolor="#CACAFF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{pjaus_cd_proprio_pj}]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="406" y="60" width="200" height="15" backcolor="#CACAFF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{pjaus_st}]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="606" y="60" width="96" height="15" backcolor="#CACAFF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{pjaus_id_solicitante}]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="702" y="60" width="142" height="15" backcolor="#CACAFF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{pjaus_in_ocup_area_terc}]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="844" y="60" width="216" height="15" backcolor="#CACAFF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{pjaus_tp_investimento}]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1202" y="60" width="104" height="15" backcolor="#CACAFF"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{pjaus_in_parc_fixa}]]></textFieldExpression> </textField>
+   </band>
+</title>
+<pageHeader>
+  <band splitType="Stretch"/>
+</pageHeader>
+<columnHeader>
+  <band splitType="Stretch"/>
+</columnHeader>
+<detail>
+  <band height="18" splitType="Stretch">
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="0" y="0" width="160" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_id} != null ? $F{pjaus_id} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="160" y="0" width="64" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_nu_pasta} != null ? $F{pjaus_nu_pasta} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="224" y="0" width="100" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_nu_base_dados} != null ? $F{pjaus_nu_base_dados} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="324" y="0" width="82" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_cd_proprio_pj} != null ? $F{pjaus_cd_proprio_pj} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="406" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_st_dscl} != null ? $F{pjaus_st_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="606" y="0" width="96" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_id_solicitante} != null ? $F{pjaus_id_solicitante} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="702" y="0" width="142" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_in_ocup_area_terc_dscl} != null ? $F{pjaus_in_ocup_area_terc_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="844" y="0" width="216" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_tp_investimento_dscl} != null ? $F{pjaus_tp_investimento_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="1060" y="0" width="142" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.math.BigDecimal">
+    <![CDATA[$F{pjaus_vl_contrato}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1202" y="0" width="104" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjaus_in_parc_fixa_dscl} != null ? $F{pjaus_in_parc_fixa_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1306" y="0" width="12" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{imag_vx} != null ? $F{imag_vx} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1318" y="0" width="12" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{file_vx} != null ? $F{file_vx} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1330" y="0" width="12" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{obdocpj_vx} != null ? $F{obdocpj_vx} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1342" y="0" width="12" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{pjhsp_vx} != null ? $F{pjhsp_vx} : "-" ]]></textFieldExpression> </textField>
+   </band>
+</detail>
+<columnFooter>
+  <band splitType="Stretch"/>
+</columnFooter>
+<pageFooter>
+  <band splitType="Stretch"/>
+</pageFooter>
+<summary>
+  <band splitType="Stretch"/>
+</summary>
+</jasperReport>

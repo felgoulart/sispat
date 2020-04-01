@@ -1,0 +1,717 @@
+package appl.bean;
+    
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+import javax.faces.model.SelectItem;
+import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import wins.report.jasperRunner;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.util.List;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.fileupload.FileItem;
+import appl.data.Userx;
+// ---------------------------------------
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import wins.libs.LoginException;
+import appl.libs.IIBeanUtils;
+public class CadUserpwBean extends CadastroBean {
+        protected static Log log = LogFactory.getLog(CadUserpwBean.class);
+    public int xtab = 0;
+    // Tabs Validation Status
+    private String alterando;
+    private Boolean assistnovo;
+    private String filter;
+    private String vc;
+    public String role = "";
+    public int imgskk = 0;
+    public int fileskk = 0;
+    public String fileUploaded= "";
+    private int maxResultsTrn = 0;
+    public String valorz = "";
+    
+    // Building Fields Validation Map ---------------
+    private static Map<String, Integer> i_fields = new HashMap<String, Integer>(); static {
+        i_fields.put("userx_id_login", 1);
+        i_fields.put("userx_pw", 2);
+        i_fields.put("userx_pw_conf_var", 3);
+        i_fields.put("userx_st", 4);
+    } // 222
+    
+    // Declaring Validation Map -------------------
+    private HashMap<String, StringBuffer> i_divns = new HashMap<String, StringBuffer>();
+    // ii.properties---------------------------------------
+    private String xbutn_id;
+    private String xuserx_id_login;
+    private String tabs_vc;
+    private String tabs_vf;
+    private String tabs_vf_old;
+    private String flds_vf;
+    private String user_cd;
+    private Date recd_ts;
+    private String recd_ts_str;
+    private String recd_ts_dt;
+    private String userx_id_login;
+    private String userx_id_login_desc;
+    private String userx_id_login_vc;
+    private String userx_pw;
+    private String userx_pw_sav;
+    private String userx_pw_old;
+    private String userx_pw_vc;
+    private String userx_pw_conf_var;
+    private String userx_pw_conf_var_sav;
+    private String userx_pw_conf_var_old;
+    private String userx_pw_conf_var_vc;
+    private Integer userx_st;
+    private String userx_st_vc;
+    private String flds_vf_ref;
+    // Filters------------------------------------------
+    private String fil_tabs_vc;
+    // Orders------------------------------------
+    // Constructor--------------------------------------
+    public CadUserpwBean() { 
+    } // 333
+    
+    // Returns a Reference to the Associared DataObject-
+    protected Class getDataClass() { return Userx.class;}
+    // Working Variables Methods-------------------------
+    public void setAlterando(String alterando) { this.alterando = alterando; }
+    public String getAlterando() { return alterando;} 
+    
+    // Setters -----------------------------------------
+    public void setXbutn_id (String xbutn_id) {
+        this.xbutn_id = xbutn_id;
+    }
+    public void setXuserx_id_login (String xuserx_id_login) {
+        this.xuserx_id_login = xuserx_id_login;
+    }
+    public void setTabs_vc (String tabs_vc) {this.tabs_vc = tabs_vc;}
+    public void setTabs_vf (String tabs_vf) {this.tabs_vf = tabs_vf;}
+    public void setFlds_vf (String flds_vf) {this.flds_vf = flds_vf;}
+    
+    public void setFlds_vfsb (StringBuffer flds_vfsb) {this.flds_vfsb = flds_vfsb;}
+    
+    public void setUser_cd (String user_cd) {this.user_cd = user_cd;}
+    
+    public void setRecd_ts (Date recd_ts) {this.recd_ts = recd_ts;}
+    
+    public void setUserx_id_login (String userx_id_login) {this.userx_id_login = userx_id_login;}
+    public void setUserx_id_login_desc (String userx_id_login_desc) {this.userx_id_login_desc = userx_id_login_desc;}
+    public void setUserx_id_login_vc (String userx_id_login_vc) {this.userx_id_login_vc = userx_id_login_vc;}
+    public void setUserx_pw (String userx_pw) {this.userx_pw = userx_pw;}
+    public void setUserx_pw_vc (String userx_pw_vc) {this.userx_pw_vc = userx_pw_vc;}
+    public void setUserx_pw_conf_var (String userx_pw_conf_var) {this.userx_pw_conf_var = userx_pw_conf_var;}
+    public void setUserx_pw_conf_var_vc (String userx_pw_conf_var_vc) {this.userx_pw_conf_var_vc = userx_pw_conf_var_vc;}
+    
+    public void setUserx_st (Integer userx_st) {this.userx_st = userx_st;}
+    public void setUserx_st_vc (String userx_st_vc) {this.userx_st_vc = userx_st_vc;}
+    // Filter Setters-----------------------------------
+    public void setFil_tabs_vc (String fil_tabs_vc) {this.fil_tabs_vc = fil_tabs_vc;}
+    // Order Setters---------------------------
+    
+    // Getters -----------------------------------------
+    public String getXbutn_id() {
+        return xbutn_id; 
+    }
+    public String getXuserx_id_login() {
+        return xuserx_id_login; 
+    }
+    public String getTabs_vc() {return tabs_vc; }
+    public String getTabs_vf() {return tabs_vf; }
+    public String getFlds_vf() {return flds_vf; }
+    
+    public StringBuffer getFlds_vfsb() {return flds_vfsb; }
+    
+    public String getUser_cd() {return user_cd; }
+    
+    public Date getRecd_ts() {return recd_ts; }
+    
+    public String getUserx_id_login() {return userx_id_login; }
+    public String getUserx_id_login_desc() {return userx_id_login_desc; }
+    public String getUserx_id_login_vc() {return userx_id_login_vc; }
+    public String getUserx_pw() {return userx_pw; }
+    public String getUserx_pw_vc() {return userx_pw_vc; }
+    public String getUserx_pw_conf_var() {return userx_pw_conf_var; }
+    public String getUserx_pw_conf_var_vc() {return userx_pw_conf_var_vc; }
+    
+    public Integer getUserx_st() {return userx_st; }
+    public String getUserx_st_vc() {return userx_st_vc; }
+    // Filter Getters-----------------------------------
+    public String getFil_tabs_vc() {return fil_tabs_vc; }
+    // Order Getters-----------------------------
+    
+    protected boolean validate() { // @save @getrecd  
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadUserpwBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        userx_id_login_vc = valUserx_id_login(userx_id_login); 
+        userx_pw_vc = valUserx_pw(userx_pw); 
+        userx_pw_conf_var_vc = valUserx_pw_conf_var(userx_pw_conf_var); 
+        userx_st_vc = valUserx_st(userx_st); 
+    
+        validateMax(vfbuffer); addErrorMessageFromErrorList(); 
+        addAttribute("validateOn"+tab, "1");
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+        // Engage into MD5 only when userx_pw is not cripted (<15)
+            this.userx_pw = this.userx_pw.toLowerCase();
+        if (this.userx_pw != null && this.userx_pw.length() < 15 ) {
+            try {
+                userx_pw = getStringAsMD5(userx_pw);
+            } catch (Exception e) {
+                    e.printStackTrace();
+            }
+            if (result) {
+                this.userx_st = 0;
+            }
+        }
+        return result; 
+    }   //  End of Validate 
+    public void updateRecdTs() {
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            if (result) {
+                this.recd_ts = new Date();
+            }
+        } catch (Exception ex) { ex.getMessage(); }
+    }
+    
+    protected void validateInserir() {
+        StringBuffer vfbuffer = new StringBuffer();
+        if (tabs_vf != null) {
+            vfbuffer.append(tabs_vf);
+            vfbuffer.setCharAt(49,'0');
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf;
+        }
+    } 
+    
+    public String validateFieldOnChange(String value, String field) {
+        String result = null;
+        vf = 0; int i_field = 0; int valueInteger=0; Date valueDate = null; BigDecimal valueBigDecimal = null;
+    if (i_fields.containsKey(field)) {
+        i_field = i_fields.get(field);
+    }
+        switch (i_field) {
+        // Fields Validation Methods Switch 
+           case 1: result = valUserx_id_login(value); break;
+           case 2: result = valUserx_pw(value); break;
+           case 3: result = valUserx_pw_conf_var(value); break;
+           case 4: result = valUserx_st(toInteger(value)); break;
+        } // 111
+        return result;
+    }
+    public String checkMaxFieldOnChange(String divn) {
+        vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(Integer.parseInt(divn),selMaxVc(divn).charAt(0));
+        vfbuffer.setCharAt(psvc,selMaxVc(divn).charAt(0));
+        tabsvf = vfbuffer.toString();
+        return vfbuffer.toString();
+    }
+    public String checkVFMaxFieldOnChange(String divn) {
+        return retSelBuffer(divn);
+    }
+    public String retSelBuffer(String divn) {
+        String selBuffer = null;
+        selBuffer = flds_vfsb.toString();
+        return selBuffer;
+    }
+    
+    // Main Record (Univalued) Field Validation Methods...
+    
+    public Boolean valRecd_ts(Connection con) throws SQLException {
+        msgkey = "";
+        Userx Userxx = new Userx(userx_id_login);
+        Userxx.loadUfmv(this);
+        Userxx.setLoadChilds(true);
+        Userxx.load(con);
+        Date recd_ts_db = Userxx.getRecd_ts();
+        if (recd_ts_db == null || this.recd_ts == null) {
+            recd_ts_db = new Date();
+        	   this.recd_ts = recd_ts_db;
+        }
+        String tsdb = recd_ts_db.toString();
+        String ts = this.recd_ts.toString();
+        if (!ts.equals(tsdb) ) {
+            msgkey = "key:valrecd_ts/";
+            errorList.add(msgkey);
+            addErrorMessageFromErrorList();
+            log.error("Userpw lock event: key:"+userx_id_login+", ts:"+ts+", tsdb:"+tsdb);
+            return false;
+        }
+        return true;
+    }
+    public String valUserx_id_login(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.userx_id_login = "";
+            this.userx_id_login_desc = "";
+        } else {
+            this.userx_id_login = value;
+        }
+        return "0";
+    }
+    public String valUserx_pw(String value) {
+        String vl = "";
+        if (value != null ) { value = value.toLowerCase();
+            try {
+                vl = getStringAsMD5(value);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (vl.equals(userx_pw_old)) {
+                userx_pw_vc = "9"; vf(9);
+                mesg_var = getMessageByKey("passwordMustBeDifferent");
+                return userx_pw_vc;
+            }
+        }
+        this.userx_pw = value;
+        userx_pw_vc = valEntryString("0", value,"Userpw_userx_pw");
+        mesg_var = "";
+        if(this.userx_pw == null) {
+             this.userx_pw = "";
+        }
+        if(this.userx_pw_conf_var == null) {
+             this.userx_pw_conf_var = "";
+        }
+        // Engage into pw validation only when userx_pw is not cripted (<15)
+        this.userx_pw = this.userx_pw.toLowerCase();
+        if (this.userx_pw.length() < 15 && !valPw(this.userx_pw)) {
+           String p1 = getMessageByKey("passwordInvalid1");
+           String and = getMessageByKey("label_and")+" ";
+           String numeric = getMessageByKey("numeric");
+           String alpha = getMessageByKey("alphabetic");
+           String p2 = getMessageByKey("passwordInvalid2")+" ";
+           mesg_var = p1+" "+"4"+" "+p2+numeric+" "+and+alpha;
+           userx_pw_vc = "9"; vf(9);
+           this.userx_pw = "";
+           this.userx_pw_conf_var = "";
+        }
+        return userx_pw_vc;
+    }
+    public String valUserx_pw_conf_var(String value) {
+        if (value != null ) { value = value.toLowerCase();}
+        this.userx_pw_conf_var = value;
+        userx_pw_conf_var_vc = valEntryString("0", value,"Userpw_userx_pw_conf_var");
+        //  Get Validation Source Code  aaa
+        // External Source Code 2 -----------------
+        if ( userx_pw_vc.equals("9") )  {
+      	     userx_pw_conf_var_vc = "9"; vf(9);
+        }	
+        if ( userx_pw.length() == 0 && userx_pw_conf_var.length() == 0 )  {
+             mesg_var = getMessageByKey("noChangeWasMade");
+       	     userx_pw_conf_var_vc = "9"; vf(9);
+        }
+        if ( mesg_var.indexOf("espec") < 0  && !this.userx_pw.equals(this.userx_pw_conf_var)  )  {
+             mesg_var = getMessageByKey("passwordConfirmation");
+             userx_pw_conf_var_vc = "9"; vf(9);
+        }
+        return userx_pw_conf_var_vc;
+    }
+    public String valUserx_st(Integer value) {
+        this.userx_st = value;
+        userx_st_vc = valEntryNumber("0", value,"Userpw_userx_st");
+        return userx_st_vc;
+    }
+    
+    public String doUpdateMd5() throws SQLException, LoginException, Exception { // logic section - Update a Record
+        return super.doUpdateMd5();
+    }
+    public String getStringAsMD5(String str) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        BigInteger hash = new BigInteger(1, md.digest(str.getBytes()));
+        String s2 = hash.toString(16);
+        return s2;
+    }
+    public boolean valPw(String str) {
+        if (str == null) {str = "";}
+        boolean result = false;
+        if (str.length() < 5) {
+            return result = false;
+        }
+        result = false;
+        if (str.indexOf("0") >= 0 ) {result = true;}
+        else if (str.indexOf("1") >= 0 ) {result = true;}
+        else if (str.indexOf("2") >= 0 ) {result = true;}
+        else if (str.indexOf("3") >= 0 ) {result = true;}
+        else if (str.indexOf("4") >= 0 ) {result = true;}
+        else if (str.indexOf("5") >= 0 ) {result = true;}
+        else if (str.indexOf("6") >= 0 ) {result = true;}
+        else if (str.indexOf("7") >= 0 ) {result = true;}
+        else if (str.indexOf("8") >= 0 ) {result = true;}
+        else if (str.indexOf("9") >= 0 ) {result = true;}
+        if (result == false ) {
+            return result;
+        }
+        result = false;
+        if (str.indexOf("a") >= 0 ) {result = true;}
+        else if (str.indexOf("b") >= 0 ) {result = true;}
+        else if (str.indexOf("c") >= 0 ) {result = true;}
+        else if (str.indexOf("d") >= 0 ) {result = true;}
+        else if (str.indexOf("e") >= 0 ) {result = true;}
+        else if (str.indexOf("f") >= 0 ) {result = true;}
+        else if (str.indexOf("g") >= 0 ) {result = true;}
+        else if (str.indexOf("h") >= 0 ) {result = true;}
+        else if (str.indexOf("i") >= 0 ) {result = true;}
+        else if (str.indexOf("j") >= 0 ) {result = true;}
+        else if (str.indexOf("k") >= 0 ) {result = true;}
+        else if (str.indexOf("l") >= 0 ) {result = true;}
+        else if (str.indexOf("m") >= 0 ) {result = true;}
+        else if (str.indexOf("n") >= 0 ) {result = true;}
+        else if (str.indexOf("o") >= 0 ) {result = true;}
+        else if (str.indexOf("p") >= 0 ) {result = true;}
+        else if (str.indexOf("q") >= 0 ) {result = true;}
+        else if (str.indexOf("r") >= 0 ) {result = true;}
+        else if (str.indexOf("s") >= 0 ) {result = true;}
+        else if (str.indexOf("t") >= 0 ) {result = true;}
+        else if (str.indexOf("u") >= 0 ) {result = true;}
+        else if (str.indexOf("v") >= 0 ) {result = true;}
+        else if (str.indexOf("x") >= 0 ) {result = true;}
+        else if (str.indexOf("z") >= 0 ) {result = true;}
+        else if (str.indexOf("w") >= 0 ) {result = true;}
+        if (result == false ) {
+            return result;
+        }
+        return result;
+    }
+    protected void reset() {  
+     try {
+        super.reset(); 
+        // Set initial ABA Number
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("cadbeanx", "cadUserpwBean");
+        if (tab_remember == true) {
+            getSession().getAttribute("cadUserpwBeanx");
+        } else {
+            getSession().setAttribute("cadUserpwBeanx", "1");
+        } 
+        ufmv = "00000000000000000000000000000000000000000000000000";
+        getSession().setAttribute("ufmv", ufmv);
+        // Tabs Validation Status
+        this.tabs_vf = null;
+        this.tabs_vc = null;
+        vf = 0;
+        xmesg_st = "null";
+        // Reset of Main Record ii.properties-----------------
+        this.flds_vf = "null";
+        // Set initial tabsvf
+        tabsvf =    "00000000000000000000000000000000000000000000000909";
+        tabsvf_in = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tr = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tp = "90000000000000000000000000000000000000000000000000";
+        // Load flds_vf & chld_vfs into prop vcs;
+        Connection con = DatabaseUtils.getConnection();
+        // Reset Initial Stub Number--------------------------
+        this.xbutn_id = "1";
+        this.userx_id_login = getLoginInfo().getUserx_id_login(); // Initialized 3
+        this.user_cd = getLoginInfo().getUserx_id_login(); // Initialized 3
+        this.userx_pw_old = getLoginInfo().getUserx_pw(); // Initialized 4
+        this.userx_pw = null; // Reset of any other variable --
+        this.userx_pw_conf_var = null; // Reset work variable
+        this.userx_pw_conf_var_vc = "0"; // Reset work var vc to Green 
+        this.userx_st = 0;
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        // Orders-Reset------------------------------------
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo.indexOf("psq") >= 0){
+        } else {
+            mesg_var = "";
+            xmesg_rc = 0;
+        }
+    } catch (Exception ex) { ex.getMessage(); }
+    } // Closing Reset Method
+    // Filters-Reset------------------------------------
+    protected void resetFilters() {  
+        this.fil_tabs_vc = null;
+    }
+    
+    
+    public void loadDesc() throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+    
+        // Load FK Desc ------------------------
+        userx_id_login_desc = IIBeanUtils.getUserx_desc(con, userx_id_login);
+    
+        } finally { DatabaseUtils.releaseConnection(con); }
+    }  //  End of loadDesc 
+    public String doObterRefreshParent() throws SQLException, LoginException { // @getrecd
+        valorz = "refresh";
+        return doObter(); // @getrecd
+    }
+    
+    // a Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObter() throws SQLException, LoginException { // @getrecd
+        // Set Transactio Type 
+        tipo ="userpwcad";
+        String tipoOabv ="userpw";
+        loadBean(); // Load Record @getrecd - 1
+        // Return to Caller if valor is null 
+        //if (valorz == null) { return tipoOabv+"psq";}
+        //if (valorz != null && valorz.length() == 0 ) {return tipoOabv+"psq";}
+        valorz = null; 
+        //String result = super.doObter(); // @getrecd
+        return tipo ; // @getrecd
+    } 
+    
+    public Object doObterBean() throws SQLException, LoginException {
+        loadBean();
+        return this;
+    }
+    
+    // Loads bean from dao, based on PK value of Object - @param (valor) from Object PK
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+    public DataObject setTableAliasBean(DataObject dao) {
+        dao.setTableAlias("USERPW_USERX");
+        return dao;
+    }
+    // loadBean Get Selection Values from Session  ------------------
+    public void loadBean() throws SQLException, LoginException {
+        String valor = "";
+        tipo = "userpwcad";
+        valorz = valor;
+    //  load Record - Start;
+        valor = (String) getSession().getAttribute(tipo+"valor");
+        valor = "sisadm";
+        if (valor != null &&  valor.length() == 0) {valor = null;}
+        valorz = valor;
+        // Return to caller if key value not received  
+        if (valor == null ) {
+            return;
+        }
+    //  load Record - End;
+        getSession().setAttribute("tipo", tipo);
+        loadBean(valor);
+    } // end of loadBean
+    // loadBean - Userpw ---------------------------------------------
+    public void loadBean(String valor) throws SQLException, LoginException {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        userx_pw_sav = userx_pw;
+        userx_pw_conf_var_sav = userx_pw;
+        userx_pw_conf_var = userx_pw;
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    public void loadFieldBean() {
+        userx_id_login_vc = valUserx_id_login(userx_id_login); 
+        userx_pw_vc = valUserx_pw(userx_pw); 
+        userx_pw_conf_var_vc = valUserx_pw_conf_var(userx_pw_conf_var); 
+        userx_st_vc = valUserx_st(userx_st); 
+    } // end of loadFieldBean
+     
+    public String selMaxVc(String divn) {
+        String vc = "0"; String vc5 = "0"; 
+        Integer divni = Integer.parseInt(divn);
+            vc = userx_id_login_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = userx_pw_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = userx_pw_conf_var_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = userx_st_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        if (vc5.equals("5")) {vc = "5";}
+        return vc;
+    } 
+    
+    protected void mountFilter() {
+        ufmv = (String) getSession().getAttribute("ufmv");
+    } // end of mountFilter
+    
+    public String doRetornaPesquisa() {
+        getSession().setAttribute("novainclusao", false);
+        return super.tipo;
+    }
+    public boolean isCanMenu() throws SQLException, LoginException {
+        tipo1 = "*userpw";
+        return super.isCanPesquisar();
+    }
+    
+    // getAssistnovo------------------------------------------------
+    // Verifies whether record selection button is to be rendered right after record insertion
+    public Boolean getAssistnovo() {
+        assistnovo = false;
+        Boolean bb = (Boolean) (getSession().getAttribute(super.tipo));
+        Boolean an = (Boolean) (getSession().getAttribute("novainclusao"));
+        if (bb == null) {bb = false;}
+        if (an == null) {an = false;}
+        if (bb == true && an == true) {assistnovo = true;}
+        return assistnovo;
+    }
+    
+    public String doSelecionar() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        pageLength = 999;
+        getSession().setAttribute("filter", null);
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "userpwpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarOnly() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarOnly();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "userpwpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarBackx() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        pageLength = 999;
+        getSession().setAttribute("filter", null);
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "userpwpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarNull() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        pageLength = 999;
+        tipo = "userpwpsqxxx";
+        String ret = "";
+        int filterx = 0;
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNull();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "userpwpsq"; // updbutton != 1c - end
+    }
+
+} // End of Code

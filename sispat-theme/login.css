@@ -1,0 +1,28 @@
+.navbar-default {
+    background-color: white;
+    border-color: #337ab7;
+    border-bottom-width: thick;
+}
+
+body {
+    background-color: white;
+}
+
+.row {
+    background-color: white;
+}
+
+.panel-body {
+	background-color: rgba(51, 122, 183, 0.07);
+}
+
+#logo-mrs {
+  width: 47px;
+  height: 23px;
+  vertical-align: middle;
+}
+
+#logo-sysfer {
+  width: 47px;
+  height: 23px;
+}

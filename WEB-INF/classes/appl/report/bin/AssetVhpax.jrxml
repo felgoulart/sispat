@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AssetVhpax" pageWidth="7692" pageHeight="595" orientation="Landscape" columnWidth="820" leftMargin="10" rightMargin="10" topMargin="0" bottomMargin="0" resourceBundle="ApplicationResources_pt_BR">
+<property name="ireport.scriptlethandling" value="0"/>
+<property name="ireport.encoding" value="UTF-8"/>
+<property name="ireport.zoom" value="1.0"/>
+<property name="ireport.x" value="0"/>
+<property name="ireport.y" value="0"/>
+<import value="java.util.*"/>
+<import value="net.sf.jasperreports.engine.*"/>
+<import value="net.sf.jasperreports.engine.data.*"/>
+<parameter name="p_locale" class="java.lang.String"/>
+<parameter name="p_date_start" class="java.lang.String"/>
+<parameter name="p_date_end" class="java.lang.String"/>
+<parameter name="p_asset_nu_ident" class="java.lang.String"/>
+<parameter name="p_asset_nu" class="java.lang.String"/>
+<parameter name="p_asset_nu_imobilizado" class="java.lang.String"/>
+<parameter name="p_asset_cd_serie" class="java.lang.String"/>
+<parameter name="p_asset_cd_plaqueta_erp" class="java.lang.String"/>
+<parameter name="p_asset_cd_corredor" class="java.lang.String"/>
+<parameter name="p_asset_px_local_vistoria" class="java.lang.String"/>
+<parameter name="p_asset_ds_acesso_rodv" class="java.lang.String"/>
+<parameter name="p_asset_tp_propriedade" class="java.lang.String"/>
+<parameter name="p_asset_cd_propriedade_erp" class="java.lang.String"/>
+<parameter name="asset_in_ultvist" class="java.lang.String"/>
+<field name="asset_tp_cfasttp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_in_ultvist" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_dt_vistoria" class="java.util.Date"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_id" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_cfinvty" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_nu" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_nu_ident" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_serie" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_tp_propriedade" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_tp_propriedade_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_tp_vhpax" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_tp_vhpax_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_hierarquico" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_corredor" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_corredor_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_cfreslc" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_cfreslc_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_px_local_vistoria" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_px_local_vistoria_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_ds_acesso_rodv" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_km_fim" class="java.math.BigDecimal"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_vl_coords" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="imag_vx" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="file_vx" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_nu_imobilizado" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_ds_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_plaqueta_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_macro_classe_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_macro_classe_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cl_imobilizado" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cl_imobilizado_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_proprietaria_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_proprietaria_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_propriedade_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_propriedade_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_classificacao_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_classificacao_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_ramo_neg_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_ramo_neg_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_dt_itf_erp" class="java.util.Date"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_vl_vida_util_anos" class="java.lang.Integer"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_vl_vida_util_periodos" class="java.lang.Integer"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_vl_aquisicao" class="java.math.BigDecimal"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_dt_capitalizacao" class="java.util.Date"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_vl_deprec_mensal" class="java.math.BigDecimal"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_vl_deprec_acumulada" class="java.math.BigDecimal"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_vl_contabil" class="java.math.BigDecimal"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_corredor_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_corredor_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_uf_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_uf_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_municipio_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_municipio_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_local_vli_erp" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_cd_local_vli_erp_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_trq_lateral1" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_trq_lateral1_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_trq_lateral2" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_trq_lateral2_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_rodeiro1" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_rodeiro1_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_rodeiro2" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_rodeiro2_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_engate1" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_engate1_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_engate2" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_engate2_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_estrutura_cx" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_estrutura_cx_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_longarina" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_longarina_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_portas" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_portas_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_chapa" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_chapa_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_sanfona" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="asset_st_sanfona_dscl" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<field name="geo_vx" class="java.lang.String"> <fieldDescription><![CDATA[]]></fieldDescription> </field>
+<title>
+  <band height="75" splitType="Stretch">
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Transparent" x="0" y="6" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/> </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "assetvhpax_TT" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Transparent" x="620" y="6" width="80" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Center"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/> </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "label_issue" )]]></textFieldExpression> </textField>
+  <textField pattern="dd/MM/yyyy HH:mm:ss"  isBlankWhenNull="true">
+    <reportElement key="textField" mode="Transparent" x="700" y="6" width="127" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Center"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.util.Date">
+    <![CDATA[new Date()]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="0" y="42" width="232" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_in_ultvist_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="232" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_dt_vistoria_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="432" y="42" width="160" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_id_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="592" y="42" width="64" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_nu_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="656" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_nu_ident_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="856" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_serie_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1056" y="42" width="70" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_tp_propriedade_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1126" y="42" width="94" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_tp_vhpax_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1220" y="42" width="52" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_corredor_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1272" y="42" width="106" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_cfreslc_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1378" y="42" width="106" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_px_local_vistoria_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1484" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_ds_acesso_rodv_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1684" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_km_fim_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="1884" y="42" width="176" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_vl_coords_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2060" y="42" width="12" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_imag_vx_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2072" y="42" width="12" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_file_vx_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2084" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_nu_imobilizado_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2284" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_ds_erp_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2484" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_plaqueta_erp_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2684" y="42" width="76" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_macro_classe_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2760" y="42" width="130" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cl_imobilizado_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2890" y="42" width="46" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_proprietaria_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="2936" y="42" width="70" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_propriedade_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="3006" y="42" width="82" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_classificacao_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="3088" y="42" width="94" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_ramo_neg_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="3182" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_dt_itf_erp_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="3382" y="42" width="160" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_vl_vida_util_anos_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="3542" y="42" width="160" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_vl_vida_util_periodos_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="3702" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_vl_aquisicao_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="3902" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_dt_capitalizacao_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4102" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_vl_deprec_mensal_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4302" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_vl_deprec_acumulada_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4502" y="42" width="200" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_vl_contabil_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4702" y="42" width="76" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_corredor_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4778" y="42" width="40" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_uf_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4818" y="42" width="58" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_municipio_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4876" y="42" width="58" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_cd_local_vli_erp_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4934" y="42" width="58" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_trq_lateral1_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="4992" y="42" width="58" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_trq_lateral2_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5050" y="42" width="112" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_rodeiro1_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5162" y="42" width="112" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_rodeiro2_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5274" y="42" width="52" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_engate1_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5326" y="42" width="52" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_engate2_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5378" y="42" width="40" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_estrutura_cx_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5418" y="42" width="58" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_longarina_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5476" y="42" width="40" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_portas_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5516" y="42" width="40" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_chapa_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5556" y="42" width="46" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_asset_st_sanfona_dscl_tt" )]]></textFieldExpression> </textField>
+  <textField isBlankWhenNull="true">
+    <reportElement key="textField" mode="Opaque" x="5602" y="42" width="12" height="15" backcolor="#FF9900"/>
+    <textElement textAlignment="Center">      <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "AssetVhpax_geo_vx_tt" )]]></textFieldExpression> </textField>
+   </band>
+</title>
+<pageHeader>
+  <band splitType="Stretch"/>
+</pageHeader>
+<columnHeader>
+  <band splitType="Stretch"/>
+</columnHeader>
+<detail>
+  <band height="18" splitType="Stretch">
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="0" y="0" width="232" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Center"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_in_ultvist} != null ? $F{asset_in_ultvist} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="232" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.util.Date">
+    <![CDATA[$F{asset_dt_vistoria}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="432" y="0" width="160" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_id} != null ? $F{asset_id} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="592" y="0" width="64" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_nu} != null ? $F{asset_nu} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="656" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_nu_ident} != null ? $F{asset_nu_ident} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="856" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_serie} != null ? $F{asset_cd_serie} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1056" y="0" width="70" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_tp_propriedade_dscl} != null ? $F{asset_tp_propriedade_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1126" y="0" width="94" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_tp_vhpax_dscl} != null ? $F{asset_tp_vhpax_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1220" y="0" width="52" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_corredor_dscl} != null ? $F{asset_cd_corredor_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1272" y="0" width="106" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_cfreslc_dscl} != null ? $F{asset_cd_cfreslc_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1378" y="0" width="106" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_px_local_vistoria_dscl} != null ? $F{asset_px_local_vistoria_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1484" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_ds_acesso_rodv} != null ? $F{asset_ds_acesso_rodv} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="1684" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.math.BigDecimal">
+    <![CDATA[$F{asset_km_fim}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="1884" y="0" width="176" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_vl_coords} != null ? $F{asset_vl_coords} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2060" y="0" width="12" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{imag_vx} != null ? $F{imag_vx} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2072" y="0" width="12" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{file_vx} != null ? $F{file_vx} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2084" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_nu_imobilizado} != null ? $F{asset_nu_imobilizado} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2284" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_ds_erp} != null ? $F{asset_ds_erp} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2484" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_plaqueta_erp} != null ? $F{asset_cd_plaqueta_erp} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2684" y="0" width="76" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_macro_classe_erp_dscl} != null ? $F{asset_cd_macro_classe_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2760" y="0" width="130" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cl_imobilizado_dscl} != null ? $F{asset_cl_imobilizado_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2890" y="0" width="46" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_proprietaria_erp_dscl} != null ? $F{asset_cd_proprietaria_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="2936" y="0" width="70" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_propriedade_erp_dscl} != null ? $F{asset_cd_propriedade_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="3006" y="0" width="82" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_classificacao_erp_dscl} != null ? $F{asset_cd_classificacao_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="3088" y="0" width="94" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_ramo_neg_erp_dscl} != null ? $F{asset_cd_ramo_neg_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="3182" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.util.Date">
+    <![CDATA[$F{asset_dt_itf_erp}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="3382" y="0" width="160" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.Integer">
+    <![CDATA[$F{asset_vl_vida_util_anos}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="3542" y="0" width="160" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.Integer">
+    <![CDATA[$F{asset_vl_vida_util_periodos}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="3702" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.math.BigDecimal">
+    <![CDATA[$F{asset_vl_aquisicao}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="3902" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.util.Date">
+    <![CDATA[$F{asset_dt_capitalizacao}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="4102" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.math.BigDecimal">
+    <![CDATA[$F{asset_vl_deprec_mensal}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="4302" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.math.BigDecimal">
+    <![CDATA[$F{asset_vl_deprec_acumulada}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+    <reportElement key="textField-1" mode="Transparent" x="4502" y="0" width="200" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.math.BigDecimal">
+    <![CDATA[$F{asset_vl_contabil}]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="4702" y="0" width="76" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_corredor_erp_dscl} != null ? $F{asset_cd_corredor_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="4778" y="0" width="40" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_uf_erp_dscl} != null ? $F{asset_cd_uf_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="4818" y="0" width="58" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_municipio_erp_dscl} != null ? $F{asset_cd_municipio_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="4876" y="0" width="58" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_cd_local_vli_erp_dscl} != null ? $F{asset_cd_local_vli_erp_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="4934" y="0" width="58" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_trq_lateral1_dscl} != null ? $F{asset_st_trq_lateral1_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="4992" y="0" width="58" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_trq_lateral2_dscl} != null ? $F{asset_st_trq_lateral2_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5050" y="0" width="112" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_rodeiro1_dscl} != null ? $F{asset_st_rodeiro1_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5162" y="0" width="112" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_rodeiro2_dscl} != null ? $F{asset_st_rodeiro2_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5274" y="0" width="52" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_engate1_dscl} != null ? $F{asset_st_engate1_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5326" y="0" width="52" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_engate2_dscl} != null ? $F{asset_st_engate2_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5378" y="0" width="40" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_estrutura_cx_dscl} != null ? $F{asset_st_estrutura_cx_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5418" y="0" width="58" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_longarina_dscl} != null ? $F{asset_st_longarina_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5476" y="0" width="40" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_portas_dscl} != null ? $F{asset_st_portas_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5516" y="0" width="40" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_chapa_dscl} != null ? $F{asset_st_chapa_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5556" y="0" width="46" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{asset_st_sanfona_dscl} != null ? $F{asset_st_sanfona_dscl} : "-" ]]></textFieldExpression> </textField>
+  <textField isStretchWithOverflow="true">
+    <reportElement key="textField-1" mode="Transparent" x="5602" y="0" width="12" height="15" backcolor="#FFFFFF"/>
+    <textElement textAlignment="Left"> <font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>    </textElement>
+    <textFieldExpression class="java.lang.String">
+    <![CDATA[$F{geo_vx} != null ? $F{geo_vx} : "-" ]]></textFieldExpression> </textField>
+   </band>
+</detail>
+<columnFooter>
+  <band splitType="Stretch"/>
+</columnFooter>
+<pageFooter>
+  <band splitType="Stretch"/>
+</pageFooter>
+<summary>
+  <band splitType="Stretch"/>
+</summary>
+</jasperReport>

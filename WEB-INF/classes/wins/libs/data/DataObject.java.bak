@@ -1,0 +1,2012 @@
+package wins.libs.data;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import oracle.sql.TIMESTAMP;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.dbutils.BasicRowProcessor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import wins.libs.DatabaseUtils;
+import wins.libs.StringUtils;
+import wins.libs.TableColumn;
+import wins.libs.ProcedureColumn;
+import appl.libs.IITableBuilder;
+import net.sourceforge.jtds.jdbc.ClobImpl;
+import org.apache.log4j.Logger;
+/**
+ * <p>Title: Java Beans Creator</p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2004</p>
+ * <p>Company: </p>
+ * @author Paulo Roberto Medeiros
+ * @version 1.0
+ */
+
+public abstract class DataObject implements Serializable {
+    protected Map<String, Object> mapFields;
+    protected Map<String, Object> mapParamaters;
+    protected static Map<String, TableColumn[]> mapTablesCols;
+    protected static Map<String, ProcedureColumn[]> mapProceduresCols;
+    private String tableAlias = null;
+    private String procedureName = null;
+    private boolean psTable = false;
+    protected boolean loaded = false;
+    protected boolean changed = false;
+    private boolean loadChilds = false;
+    public String ufmvval = "";
+    public Integer mvsqval = 0;
+    public Integer psval = 0;     public Integer peval = 0;
+    public Boolean pkchangeflag = false;
+    public Boolean rowdelete = false; // Row Delete Request Flag
+    protected static Logger log = Logger.getLogger(DataObject.class);
+
+    public DataObject() {
+        mapFields = new CaseInsensitiveMap();
+    }
+
+    public String _validate() {
+        return null;
+    }
+
+    /**
+     * Deve especificar o nome da tabela para onde deve ser mapeado este objeto.
+     * @return String
+     */
+    public abstract String getTableName();
+
+    /**
+     * Deve especificar o "alias" da tabela para onde deve ser mapeado este objeto.
+     * @return String
+     */
+    public String getTableAlias() {
+        return tableAlias;
+    }
+
+    /**
+     * Deve especificar o "alias" da tabela para onde deve ser mapeado este objeto.
+     * @param String
+     */
+    public void setTableAlias(String tableAlias) { 
+        this.tableAlias = tableAlias;
+    }
+
+    /**
+     * Deve especificar o "alias" da tabela para onde deve ser mapeado este objeto.
+     * @return String
+     */
+    public String getProcedureName() {
+        return procedureName;
+    }
+
+    /**
+     * Deve especificar o "alias" da tabela para onde deve ser mapeado este objeto.
+     * @param String
+     */
+    public void setProcedureName(String procedureName) {
+        this.procedureName = procedureName;
+    }
+
+    /**
+     * Usado em classes descendentes para implementar verificações quando o conteudo do Bean é alterado.
+     *
+     * @param con Connection
+     */
+    protected void onLoad(Connection con) {
+    }
+
+    /**
+     * Definição das Colunas da tabela em questão.
+     * @return TableColumn[]
+     */
+    public ProcedureColumn[] getProcedureColumns() {
+        return (ProcedureColumn[]) mapProceduresCols.get(getProcedureName());
+    }
+
+    /**
+     * Definição das Colunas da tabela em questão.
+     * @return TableColumn[]
+     */
+    public TableColumn[] getColumns() {
+        if (getTableAlias() != null) {
+            return (TableColumn[]) mapTablesCols.get(getTableAlias());
+        } else {
+            return (TableColumn[]) mapTablesCols.get(getTableName());
+        }
+    }
+
+    /**
+     * Cria uma lista de campos separados por virgula, para ser usado em selects.
+     * @param fields String[]
+     * @return String
+     */
+    private String criaListaCampos(String[] fields) {
+        StringBuffer sbLoad = new StringBuffer();
+        if (fields != null && fields.length > 0) {
+            sbLoad.append(fields[0]);
+            for (int i = 1; i < fields.length; i++) {
+                sbLoad.append(", " + fields[i]);
+            }
+        } else {
+            sbLoad.append("*");
+        }
+        return sbLoad.toString();
+    }
+
+    private String createWhere(String[] fields) {
+        StringBuffer sbLoad = new StringBuffer(" where 1 = 1 ");
+        if (fields != null && fields.length > 0) {
+            for (int i = 0; i < fields.length; i++) {
+                sbLoad.append("and " + fields[i] + " = ? ");
+            }
+        }
+        return sbLoad.toString();
+    }
+
+    /**
+     * Carrega o registro para este objeto.
+     * O registro é localizado pelas chaves primárias da tabela.
+     * @param con Connection
+     * @throws SQLException
+     * @return boolean
+     */
+    public boolean load(Connection con) throws SQLException {
+        return load(con, null, false);
+    }
+
+    /**
+     * Carrega os campos especificados do registro para este objeto.
+     * O registro é localizado pelas chaves primárias da tabela.
+     * @param con Connection
+     * @param fields String[]
+     * @throws SQLException
+     * @return boolean
+     */
+    public boolean load(Connection con, String[] fields) throws SQLException {
+        String sql = "SELECT " + criaListaCampos(fields) + " FROM " + getTableName() + createWhere();
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        setPkValues(ps, 1);
+
+        ResultSet rs = ps.executeQuery();
+        boolean ok = rs.next();
+        if (ok) {
+            loadFrom(con, rs);
+        }
+        rs.close();
+        ps.close();
+        return ok;
+    }
+
+    /**
+     * Carrega os campos especificados do registro para este objeto.
+     * O registro é localizado pelas chaves primárias da tabela.
+     * @param con Connection
+     * @param fields String[]
+     * @throws SQLException
+     * @return boolean
+     */
+    public boolean load(Connection con, String[] fields, Boolean flag) throws SQLException {
+        String sql = "SELECT " + criaListaCampos(fields) + " FROM " + getObjectName() + createWhere();
+        // the Logic bwlow avoids printing to log all loads from codf   
+        String sqlx = "SELECT * FROM CODF WHERE 1 = 1  AND codf_tp = ? AND codf_lg = ? AND codf_id = ?";
+        if (sqlx.indexOf(sqlx) < 0 ) {
+        	// System.out.println(ConvertUtils.lookup(String.class).convert(Timestamp.class, new Date()) + " " + this.getClass());
+        	// System.out.println("SQL LOAD: "+sql);
+        }
+        PreparedStatement ps = con.prepareStatement(sql);
+        int count = 1;
+        if (flag == true) {
+            count = setParamValues(ps, 1);
+        }
+        setPkValues(ps, count);
+
+        ResultSet rs = ps.executeQuery();
+        boolean ok = rs.next();
+        if (ok) {
+            loadFrom(con, rs);
+        }
+        rs.close();
+        ps.close();
+        return ok;
+    }
+
+    /**
+     * Carrega os campos especificados do registro para este objeto.
+     * O registro é localizado pelas chaves primárias da tabela.
+     * @param con Connection
+     * @param fields String[]
+     * @throws SQLException
+     * @return boolean
+     */
+    public Object load_rc(Connection con) throws SQLException {
+        String sql = "{ ? = CALL " + getObjectName() + " }";
+
+        String datetime = ConvertUtils.lookup(String.class).convert(Timestamp.class, new Date()) + " " + this.getClass();
+        datetime = datetime.replace("class appl.data.", "- ");
+
+        String selx = sql.toString();
+        int end = selx.indexOf("(");
+        String selz = "";
+        if (end >= 0) {
+            selz = selx.substring(0, end+1);
+        } else {
+        	selz = selx;
+       	}
+        int callx = selz.indexOf("Call")+5;
+        selz = selz.substring(callx,selz.length())+" -- "+datetime;
+        System.out.println(""+selz);
+        log.error(""+selz);
+
+        CallableStatement cs = con.prepareCall(sql);
+        setParamValues(cs, 1);
+        cs.execute();
+        Object rc = cs.getObject(1);
+        if (rc != null ) {
+        	System.out.println(") -- End Call, rc="+rc.toString());
+        	log.error(") -- End Call, rc="+rc.toString());
+        }
+        cs.close();
+        return rc;
+    }
+
+    public String getObjectName() throws SQLException {
+        if (getProcedureName() != null) {
+            return getProcedureName() + createParameters();
+//        } else if (getTableAlias() != null) {
+//            return getTableAlias();
+        } else {
+            return getTableName();
+        }
+    }
+
+    /**
+     * Seta os parametros de entrada da Procedure no PreparedStatement.
+     * @param ps PreparedStatement
+     * @param offset int
+     * @throws SQLException
+     * @return int
+     */
+    private int setParamValues(PreparedStatement ps, int offset) throws SQLException {
+        if(getProcedureColumns() != null) {
+            ProcedureColumn[] cols = getProcedureColumns();
+            int count = offset; // Contador de parametros passados para o PreparedStatement.
+
+            for (int i = 0; i < cols.length; i++) {
+                if (cols[i].getParam_type() == 1) {
+                    setValue(ps, count, cols[i], false, cols[i].getType() == Types.VARCHAR && psTable);
+                    count++;
+                }
+            }
+            return count;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * Seta os parametros de entrada da Procedure no CallableStatement.
+     * @param ps PreparedStatement
+     * @param offset int
+     * @throws SQLException
+     * @return int
+     */
+    private int setParamValues(CallableStatement cs, int offset) throws SQLException {
+        if(getProcedureColumns() != null) {
+            ProcedureColumn[] cols = getProcedureColumns();
+            int count = offset; // Contador de parametros passados para o PreparedStatement.
+
+            for (int i = 0; i < cols.length; i++) {
+                if (cols[i].getParam_type() == 1) {
+                    setValue(cs, count, cols[i], false, cols[i].getType() == Types.VARCHAR && psTable);
+                    count++;
+                } else {
+                    cs.registerOutParameter(count,cols[i].getType());
+                    count++;
+                }
+            }
+            return count;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * Seta os parametros da chave primario no PreparedStatement.
+     * @param ps PreparedStatement
+     * @param offset int
+     * @throws SQLException
+     * @return int
+     */
+    private int setPkValues(PreparedStatement ps, int offset) throws SQLException {
+        TableColumn[] pks = getColumns();
+        int count = offset; // Contador de parametros passados para o PreparedStatement.
+
+        if (pks != null) {
+            for (int i = 0; i < pks.length; i++) {
+                if (pks[i].isPk()) {
+                    setValue(ps, count, pks[i], false, pks[i].getType() == Types.VARCHAR && psTable); // sintaxok
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Seta os valores dos campos q não são chaves primárias.
+     * @param ps PreparedStatement
+     * @param offset int
+     * @param isInsert boolean
+     * @throws SQLException
+     * @return int
+     */
+    private int setFieldValues(PreparedStatement ps, int offset, boolean isInsert) throws
+        SQLException {
+        TableColumn[] cols = getColumns();
+
+        int count = offset; // Contador de parametros passados para o PreparedStatement.
+        for (int i = 0; i < cols.length; i++) {
+            if (!cols[i].isPk()) {
+                setValue(ps, count, cols[i], isInsert, false);
+                count++;
+                if (cols[i].getType() == Types.VARCHAR && psTable) {
+                    setValue(ps, count, cols[i], isInsert, true);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Seta os valores de todos os campos da tabela.
+     * @param ps PreparedStatement
+     * @param offset int
+     * @param isInsert boolean
+     * @throws SQLException
+     * @return int
+     */
+    private int setAllValues(PreparedStatement ps, int offset, boolean isInsert) throws
+        SQLException {
+        TableColumn[] cols = getColumns();
+
+        int count = offset; // Contador de parametros passados para o PreparedStatement.
+        for (int i = 0; i < cols.length; i++, count++) {
+            if (cols[i].isIdentity()) {
+                i++;
+            }
+            setValue(ps, count, cols[i], isInsert, false);
+            if (cols[i].getType() == Types.VARCHAR && psTable) { // suporte a campos VARCHAR 'I$_'
+                count++;
+                setValue(ps, count, cols[i], isInsert, true);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Carrega os campos da tabela do <code>ResultSet</code>.
+     *
+     * @param con Connection
+     * @param rs ResultSet
+     * @throws SQLException
+     */
+    public void loadFrom(Connection con, ResultSet rs) throws SQLException {
+        mapFields = BasicRowProcessor.instance().toMap(rs);
+        loaded = true;
+        changed = false;
+        if (loadChilds) {
+            loadChilds(con);
+        }
+        onLoad(con);
+    }
+
+    /**
+     * Salva o registro.
+     * @param con Connection
+     * @throws SQLException
+     * @return int
+     */
+    public int save(Connection con) throws SQLException {
+        PreparedStatement ps = con.prepareStatement(createInsert());
+
+        // valores das colunas a serem inseridas
+        setAllValues(ps, 1, true);
+
+        int ret = ps.executeUpdate();
+        ps.close();
+
+//        if (ret != 0) { // se conseguiu inserir, insere as dependencias.
+//            saveChilds(con);
+//        }
+        return ret;
+    }
+
+    /**
+     * Atualiza o registro.
+     * @param con Connection
+     * @throws SQLException
+     * @return int
+     */
+    public int update(Connection con) throws SQLException {
+        int ret = 0;
+
+        String update = createUpdate();
+        if (update != null) {
+            PreparedStatement ps = con.prepareStatement(update);
+
+            // valores das colunas a serem atualizadas
+            int count = setFieldValues(ps, 1, false);
+
+            // valores das chaves primarias.
+            setPkValues(ps, count);
+
+            ret = ps.executeUpdate();
+            ps.close();
+        }
+
+//        if (ret != 0) { // se a linha existe, atualiza as dependencias.
+//            saveOrUpdateChilds(con);
+//        }
+
+        return ret;
+    }
+
+    /**
+     * Apaga o registro.
+     * O objeto continua existindo com os dados do registro.
+     * @param con Connection
+     * @throws SQLException
+     * @return int
+     */
+    public int delete(Connection con) throws SQLException {
+        deleteChilds(con);
+
+        PreparedStatement ps = con.prepareStatement("delete from " + getTableName() + createWhere());
+        setPkValues(ps, 1);
+
+        int ret = ps.executeUpdate();
+        ps.close();
+        return ret;
+    }
+
+    public int deleteAll(Connection con, String fieldMatch) throws SQLException {
+        return deleteAll(con, new String[]{fieldMatch});
+    }
+
+    public int deleteAll(Connection con, String[] fieldMatch) throws SQLException {
+        PreparedStatement ps = con.prepareStatement("delete from " + getTableName() + createWhere(fieldMatch));
+
+        for (int i = 0; i < fieldMatch.length; i++) {
+            setValue(ps, i+1, getColumnDefinition(fieldMatch[i]), false, false);
+        }
+
+        int ret = ps.executeUpdate();
+        ps.close();
+        return ret;
+    }
+
+    /**
+     * Procura a definição da coluna.
+     * @param field String
+     * @return TableColumn
+     */
+    private TableColumn getColumnDefinition(String field) {
+        TableColumn[] cols = getColumns();
+        String upField = field.toUpperCase();
+        for (int i = 0; i < cols.length; i++) {
+            if (cols[i].getName().equalsIgnoreCase(upField)) {
+                return cols[i];
+            }
+        }
+        throw new RuntimeException("Column not found: " + field);
+    }
+
+    /**
+     * Busca genérica, retorna uma lista com os objetos encontrados. Retorna os registro da tabela onde os campos contidos em <code>params</code> sejam iguais aos valores contidos em <code>values</code>, ordenado pelos campos contidos em <code>orderBy</code>.
+     * Para retornar todos os registros da tabela, deixe os parametros <code>params</code>
+     * e <code>values</code> nulos. Para deixar sem ordenação, deixe o parametro <code>orderBy</code>
+     * nulo.
+     * @param con Connection
+     * @param params String[] Pode ser nulo ou vazio.
+     * @param values Object[] Pode ser nulo ou vazio.
+     * @param orderBy String[] Pode ser nulo ou vazio.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> findSorted(Connection con, String[] params, Object[] values, String[] orderBy) throws SQLException {
+        return findSorted(con, params, values, orderBy, null, -1);
+    }
+
+    /**
+     * Busca genérica com filtro, retorna uma lista com os objetos encontrados. Retorna os registro da tabela onde os campos contidos em <code>params</code> sejam iguais aos valores contidos em <code>values</code>, ordenado pelos campos contidos em <code>orderBy</code>.
+     * Para retornar todos os registros da tabela, deixe os parametros <code>params</code>
+     * , <code>values</code> e <code>filter</code> nulos. Para deixar sem ordenação, deixe o parametro <code>orderBy</code>
+     * nulo.
+     * @param con Connection
+     * @param params String[]
+     * @param values Object[]
+     * @param orderBy String[]
+     * @param filter String
+     * @return List
+     * @throws SQLException
+     */
+    public List<? extends DataObject> findSorted(Connection con, String[] params, Object[] values, String[] orderBy, String filter, int maxResults) throws SQLException { // @search
+        try {
+            // para utilizar os indices na pesquisa com parametros do tipo VARCHAR.
+            if (params != null) {
+                for (int i = 0; i < params.length; i++) {
+                    if (getColumnDefinition(params[i]).getType() == Types.VARCHAR && psTable) {
+                        params[i] = "I$_" + params[i];
+                    }
+                }
+            }
+
+            // para utilizar os indices na pesquisa com ordenação por campos VARCHAR.
+            if (orderBy != null) {
+                for (int i = 0; i < orderBy.length; i++) {
+                    if (psTable && getColumnDefinition(orderBy[i]).getType() == Types.VARCHAR) {
+                        orderBy[i] = "I$_" + orderBy[i];
+                    }
+                }
+            }
+
+            PreparedStatement ps = createFind(con, params, values, orderBy, filter); // @search
+            ResultSet rs = ps.executeQuery(); // @search
+            LinkedList ll = new LinkedList();
+            while (rs.next() && (ll.size() < maxResults || maxResults < 0)) {
+                /*
+                  Cria uma nova instancia dessa classe,
+                  para isso ela deve seguir o padrão de Java Beans:
+                  - Classe deve ser publica
+                  - Deve possuir um construtor publico sem parametros
+                 */
+                DataObject obj = (DataObject)this.getClass().newInstance();
+                obj.setPsTable(psTable);
+//              obj.setLoadChilds(loadChilds);
+                obj.loadFrom(con, rs);
+                ll.add(obj);
+            }
+            rs.close();
+            ps.close();
+
+            return ll;
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Error creating data object.");
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Error creating data object.");
+        }
+    }
+
+    /**
+     * Retorna os registro da tabela onde os campos contidos em <code>params</code> sejam iguais aos valores contidos em <code>values</code>, ordenado pelo campo <code>orderBy</code>.
+     * @param con Connection
+     * @param params String[] Pode ser nulo ou vazio.
+     * @param values Object[] Pode ser nulo ou vazio.
+     * @param orderBy String Não pode ser nulo.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> findSorted(Connection con, String[] params, Object[] values, String orderBy) throws SQLException {
+        if (orderBy == null) {
+            throw new RuntimeException(
+                "OrderBy não pode ser nulo aqui, utilize outra assinatura de método.");
+        }
+        return findSorted(con, params, values, new String[] {orderBy});
+    }
+
+    /**
+     * Retorna os registros da tabela onde <code>param</code> seja igual a <code>value</code>, ordenados pelos campos contidos em <code>orderBy</code>.
+     * @param con Connection
+     * @param param String Não pode ser nulo.
+     * @param value Object Pode ser nulo.
+     * @param orderBy String[] Pode ser nulo ou vazio.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> findSorted(Connection con, String param, Object value, String[] orderBy) throws SQLException {
+        if (param == null) {
+            throw new RuntimeException(
+                "param não pode ser nulo, utilize outra assinatura de método.");
+        }
+        return findSorted(con, new String[] {param}
+                          , new Object[] {value}
+                          , orderBy);
+    }
+
+    /**
+     * Retorna os registros da tabela onde <code>param</code> seja igual a <code>value</code>, ordenados pelo campo <code>orderBy</code>.
+     * @param con Connection
+     * @param param String Não pode ser nulo.
+     * @param value Object Pode ser nulo.
+     * @param orderBy String Não pode ser nulo.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> findSorted(Connection con, String param, Object value, String orderBy) throws SQLException {
+        if (param == null || orderBy == null) {
+            throw new RuntimeException(
+                "param e orderBy não podem ser nulos, utilize outra assinatura de método.");
+        }
+        return findSorted(con, new String[] {param}
+                          , new Object[] {value}
+                          , new String[] {orderBy});
+    }
+
+    //-- ordenados, mas os parametros são buscados no objeto.
+    /**
+     * Retorna os registro da tabela onde os campos contidos em <code>params</code> sejam iguais aos valores de <code>params[i]</code> contido no <code>mapFields</code>, ordenado pelos campos contidos em <code>orderBy</code>.
+     * @param con Connection
+     * @param params String[] Pode ser nulo ou vazio.
+     * @param orderBy String[] Pode ser nulo ou vazio.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> findSorted(Connection con, String[] params, String[] orderBy) throws SQLException {
+        Object[] values = new Object[params.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = mapFields.get(params[i]);
+        }
+        return findSorted(con, params, values, orderBy);
+    }
+
+    /**
+     * Retorna os registro da tabela onde <code>param</code> seja igual ao valor de <code>param</code> contido no <code>mapFields</code>, ordenado pelos campos contidos em <code>orderBy</code>.
+     * @param con Connection
+     * @param param String Não pode ser nulo.
+     * @param orderBy String[] Pode ser nulo ou vazio.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> findSorted(Connection con, String param, String[] orderBy) throws SQLException {
+        if (param == null) {
+            throw new RuntimeException(
+                "param não pode ser nulo, utilize outra assinatura de método.");
+        }
+        return findSorted(con, new String[] {param}, orderBy);
+    }
+
+    /**
+     * Retorna os registro da tabela onde <code>param</code> seja igual ao valor de <code>param</code> contido no <code>mapFields</code>, ordenado pelo campo <code>orderBy</code>.
+     * @param con Connection
+     * @param param String Não pode ser nulo.
+     * @param orderBy String Não pode ser nulo.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> findSorted(Connection con, String param, String orderBy) throws SQLException {
+        if (param == null || orderBy == null) {
+            throw new RuntimeException(
+                "param e orderBy não podem ser nulos, utilize outra assinatura de método.");
+        }
+        return findSorted(con, new String[] {param}
+                          , new String[] {orderBy});
+    }
+
+    /**
+     * Retorna todos os registro da tabela com a ordenação do campo <code>orderBy</code>.
+     * @param con Connection
+     * @param orderBy String Não pode ser nulo.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> findSorted(Connection con, String orderBy) throws SQLException {
+        if (orderBy == null) {
+            throw new RuntimeException(
+                "OrderBy não pode ser nulo aqui, utilize outra assinatura de método.");
+        }
+        return findSorted(con, new String[] {}
+                          , new Object[] {}
+                          , orderBy);
+    }
+
+    // -- daqui para frente, find sem order by
+
+    public List<? extends DataObject> find(Connection con, String[] params) throws SQLException {
+        return findSorted(con, params, new String[] {});
+    }
+
+    public List<? extends DataObject> find(Connection con, String[] params, Object[] values) throws SQLException {
+        return findSorted(con, params, values, new String[] {});
+    }
+
+    /**
+     * Retorna os registros da tabela onde <code>param</code> seja igual a <code>value</code>.
+     * @param con Connection
+     * @param param String Não pode ser nulo.
+     * @param value Object Pode ser nulo.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> find(Connection con, String param, Object value) throws SQLException {
+        if (param == null) {
+            throw new RuntimeException(
+                "param não pode ser nulo, utilize outra assinatura de método.");
+        }
+        return findSorted(con, param, value, new String[] {});
+    }
+
+    /**
+     * Retorna os registro da tabela onde <code>param</code> seja igual ao valor de <code>param</code> contido no <code>mapFields</code>.
+     * @param con Connection
+     * @param param String Não pode ser nulo.
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> find(Connection con, String param) throws SQLException {
+        if (param == null) {
+            throw new RuntimeException(
+                "param não pode ser nulo, utilize outra assinatura de método.");
+        }
+        return findSorted(con, param, new String[] {});
+    }
+
+    /**
+     * Retorna todos os registros da tabela sem ordenação.
+     * @param con Connection
+     * @throws SQLException
+     * @return List
+     */
+    public List<? extends DataObject> find(Connection con) throws SQLException {
+        return findSorted(con, new String[] {}
+                          , new Object[] {}
+                          , new String[] {});
+    }
+
+    public List<? extends DataObject> findFilter(Connection con, String filter) throws SQLException {
+        return findSorted(con, new String[] {}
+                          , new Object[] {}
+                          , new String[] {}
+                          , filter, -1);
+    }
+
+    public List<? extends DataObject> findFilterSorted(Connection con, String filter, String order, int maxResults) throws SQLException {
+        if (order == null || order.equals("")) {
+            return findSorted(con, new String[] {}  
+                             , new Object[] {}
+                             , null
+                             , filter, maxResults);
+        } else {
+            return findSorted(con, new String[] {}   
+                              , new Object[] {}
+                              , new String[] {order}
+                              , filter, maxResults);
+        }
+    }
+
+    /**
+     * Salva ou atualiza o registro.
+     * @param con Connection
+     * @throws SQLException
+     * @return int
+     */
+    public int saveOrUpdate(Connection con) throws SQLException {
+        int ret = update(con);
+        if (ret == 0) {ret = save(con);}
+        return ret;
+    }
+
+    /**
+     * Cria o sql de inserção do registro.
+     * @return String
+     */
+    private String createInsert() {
+        StringBuffer sql = new StringBuffer("INSERT INTO " + getTableName() + "(");
+        TableColumn[] cols = getColumns();
+
+        // colunas a serem inseridas
+        if (cols.length > 0) {
+            int count = 0;
+            for (int i = 0; i < cols.length; i++) {
+                if (!cols[i].isIdentity()) {
+                    if (count == 0) {
+                        sql.append(cols[i].getName());
+                        count = 1;
+                    } else {
+                        sql.append(", " + cols[i].getName());
+                        if (cols[i].getType() == Types.VARCHAR && psTable) {
+                            sql.append(", I$_" + cols[i].getName());
+                        }
+                    }
+                }
+            }
+        }
+        sql.append(") VALUES(");
+        if (cols.length > 0) {
+            int count = 0;
+            for (int i = 0; i < cols.length; i++) {
+                if (!cols[i].isIdentity()) {
+                    if (count == 0) {
+                        sql.append("?");
+                        count = 1;
+                    } else {
+                        sql.append(", ?");
+                        if (cols[i].getType() == Types.VARCHAR && psTable) {
+                            sql.append(", ?");
+                        }
+                    }
+                }
+            }
+        }
+        sql.append(")");
+        String asql = sql.toString();
+        System.out.println(ConvertUtils.lookup(String.class).convert(Timestamp.class, new Date()) + " " + this.getClass());
+        System.out.println("SQL INSERT: "+sql.toString());
+        log.error("SQL INSERT: "+sql.toString());
+        return sql.toString();
+    }
+
+    /**
+     * Utiliza as chaves primarias da tabela para criar o sql de update do registro.
+     * @return String
+     */
+    private String createUpdate() {
+        StringBuffer sql = new StringBuffer("UPDATE " + getTableName() + " SET ");
+        TableColumn[] cols = getColumns();
+
+        // colunas a serem atualizadas
+        boolean canUp = false;
+        if (cols.length > 0) {
+            for (int i = 0; i < cols.length; i++) {
+              if (!cols[i].isPk()) {
+                    canUp = true;
+                    sql.append(cols[i].getName() + " = ?, ");
+                    if (cols[i].getType() == Types.VARCHAR && psTable) {
+                        sql.append("I$_" + cols[i].getName() + " = ?, ");
+                    }
+              }
+            }
+            sql.delete(sql.length() - 2, sql.length());
+        }
+
+        // chaves primarias.
+        sql.append(createWhere());
+        System.out.println(ConvertUtils.lookup(String.class).convert(Timestamp.class, new Date()) + " " + this.getClass());
+        System.out.println("SQL UPDATE: "+sql.toString());
+        log.error("SQL UPDATE: "+sql.toString());
+        return (canUp) ? sql.toString() : null;
+    }
+
+    /**
+     * Prepara o statement para a busca.
+     *
+     * @param con Connection
+     * @param params String[]
+     * @param values Object[]
+     * @param orderBy String[]
+     * @param filter String
+     * @throws SQLException
+     * @return PreparedStatement
+     */
+    private PreparedStatement createFind(Connection con, String[] params, Object[] values,
+                                         String[] orderBy, String filter) throws SQLException {
+        StringBuffer select = new StringBuffer("select * from " + getObjectName());
+        if (params != null && params.length > 0) {
+            select.append(" WHERE " + params[0] + " = ?");
+            for (int i = 1; i < params.length; i++) {
+                select.append(" AND " + params[i] + " = ?");
+            }
+            if (filter != null) {
+                select.append(" AND " + filter);
+            }
+        } else {
+            if (filter != null) {
+                select.append(" WHERE " + filter);
+            }
+        }
+
+        if (orderBy != null && orderBy.length > 0) {
+            select.append(" order by " + orderBy[0]);
+            for (int i = 1; i < orderBy.length; i++) {
+                select.append(", " + orderBy[i]);
+            }
+        }
+
+        String datetime = ConvertUtils.lookup(String.class).convert(Timestamp.class, new Date()) + " " + this.getClass();
+        datetime = datetime.replace("class appl.data.", "- ");
+        String selx = select.toString();
+        int end = selx.indexOf("(");
+        String selz = "";
+        if (end >= 0) {
+            selz = selx.substring(0, end+1);
+        } else { selz = selx;}
+        selz = selz + " -- " + datetime; 
+        int flagx = 0;
+        if (selz.indexOf("_lov") > 0 || selz.indexOf("_pub") > 0 )  {
+            System.out.println(""+selz); //logging
+        	log.error(""+selz); flagx = 1;
+        }
+  
+        PreparedStatement ps = con.prepareStatement(select.toString());
+        setParamValues(ps, 1);
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                if (values[i] == null) {
+                    throw new RuntimeException("Campo de pesquisa não pode ser nulo: " + params[0]);
+                }
+                if (values[i] instanceof String) {
+                    ps.setString(i + 1, (String) values[i]);
+                } else if (values[i] instanceof Date) {
+                    ps.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
+                } else if (values[i] instanceof Integer) {
+                    ps.setInt(i + 1, ((Integer) values[i]).intValue());
+                } else if (values[i] instanceof Double) {
+                    ps.setDouble(i + 1, ((Double) values[i]).doubleValue());
+                } else {
+                    throw new RuntimeException("Tipo de dado não suportado: " + values[i].getClass().getName());
+                }
+            }
+        }
+        if (flagx == 1) {
+        	System.out.println(") -- End Select "); // logging
+        	log.error(") -- End Select ");
+        }
+        return ps;
+    }
+
+    /**
+     * Utiliza os campos setados como primary key para criar uma clausula WHERE.
+     * @return String
+     */
+    private String createWhere() {
+        TableColumn[] pks = getColumns();
+        StringBuffer sql = new StringBuffer();
+        if (pks != null) {
+            if (pks.length > 0) {
+                sql.append(" WHERE 1 = 1 ");
+                for (int i = 0; i < pks.length; i++) {
+                    if (pks[i].isPk()) {
+                        sql.append(" AND " + pks[i].getName() + " = ?");
+                    }
+                }
+            }
+        }
+        return sql.toString();
+    }
+
+    /**
+     * Utiliza os campos setados como primary key para criar uma clausula WHERE.
+     * @return String
+     */
+    public String createParameters() {
+        ProcedureColumn[] cols = getProcedureColumns();
+        StringBuffer sql = new StringBuffer();
+        sql.append(" ( ");
+        int count = 0;
+        if (cols != null) {
+            if (cols.length > 0) {
+                for (int i = 0; i < cols.length; i++) {
+                    if (cols[i].getParam_type() == 1) {
+                        if (count == 0) {
+                            sql.append("?");
+                            count++;
+                        } else {
+                            sql.append(", ?");
+                        }
+                    }
+                }
+            }
+        }
+        sql.append(" ) ");
+        return sql.toString();
+    }
+
+    private void setValue(PreparedStatement ps, int pos, TableColumn col, boolean isInsert, boolean isDupl) throws SQLException {
+        Object valor;
+        if (isDupl) {
+            valor = getValue(col.getName());
+            if (valor != null) {
+                if (col.isPk() && col.getSize() == 8) {
+                    valor = StringUtils.toPrimaryKey((String) valor);
+                } else {
+                    valor = StringUtils.retiraAcentos(((String) valor).toUpperCase());
+                }
+            }
+        } else {
+            valor = getValue(col.getName());
+        }
+//        if (isInsert && valor == null && col.getName().equals("INCKEY")) {
+        if (isInsert && valor == null && pos == 1 && col.getName().contains("_ID")) {
+            valor = new Integer(DatabaseUtils.incrementGenerator(ps.getConnection(), getTableName()));
+        }
+
+        if (valor == null) {
+            ps.setNull(pos, col.getType());
+        } else if (valor instanceof String) {
+            if (col.getType() == Types.TIMESTAMP) {
+                if (valor.equals("")) {
+                    ps.setNull(pos, col.getType());
+                } else {
+                    Date dt = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, valor);
+                    ps.setTimestamp(pos, new java.sql.Timestamp((dt).getTime()));
+                }
+            } else {
+                ps.setString(pos, (String) valor);
+            }
+        } else if (valor instanceof Date) {
+            ps.setTimestamp(pos, new java.sql.Timestamp(((Date) valor).getTime()));
+        } else if (valor instanceof Integer) {
+            ps.setInt(pos, ((Integer) valor).intValue());
+        } else if (valor instanceof Double) {
+            ps.setDouble(pos, ((Double) valor).doubleValue());
+        } else if (valor instanceof BigDecimal) {
+            ps.setBigDecimal(pos, (BigDecimal) valor);
+        } else if (valor instanceof Boolean) {
+            ps.setString(pos, ((Boolean) valor) ? "S" : "N");
+        } else if (valor instanceof byte[]) {
+            Blob blob = DatabaseUtils.createBlob(ps.getConnection(), (byte[]) valor);
+            ps.setBlob(pos, blob);
+        } else {
+            throw new RuntimeException("Tipo de dados não suportado");
+        }
+    }
+
+    private void setValue(PreparedStatement ps, int pos, ProcedureColumn col, boolean isInsert, boolean isDupl) throws SQLException {
+        Object valor;
+        if (isDupl) {
+            valor = getValue(col.getName());
+            //if (valor != null) {
+            //    if (col.isPk() && col.getSize() == 8) {
+            //        valor = StringUtils.toPrimaryKey((String) valor);
+            //    } else {
+            //        valor = StringUtils.retiraAcentos(((String) valor).toUpperCase());
+            //    }
+            //}
+        } else {
+            String col_name = col.getName().replaceFirst("@", "");
+            String col_type = col.getJavaType();
+            valor = getValue(col_name);
+            String valorz = "";
+            if (valor == null) {
+            	valorz = "null"; 
+           	} else {
+           		valorz = valor.toString();
+           	}		
+            if (valor != null && valorz.indexOf("null") >= 0 ) {
+            	valor = null;
+            }
+            String plic = "";
+            if (col_type.indexOf("String") >= 0 && valorz.indexOf("null") < 0) {
+            	plic = "'"; 
+            }
+            System.out.println("     "+plic+valor+plic+", --@"+col_name+" - "+col_type);
+            log.error("     "+plic+valor+plic+", --@"+col_name+" - "+col_type);
+
+            // System.out.println(": "+valor);
+
+            // System.out.println(": "+col_name);
+           // valor = getValue(col_name);
+           // System.out.println(": "+valor);
+        }
+//        if (isInsert && valor == null && col.getName().equals("INCKEY")) {
+        if (isInsert && valor == null && pos == 1 && col.getName().contains("_ID")) {
+            valor = new Integer(DatabaseUtils.incrementGenerator(ps.getConnection(), getTableName()));
+        }
+
+        if (valor == null) {
+            ps.setNull(pos, col.getType());
+        } else if (valor instanceof String) {
+            if (col.getType() == Types.TIMESTAMP) {
+                if (valor.equals("")) {
+                    ps.setNull(pos, col.getType());
+                } else {
+                    Date dt = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, valor);
+                    ps.setTimestamp(pos, new java.sql.Timestamp((dt).getTime()));
+                }
+            } else {
+                ps.setString(pos, (String) valor);
+            }
+        } else if (valor instanceof Date) {
+            ps.setTimestamp(pos, new java.sql.Timestamp(((Date) valor).getTime()));
+        } else if (valor instanceof Integer) {
+            ps.setInt(pos, ((Integer) valor).intValue());
+        } else if (valor instanceof Double) {
+            ps.setDouble(pos, ((Double) valor).doubleValue());
+        } else if (valor instanceof BigDecimal) {
+            ps.setBigDecimal(pos, (BigDecimal) valor);
+        } else if (valor instanceof Boolean) {
+            ps.setString(pos, ((Boolean) valor) ? "S" : "N");
+        } else if (valor instanceof byte[]) {
+            Blob blob = DatabaseUtils.createBlob(ps.getConnection(), (byte[]) valor);
+            ps.setBlob(pos, blob);
+        } else {
+            throw new RuntimeException("Tipo de dados não suportado");
+        }
+    }
+
+    private void setValue(CallableStatement cs, int pos, ProcedureColumn col, boolean isInsert, boolean isDupl) throws SQLException {
+        Object valor;
+        if (isDupl) {
+            valor = getValue(col.getName());
+            //if (valor != null) {
+            //    if (col.isPk() && col.getSize() == 8) {
+            //        valor = StringUtils.toPrimaryKey((String) valor);
+            //    } else {
+            //        valor = StringUtils.retiraAcentos(((String) valor).toUpperCase());
+            //    }
+            //}
+        } else {
+            String col_name = col.getName().replaceFirst("@", "");
+            String col_type = col.getJavaType();
+
+            valor = getValue(col_name);
+            String valorz = "";
+            if (valor == null) {
+            	valorz = "null"; 
+           	} else {
+           		valorz = valor.toString();
+           	}		
+            if (valor != null && valorz.indexOf("null") >= 0 ) {
+            	valor = null;
+            }
+            String plic = "";
+            if (col_type.indexOf("String") >= 0 && valorz.indexOf("null") < 0) {
+            	plic = "'"; 
+            }
+            System.out.println("     "+plic+valor+plic+", ---@"+col_name+" - "+col_type);
+            log.error("     "+plic+valor+plic+", --@"+col_name+" - "+col_type);
+
+        }
+//        if (isInsert && valor == null && col.getName().equals("INCKEY")) {
+        if (isInsert && valor == null && pos == 1 && col.getName().contains("_ID")) {
+            valor = new Integer(DatabaseUtils.incrementGenerator(cs.getConnection(), getTableName()));
+        }
+
+        if (valor == null) {
+            cs.setNull(pos, col.getType());
+        } else if (valor instanceof String) {
+            if (col.getType() == Types.TIMESTAMP) {
+                if (valor.equals("")) {
+                    cs.setNull(pos, col.getType());
+                } else {
+                    Date dt = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, valor);
+                    cs.setTimestamp(pos, new java.sql.Timestamp((dt).getTime()));
+                }
+            } else {
+                cs.setString(pos, (String) valor);
+            }
+        } else if (valor instanceof Date) {
+            cs.setTimestamp(pos, new java.sql.Timestamp(((Date) valor).getTime()));
+        } else if (valor instanceof Integer) {
+            cs.setInt(pos, ((Integer) valor).intValue());
+        } else if (valor instanceof Double) {
+            cs.setDouble(pos, ((Double) valor).doubleValue());
+        } else if (valor instanceof BigDecimal) {
+            cs.setBigDecimal(pos, (BigDecimal) valor);
+        } else if (valor instanceof Boolean) {
+            cs.setString(pos, ((Boolean) valor) ? "S" : "N");
+        } else if (valor instanceof byte[]) {
+            Blob blob = DatabaseUtils.createBlob(cs.getConnection(), (byte[]) valor);
+            cs.setBlob(pos, blob);
+        } else {
+            throw new RuntimeException("Tipo de dados não suportado");
+        }
+    }
+
+    private static String getJavaType(String sqlType) { // <log.debug>
+        String jType = sqlType;
+        String database = DatabaseUtils.getDatabase();
+        if (database.equals("SQLSERVER")) {
+            if (sqlType.equalsIgnoreCase("SYSNAME") || sqlType.equalsIgnoreCase("CHAR") || sqlType.equalsIgnoreCase("NCHAR") || sqlType.equalsIgnoreCase("VARCHAR") || sqlType.equalsIgnoreCase("VARCHAR(MAX)") || sqlType.startsWith("BLOB") || sqlType.equalsIgnoreCase("NVARCHAR") || sqlType.equalsIgnoreCase("TEXT")) {
+                jType = "String";
+            } else if (sqlType.equalsIgnoreCase("NUMERIC") || sqlType.equalsIgnoreCase("DECIMAL") || sqlType.equalsIgnoreCase("REAL") || sqlType.equalsIgnoreCase("SMALLMONEY") || sqlType.equalsIgnoreCase("MONEY") || sqlType.equalsIgnoreCase("FLOAT")) {
+                jType = "Double";
+            } else if (sqlType.equalsIgnoreCase("TIMESTAMP") || sqlType.equalsIgnoreCase("DATETIME") || sqlType.equalsIgnoreCase("SMALLDATETIME")) {
+                jType = "Date";
+            } else if (sqlType.equalsIgnoreCase("TINYINT") || sqlType.equalsIgnoreCase("SMALLINT") || sqlType.equalsIgnoreCase("INT") || sqlType.equalsIgnoreCase("BIGINT") || sqlType.equalsIgnoreCase("UNIQUEIDENTIFIER")) {
+                jType = "Integer";
+            } else {
+                //if (log.isWarnEnabled()) {
+                   // log.warn("SQLSERVER - Sql Type Unknown: " + sqlType);
+                //}
+            }
+        } else {
+            if (sqlType.equals("VARCHAR") || sqlType.startsWith("BLOB") || sqlType.equals("VARCHAR2") || sqlType.equals("CHAR")) {
+                jType = "String";
+            } else if (sqlType.startsWith("DOUBLE") || sqlType.startsWith("NUMBER")) {
+                jType = "Double";
+            } else if (sqlType.startsWith("TIMESTAMP") || sqlType.equals("DATE")) {
+                jType = "Date";
+            } else if (sqlType.equals("INTEGER")) {
+                jType = "Integer";
+            } else {
+                //if (log.isWarnEnabled()) {
+                    //log.warn("Sql Type Unknown: " + sqlType);
+                //}
+            }
+        }
+        return jType;
+    }
+
+    private static int getSqlType(String sqlType) { // <log.debug>
+        int iType = Types.OTHER;
+        String database = DatabaseUtils.getDatabase();
+        if (database.equals("SQLSERVER")) {
+            if (sqlType.equalsIgnoreCase("SYSNAME") || sqlType.equalsIgnoreCase("CHAR") || sqlType.equalsIgnoreCase("NCHAR") || sqlType.equalsIgnoreCase("VARCHAR") || sqlType.equalsIgnoreCase("NVARCHAR") || sqlType.equalsIgnoreCase("TEXT")) {
+                iType = Types.VARCHAR;
+            } else if (sqlType.equalsIgnoreCase("IMAGE") || sqlType.equalsIgnoreCase("VARCHAR(MAX)")) {
+                iType = Types.BLOB;
+            } else if (sqlType.equalsIgnoreCase("NUMERIC") || sqlType.equalsIgnoreCase("DECIMAL") || sqlType.equalsIgnoreCase("REAL") || sqlType.equalsIgnoreCase("SMALLMONEY") || sqlType.equalsIgnoreCase("MONEY") || sqlType.equalsIgnoreCase("FLOAT")) {
+                iType = Types.DOUBLE;
+            } else if (sqlType.equalsIgnoreCase("TIMESTAMP") || sqlType.equalsIgnoreCase("DATETIME") || sqlType.equalsIgnoreCase("SMALLDATETIME")) {
+                iType = Types.TIMESTAMP;
+            } else if (sqlType.equalsIgnoreCase("TINYINT") || sqlType.equalsIgnoreCase("SMALLINT") || sqlType.equalsIgnoreCase("INT") || sqlType.equalsIgnoreCase("BIGINT") || sqlType.equalsIgnoreCase("UNIQUEIDENTIFIER")) {
+                iType = Types.INTEGER;
+            } else {
+                //if (log.isWarnEnabled()) {
+                    //log.warn("SQLSERVER - Sql Type Unknown: " + sqlType);
+                //}
+            }
+        } else {
+            if (sqlType.equals("VARCHAR") || sqlType.equals("VARCHAR2") || sqlType.equals("CHAR")) {
+                iType = Types.VARCHAR;
+            } else if (sqlType.startsWith("BLOB")) {
+                iType = Types.BLOB;
+            } else if (sqlType.startsWith("DOUBLE") || sqlType.startsWith("NUMBER")) {
+                iType = Types.DOUBLE;
+            } else if (sqlType.startsWith("TIMESTAMP") || sqlType.equals("DATE")) {
+                iType = Types.TIMESTAMP;
+            } else if (sqlType.equals("INTEGER")) {
+                iType = Types.INTEGER;
+            } else {
+                //if (log.isWarnEnabled()) {
+                    // log.warn("Sql Type Unknown: " + sqlType);
+                //}
+            }
+        }
+        return iType;
+    }
+
+    private static void addField(Vector v, ResultSet rs) throws SQLException { // <log.debug>
+        String sName = rs.getString("COLUMN_NAME");
+        if (!sName.startsWith("I$_")) {
+            String cType = rs.getString("TYPE_NAME");
+            int iSize = rs.getInt("COLUMN_SIZE");
+            boolean bNullable = (rs.getInt("NULLABLE") == 1);
+            int pos = cType.indexOf(" ");
+            if (pos > 0) {
+                cType = cType.substring(0, pos);
+            }
+/*
+            boolean bIdentity = (rs.getString("TYPE_NAME").contains("IDENTITY"));
+            if (rs.getString("TABLE_NAME").indexOf("WBRL") > 0) {
+                System.out.print("OK!!");
+                System.out.println("------------------------------" +
+                                   " TAB: " + rs.getString("TABLE_NAME") +
+                                   " COL: " + rs.getString("COLUMN_NAME") +
+                                   " TYP: " + rs.getString("TYPE_NAME"));
+            }
+*/
+            boolean bIdentity = false;
+
+            // todo  && DatabaseUtils.getDatabase().equalsIgnoreCase("SQLSERVER")
+
+            String ident = rs.getString("TYPE_NAME").toUpperCase();
+            //System.out.println("--------------- TAB: "+ rs.getString("TABLE_NAME") + " TYP: "+ident); //logging 
+            if (ident.indexOf("IDENTITY") >= 0) {
+                bIdentity = true;
+            }
+
+/*
+            if (rs.getString("TYPE_NAME").contains("IDENTITY")) {
+                boolean bIdentity = true;
+            } else {
+                boolean bIdentity = false;
+            }
+*/
+            v.add(new TableColumn(sName, getSqlType(cType), iSize, bNullable, false, bIdentity,
+                                  getJavaType(cType)));
+        }
+    }
+
+    private static void saveTable(String sTable, Vector v) { // 
+        TableColumn[] tb = new TableColumn[v.size()];
+        for (int i = 0; i < tb.length; i++) {
+            tb[i] = (TableColumn) v.get(i);
+        }
+        mapTablesCols.put(sTable, tb);
+    }
+
+    private static void addParameter(Vector v, ResultSet rs) throws SQLException { // <log.debug>
+        //String sName = rs.getString("COLUMN_NAME").replace("@p_", "");
+        String sName = rs.getString("COLUMN_NAME");
+        if (!sName.startsWith("I$_")) {
+            String cType = rs.getString("TYPE_NAME");
+            int param_type = rs.getShort("COLUMN_TYPE");
+            int iSize = rs.getInt("LENGTH");
+            boolean bNullable = (rs.getInt("NULLABLE") == 1);
+            int pos = cType.indexOf(" ");
+            if (pos > 0) {
+                cType = cType.substring(0, pos);
+            }
+            v.add(new ProcedureColumn(sName, getSqlType(cType), iSize, bNullable, param_type,
+                                  getJavaType(cType)));
+        }
+    }
+
+    private static void saveProcedure(String sProcedure, Vector v) { // 
+        ProcedureColumn[] tb = new ProcedureColumn[v.size()];
+        for (int i = 0; i < tb.length; i++) {
+            tb[i] = (ProcedureColumn) v.get(i);
+        }
+        mapProceduresCols.put(sProcedure, tb);
+    }
+
+    private static void loadIITableSchema() throws SQLException {
+        IITableBuilder iiTableBuilder = new IITableBuilder();
+
+        for(Iterator<String> it = iiTableBuilder.iiTableTrans.iterator(); it.hasNext();){
+            String it_str = it.next();
+            String sTableAlias = it_str.substring(0, it_str.indexOf(","));
+            String sTableTran = it_str.substring(it_str.indexOf(",")+1, it_str.length());
+
+            TableColumn[] tcTran = (TableColumn[]) mapTablesCols.get(sTableTran);
+            if (tcTran != null) {
+                Vector v = new Vector();
+                for (int i = 0; i < tcTran.length; i++) {
+                    String tcTranName = tcTran[i].getName();
+                    String mapTranCols = iiTableBuilder.iiTableCols_map.get(sTableAlias.toUpperCase()+"-"+tcTranName.toUpperCase());
+                    if (tcTranName.equalsIgnoreCase(mapTranCols)) {
+                        v.add(tcTran[i]);
+                    }
+                }
+                saveTable(sTableAlias, v);
+            }
+        }
+    }
+
+    private static void loadTableSchema(ResultSet rs) throws SQLException { 
+        Vector vTC = new Vector();
+        rs.next();
+        String sTable = rs.getString("TABLE_NAME");
+        addField(vTC, rs);
+        while (true) {
+            if (rs.next()) {
+            /*
+                if (sTable.indexOf("WBRL") > 0) {
+                    System.out.println("-----------------------------------" +
+                                       " TAB: " + rs.getString("TABLE_NAME") +
+                                       " COL: " + rs.getString("COLUMN_NAME") +
+                                       " TYP: " + rs.getString("TYPE_NAME"));
+                }
+            */
+            	if (sTable.indexOf("sys") == 0 || sTable.indexOf("server") == 0 || // <log.nogen>
+            			sTable.indexOf("dm_") == 0 ||
+            			sTable.indexOf("COLUMN") >= 0 ||
+            			sTable.indexOf("DOMAIN") >= 0 ||
+            			sTable.indexOf("CONSTRAINT") >= 0 ||
+            			sTable.indexOf("service") == 0 ) {
+            		continue;
+               	}
+
+            	if (sTable.equals(rs.getString("TABLE_NAME"))) {
+                    addField(vTC, rs);
+                } else {
+                    saveTable(sTable, vTC);
+                    vTC.clear();
+                    sTable = rs.getString("TABLE_NAME");
+                    addField(vTC, rs);
+                }
+            } else {
+                saveTable(sTable, vTC);
+                break;
+            }
+        }
+    }
+
+    private static boolean loadTable(String sTable) {
+    	boolean result = true;
+    	if (sTable.indexOf("sys") == 0 ) { result = false;}
+    	else if (sTable.indexOf("COLUMN") >= 0 ) { result = false;}
+    	else if (sTable.indexOf("DOMAIN") >= 0 ) { result = false;}
+    	else if (sTable.indexOf("CONSTRAINT") >= 0 ) { result = false;}
+    	else if (sTable.indexOf("server") == 0 ) { result = false;}
+    	else if (sTable.indexOf("dm_") == 0 ) { result = false;}
+    	else if (sTable.indexOf("service") == 0 ) { result = false;}
+    	return result;
+    }    
+
+    private static void loadProcedureSchema(ResultSet rs) throws SQLException {
+        Vector vTC = new Vector();
+        rs.next();
+        String sProcedure = rs.getString("PROCEDURE_NAME");
+        addParameter(vTC, rs);
+        //log.info("*cl:src/wins/libs/data   - DataObject         mtd:private static void loadProcedureSchema( * Iterate - addParameter(vTC, rs); ");
+        while (true) {
+            if (rs.next()) {
+            	if (sProcedure.indexOf("sp_") == 0 || sProcedure.indexOf("fn_") == 0 ||
+            		sProcedure.indexOf("dm_") == 0 ) {
+            		continue;
+            	}						
+            	if (sProcedure.equals(rs.getString("PROCEDURE_NAME"))) {
+                    addParameter(vTC, rs);
+                } else {
+                    saveProcedure(sProcedure, vTC);
+                    vTC.clear();
+                    sProcedure = rs.getString("PROCEDURE_NAME");
+                    addParameter(vTC, rs);
+                }
+            } else {
+                saveProcedure(sProcedure, vTC);
+                break;
+            }
+        }
+    }
+
+    private static boolean loadProcedure(String sProcedure) {
+    	boolean result = true;
+    	if (sProcedure.indexOf("sp_") == 0 ) { result = false;}
+    	else if (sProcedure.indexOf("fn_") == 0 ) { result = false;}
+    	else if (sProcedure.indexOf("dm_") == 0 ) { result = false;}
+    	return result;
+    }    
+
+    private static void loadTablePks(Connection con, String database, String user) throws SQLException {
+        Collection coll = mapTablesCols.keySet();
+        Iterator it = coll.iterator();
+        while (it.hasNext()) {
+            String tName = (String) it.next();
+            ResultSet rs = con.getMetaData().getPrimaryKeys(null, (database.equals("ORACLE")) ? user : null, tName.toUpperCase());
+            while (rs.next()) {
+                String cName = rs.getString("COLUMN_NAME");
+                if (cName.startsWith("I$_")) {
+                    cName = cName.substring(3, cName.length());
+                }
+                if (!rs.getString("PK_NAME").equals("VARCHAR")) {
+                    TableColumn tc = getColumnPk(cName, rs.getString("TABLE_NAME"));
+                    tc.setPk(true);
+                }
+            }
+            rs.close();
+        }
+    }
+
+    /**
+     * Carrega a definição de todas as tabelas do banco de dados,
+     * chamado uma unica vez pelo ConnectionFactory quando a aplicação esta iniciando.
+     * @param con Connection
+     * @throws SQLException
+     */
+    public static void loadTableSchema(Connection con) throws SQLException { // logic section - start
+        mapTablesCols = new CaseInsensitiveMap();
+        mapProceduresCols = new CaseInsensitiveMap();
+        long ti = System.currentTimeMillis();
+
+        // adiciona colunas
+        String user = DatabaseUtils.getUser().toUpperCase();
+        String database = DatabaseUtils.getDatabase();
+
+        ResultSet rs_proc = con.getMetaData().getProcedureColumns(null, (database.equals("ORACLE")) ? user : null, null, null);
+        loadProcedureSchema(rs_proc);
+        rs_proc.close();
+
+        ResultSet rs = con.getMetaData().getColumns(null, (database.equals("ORACLE")) ? user : null, null, null);
+        loadTableSchema(rs);
+        rs.close();
+
+        // seta primary keys
+        loadTablePks(con, database, user);
+        loadIITableSchema();
+        String hh = ""; // logic section - end
+        if (log.isInfoEnabled()) {
+        	// log.info("Load Tables: " + (System.currentTimeMillis() - ti));
+        }
+    }
+
+    /**
+     * Procura na definição da tabela <code>table</code> a coluna com o nome <code>pkName</code>.
+     * @param pkName String
+     * @param table String
+     * @return TableColumn
+     */
+    private static TableColumn getColumnPk(String pkName, String table) { // 
+        TableColumn[] tc = (TableColumn[]) mapTablesCols.get(table);
+        for (int i = 0; i < tc.length; i++) {
+            if ((tc[i]).getName().equals(pkName)) {
+                return tc[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Seta o valor de um campo da tabela em questão.
+     * @param field String Case insensitive.
+     * @param value Object
+     */
+    public void setValue(String field, Object value) {
+        mapFields.put(field, value);
+        changed = true;
+    }
+
+    /**
+     * Retorna o valor de um campo da tabela em questão.
+     * @param field String Case insensitive.
+     * @return Object Campos blob são retornados como <code>java.sql.Blob</code> ou <code>byte[]</code>, conforme seu subtype.
+     */
+    public Object getValue(String field) {  // <log.debug>
+        return mapFields.get(field);
+    }
+
+    /**
+     * Retorna o resultado convertido para String.
+     * @param field String
+     * @return String
+     */
+    public String getString(String field) {  // <log.debug>
+        Object obj = getValue(field);
+        if (obj == null) {
+            return null;
+        } else if (obj instanceof String) {
+            return (String) obj;
+        } else if (obj instanceof byte[]) {
+            return new String((byte[]) obj);
+        } else {
+            return obj.toString();
+        }
+    }
+
+    public String getLowerString(String field) {  // <log.debug>
+        String str = getString(field);
+        if (str != null) {
+            return str.toLowerCase();
+        } else {
+            return null;
+        }
+    }
+
+    public String getFirstUpperString(String field) { // <log.debug>
+        String str = getString(field);
+        if (str != null) {
+            return firstUpper(str.toLowerCase());
+        } else {
+            return null;
+        }
+    }
+
+    public static String firstUpper(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1, str.length());
+    }
+
+    public BigDecimal getBigDecimal(String field) {
+        return (BigDecimal) getValue(field);
+    }
+
+    public Date getDate(String field) {
+        return (Date) getValue(field);
+    }
+
+    public Timestamp getTimestamp(String field) {
+        return (Timestamp) getValue(field);
+    }
+
+    public Integer getInteger(String field) {
+        Object value = getValue(field);
+        if (value == null) {
+            return null;
+        } else if (value instanceof Integer) {
+            return (Integer) value;
+        } else if (value instanceof BigDecimal) {
+            return ((BigDecimal) value).intValue();
+        } else if (value instanceof String) {
+            return Integer.parseInt((String) value);
+        } else {
+            throw new RuntimeException("Tipo de dados não suportado no campo " + field + ": " +
+                                       value);
+        }
+    }
+
+    public Double getDouble(String field) {
+        Object value = getValue(field);
+        if (value instanceof Double) {
+            return (Double) value;
+        } else if (value instanceof BigDecimal) {
+            return ((BigDecimal) value).doubleValue();
+        } else {
+            throw new RuntimeException("Tipo de dados não suportado no campo " + field + ": " +
+                                       value);
+        }
+    }
+
+    public Boolean getBoolean(String field) {
+        String val = getString(field);
+        return val != null && val.equals("S");
+    }
+
+    public boolean isPsTable() {
+        return psTable;
+    }
+
+    public void setPsTable(boolean psTable) {
+        this.psTable = psTable;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public boolean isChanged() {
+        return changed;
+    }
+
+    public boolean isLoadChilds() {
+        return loadChilds;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
+    }
+
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
+
+    public void setLoadChilds(boolean loadChilds) {
+        this.loadChilds = loadChilds;
+    }
+
+    public void loadPksFromBean(Object bean) {
+        TableColumn[] cols = getColumns();
+
+        for (int i = 0; i < cols.length; i++) {
+            if (cols[i].isPk()) {
+                String name = cols[i].getName().toLowerCase();
+                try {
+                    mapFields.put(name, BeanUtils.getProperty(bean, name));
+                } catch (NoSuchMethodException ex) {
+                    throw new RuntimeException("Bean não possui getter para propriedade: " + name);
+                } catch (InvocationTargetException ex) {
+                    throw new RuntimeException("Erro lendo propriedade: " + name + "\n" +
+                                               ex.getMessage());
+                } catch (IllegalAccessException ex) {
+                    throw new RuntimeException("Erro lendo propriedade: " + name + "\n" +
+                                               ex.getMessage());
+                }
+            }
+        }
+    }
+
+    public void loadFromBean(Object bean) {
+        String ufmvname = "ufmv";
+        String mvsqname = "mvsq";
+        String psname = "ps";
+        TableColumn[] cols = getColumns();
+        for (int i = 0; i < cols.length; i++) {
+            String name = cols[i].getName().toLowerCase();
+            try {
+                mapFields.put(name, PropertyUtils.getProperty(bean, name));
+                ufmvval = (String) PropertyUtils.getSimpleProperty(bean, ufmvname);
+                mvsqval = (Integer) PropertyUtils.getSimpleProperty(bean, mvsqname);
+                psval = (Integer) PropertyUtils.getSimpleProperty(bean, psname); peval=psval+1;
+            } catch (NoSuchMethodException ex) {
+                throw new RuntimeException("Bean não possui getter para propriedade: " + name);
+            } catch (InvocationTargetException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + name + "\n" + ex.getMessage());
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + name + "\n" + ex.getMessage());
+            }
+        }
+    }
+
+    public void loadFromBeanOld(Object bean) {
+        String ufmvname = "ufmv";
+        String mvsqname = "mvsq";
+        String psname = "ps";
+        TableColumn[] cols = getColumns();
+        for (int i = 0; i < cols.length; i++) {
+            String name = cols[i].getName().toLowerCase();
+            boolean iskey = cols[i].isPk();
+
+            try {
+                String old = "_old";
+                if (name.indexOf("_vc") >= 0  ) {old = "";}
+                if (name.indexOf("_vf") >= 0  ) {old = "";}
+                if (name.indexOf("_ts") >= 0  ) {old = "";}
+                if (!iskey) {old = "";}
+                
+                mapFields.put(name, PropertyUtils.getProperty(bean, name+old));
+                ufmvval = (String) PropertyUtils.getSimpleProperty(bean, ufmvname);
+                mvsqval = (Integer) PropertyUtils.getSimpleProperty(bean, mvsqname);
+                psval = (Integer) PropertyUtils.getSimpleProperty(bean, psname); peval=psval+1;
+            } catch (NoSuchMethodException ex) {
+                throw new RuntimeException("Bean não possui getter para propriedade: " + name);
+            } catch (InvocationTargetException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + name + "\n" + ex.getMessage());
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + name + "\n" + ex.getMessage());
+            }
+        }
+    }
+
+    public void loadTabsvf(Object bean) {
+        String namex = "tabs_vf";
+        String namey = "tabs_vc";
+        try {
+            mapFields.put(namex, PropertyUtils.getProperty(bean, namex));
+            mapFields.put(namey, PropertyUtils.getProperty(bean, namey));
+            } catch (NoSuchMethodException ex) {
+                throw new RuntimeException("Bean não possui getter para propriedade: " + namex);
+            } catch (InvocationTargetException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + namex + "\n" + ex.getMessage());
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + namex + "\n" + ex.getMessage());
+            }
+    }
+
+    public void loadUfmv(Object bean) {
+        String ufmvname = "ufmv";
+        try {
+            ufmvval = (String) PropertyUtils.getSimpleProperty(bean, ufmvname);
+            } catch (NoSuchMethodException ex) {
+                throw new RuntimeException("Bean não possui getter para propriedade: " + ufmvname);
+            } catch (InvocationTargetException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + ufmvname + "\n" + ex.getMessage());
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + ufmvname + "\n" + ex.getMessage());
+            }
+    }
+
+    public void saveToBean(Object bean) throws SQLException {
+        TableColumn[] cols = getColumns();
+        for (int i = 0; i < cols.length; i++) {
+            String name = cols[i].getName().toLowerCase();
+            Object value = mapFields.get(name);
+
+            try {
+                if (value == null) {
+                    PropertyUtils.setProperty(bean, name, null);
+                } else if (value instanceof Date) {
+                    PropertyUtils.setProperty(bean, name, (Date) value);
+                } else if (value instanceof TIMESTAMP) {
+                    PropertyUtils.setProperty(bean, name, ((TIMESTAMP)value).timestampValue());
+                } else if (value instanceof ClobImpl) {
+                    ClobImpl ci = (ClobImpl) value;
+                    String val = ci.getSubString(1, (int)ci.length());
+                    BeanUtils.setProperty(bean, name, val);
+                } else {
+                    BeanUtils.setProperty(bean, name, value);
+                }
+            } catch (InvocationTargetException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + name + "\n" + ex.getMessage());
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + name + "\n" + ex.getMessage());
+            } catch (NoSuchMethodException ex) {
+                throw new RuntimeException("No setter method to property : " + name + "\n" +
+                                           ex.getMessage());
+            }
+
+        }
+    }
+
+    public void savePksToBean(Object bean) {
+        TableColumn[] cols = getColumns();
+
+        for (int i = 0; i < cols.length; i++) {
+            if (cols[i].isPk()) {
+                String name = cols[i].getName().toLowerCase();
+                Object value = mapFields.get(name);
+                try {
+                    if (value == null) {
+                        PropertyUtils.setProperty(bean, name, null);
+                    } else {
+                        BeanUtils.setProperty(bean, name, value);
+                    }
+                } catch (InvocationTargetException ex) {
+                    throw new RuntimeException("Erro lendo propriedade: " + name + "\n" +
+                                               ex.getMessage());
+                } catch (IllegalAccessException ex) {
+                    throw new RuntimeException("Erro lendo propriedade: " + name + "\n" +
+                                               ex.getMessage());
+                } catch (NoSuchMethodException ex) {
+                    throw new RuntimeException("No setter method to property : " + name + "\n" +
+                                               ex.getMessage());
+                }
+            }
+        }
+    }
+
+    public void saveProcToBean(Object bean) throws SQLException {
+        ProcedureColumn[] cols = getProcedureColumns();
+
+        for (int i = 0; i < cols.length; i++) {
+            String name = cols[i].getName().toLowerCase();
+            Object value = mapFields.get(name);
+            try {
+                if (value == null) {
+                    PropertyUtils.setProperty(bean, name, null);
+                } else if (value instanceof Date) {
+                    PropertyUtils.setProperty(bean, name, (Date) value);
+                } else if (value instanceof TIMESTAMP) {
+                    PropertyUtils.setProperty(bean, name, ((TIMESTAMP)value).timestampValue());
+                } else {
+                    BeanUtils.setProperty(bean, name, value);
+                }
+            } catch (InvocationTargetException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + name + "\n" + ex.getMessage());
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Erro lendo propriedade: " + name + "\n" + ex.getMessage());
+            } catch (NoSuchMethodException ex) {
+                throw new RuntimeException("No setter method to property : " + name + "\n" +
+                                           ex.getMessage());
+            }
+
+        }
+    }
+
+    public List<? extends DataObject> loadFindList(Connection con) throws SQLException {
+        return this.findSorted(con, "DESCRICAO");
+    }
+
+    public String getDescricaoFormatada() {
+        return getString("DESCRICAO").replaceAll("'", "\\'");
+    }
+
+    public void deleteChilds(Connection con) throws SQLException {
+    }
+
+    public void deleteChild(Connection con) throws SQLException {
+    }
+
+    public void saveChilds(Connection con) throws SQLException {
+    }
+
+    public void saveOrUpdateChilds(Connection con) throws SQLException {
+    }
+
+    public void loadChilds(Connection con) throws SQLException {
+    }
+
+    public void verifyChanged(DataObject dao, DataObject daoOld ) throws SQLException {
+        TableColumn[] cols = daoOld.getColumns(); Object valorOld = null; Object valor = null;
+        String val_str = ""; String valold_str = "";
+        pkchangeflag = false; String name = "";
+        for (int i = 1; i < cols.length; i++) {
+            name = cols[i].getName().toLowerCase();
+            if (name.indexOf("_ts")>=0) { continue;}
+            if (name.indexOf("_vf")>=0) { continue;}
+            if (name.indexOf("_vc")>=0) { continue;}
+
+            if (cols[i].isPk() == true ) {
+                valorOld = daoOld.getValue(name);
+                if (valorOld != null) {
+                    valold_str = valorOld.toString();
+                }
+                valor = dao.getValue(name);
+                if (valor == null) {valor = "";}
+                val_str = valor.toString();
+                // Becarefull  if old is null set it equals to new
+                if (valorOld == null) {
+                    valold_str = val_str;
+                }
+            }
+            if (cols[i].isPk() == true && (!val_str.equals(valold_str))) {
+                pkchangeflag = true; }
+        }
+    }
+
+    public void saveOrUpdateChild(Connection con, List list, List listOld, DataObject dao, DataObject daoOld) throws SQLException {
+        int ret = 0;
+        if (list.size() > listOld.size()) {
+            ret = dao.save(con);
+        } else {
+            //daoOld = (DataObject) listOld.get(mvsqval);
+            pkchangeflag = false;
+            if (ufmvval.substring(psval,peval).contains("0")) {
+                deleteChild(con);
+            } else {
+                verifyChanged(dao, daoOld);
+                if (pkchangeflag == true) {
+                    deleteChild(con);
+                    ret = dao.save(con);
+                } else {
+                    dao.update(con);
+                }
+            }
+        }
+    }
+
+    public void deleteChild(Connection con, DataObject daomv) throws SQLException {
+        PreparedStatement ps;
+        Integer retx = 0;
+        Object valobj;
+        String name = "";
+        String valstr = "";
+        Integer valint = 0;
+        String key = "";
+        String val = "";
+
+        String Del = "delete from " + daomv.getTableName() + " where ";
+        TableColumn[] cols = daomv.getColumns();
+        for (int i = 0; i < cols.length; i++) {
+            if (cols[i].isPk() == true ) {
+                String namex = cols[i].getName().toLowerCase();
+                if (i != (cols.length -1)) {
+                    key = key + namex + "=? ";
+                    if (cols[i+1].isPk() == true) {
+                        key = key + " and ";
+                    }
+                }
+                if ( i == (cols.length -1)) {
+                    key = key + namex + "=? ";
+                }
+//              if ( i != (cols.length -1)) {key = key + namex + "=? and "; }
+//              if ( i == (cols.length -1)) {key = key + namex + "=? "; }
+            }
+        }
+
+        ps = con.prepareStatement(Del+key);
+        for (int i = 0; i < cols.length; i++) {
+            if (cols[i].isPk() == true ) {
+                if (cols[i].getType() == Types.DOUBLE) {
+                    name = cols[i].getName().toLowerCase();
+                    valobj = daomv.getValue(name);
+                    valstr = valobj.toString();
+                    valint = (Integer) ConvertUtils.lookup(Integer.class).convert(Integer.class, valstr);
+                    ps.setInt(i+1, valint.intValue());
+                }
+                if (cols[i].getType() == Types.CHAR || cols[i].getType() == Types.VARCHAR) {
+                    name = cols[i].getName().toLowerCase(); val = (String) daomv.getValue(name);
+                    ps.setString(i + 1, val);
+                }
+            }
+        }
+        retx = ps.executeUpdate();
+        ps.close();
+    }
+
+    public void mvloadDesc(DataObject daomv) throws SQLException {
+        TableColumn[] cols = daomv.getColumns();
+        for (int i= 1; i < cols.length; i++) {
+            String name = cols[i].getName().toLowerCase();
+            Object valor = daomv.getValue(name);
+            String zzz;
+        }
+    }
+
+    public Object mvloadDesc(DataObject daomv, int i) throws SQLException {
+        TableColumn[] cols = daomv.getColumns();
+        String name = cols[i].getName().toLowerCase();
+        Object valor = daomv.getValue(name);
+        return valor;
+    }
+
+    public Object mvloadDesc(DataObject daomv, String name) throws SQLException {
+        TableColumn[] cols = daomv.getColumns();
+        Object valor = "";
+        for (int i = 0; i < cols.length; i++) {
+            if (cols[i].getName().equalsIgnoreCase(name)) {
+                valor = daomv.getValue(name);
+                return valor;
+            }
+        }
+        return valor;
+    }
+
+    public Map<String, Object> getMapFields() {
+	return mapFields;
+    }
+}

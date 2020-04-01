@@ -1,0 +1,247 @@
+UL {
+	PADDING-TOP: 0px;
+	PADDING-BOTTOM: 0px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	MARGIN: 0px;
+}
+UL#menus {
+/*	BORDER-TOP: #98AF85 1px solid;*/
+	BORDER-BOTTOM: #98AF85 1px solid;
+	BORDER-LEFT: #98AF85 1px solid;
+	BORDER-RIGHT: #98AF85 1px solid;
+	WIDTH: 152px;
+}
+UL#menus LI {
+	BORDER-TOP: #98AF85 1px solid;
+	FONT-WEIGHT: bold;
+	FLOAT: left;
+	WIDTH: 152px;
+	COLOR: #004F34;
+	LINE-HEIGHT: 26px;
+	background-color:#D7F0D5;
+}
+UL#menus LI SPAN {
+	PADDING-LEFT: 10px;
+	FONT: bold 11px/26px Arial, Helvetica, sans-serif;
+	background-color:#D7F0D5;
+}
+UL#menus UL {
+	LIST-STYLE-TYPE: none
+}
+UL#menus UL LI A {
+	PADDING-LEFT: 10px;
+	FONT-SIZE: 11px;
+	COLOR: #004F34;
+	TEXT-DECORATION: none;
+}
+UL#menus UL LI A:hover {
+	PADDING-LEFT: 10px;
+	FONT-SIZE: 11px;
+	COLOR: #004F34;
+	TEXT-DECORATION: underline;
+}
+UL#menus UL LI A:hover SPAN {
+	TEXT-DECORATION: underline;
+}
+UL#menus UL LI {
+/*	BORDER-TOP: #98AF85 1px solid;*/
+/*	BORDER-BOTTOM: #98AF85 1px solid;*/
+	FLOAT: left;
+	FONT: 11px/26px Arial, Helvetica, sans-serif;
+	WIDTH: 152px;
+	HEIGHT: 26px;
+	background-color:#CC3300;
+}
+UL#menus UL LI {
+	background-color: #EAFAE9;
+	BORDER-TOP: #98AF85 1px solid;
+}
+UL#menus UL LI A {
+	DISPLAY: block;
+	PADDING-LEFT: 10px;
+/*	BACKGROUND: url(imagens/mn_Seta.gif) no-repeat 136px 50%;*/
+	WIDTH: 152px
+}
+UL#menus UL LI A.seta {
+    BACKGROUND: url(imagens/mn_Seta.gif) no-repeat 136px 50%;
+}
+UL#menus UL LI.over {
+	background-color:#D7F0D5;
+}
+UL#menus UL LI.over DIV {
+	DISPLAY: block; Z-INDEX: 10
+}
+UL#menus UL LI DIV {
+	BORDER-BOTTOM: #98AF85 1px solid;
+	BORDER-LEFT: #98AF85 1px solid;
+	BORDER-RIGHT: #98AF85 1px solid;
+ 	MARGIN-TOP: -28px;
+	DISPLAY: none;
+	LEFT: 152px;
+	FLOAT: left;
+	WIDTH: 152px;
+	POSITION: absolute
+}
+UL#menus UL LI DIV UL LI {
+	BACKGROUND: #EAFAE9;
+	BORDER-LEFT: #98AF85 8px solid;
+	WIDTH: 144px;
+	BORDER-RIGHT-WIDTH: 0px
+}
+UL#menus UL LI DIV UL LI.sover {
+	BORDER-LEFT-COLOR: #FEEAC0;
+	BACKGROUND-COLOR: #D7F0D5
+}
+UL#menus UL LI DIV UL LI A {
+	BACKGROUND: none transparent scroll repeat 0% 0%
+}
+UL#menus LI.dial {
+	BORDER-TOP-WIDTH: 0px;
+	BORDER-BOTTOM-WIDTH: 0px;
+	BORDER-LEFT-WIDTH: 0px;
+	BORDER-RIGHT: #98AF85 1px solid;
+	BACKGROUND-IMAGE: none;
+	PADDING-TOP: 10px;
+	HEIGHT: 90px;
+	TEXT-ALIGN: center
+}
+UL#menus LI.dial A {
+	DISPLAY: block
+}
+UL#menus LI.dial IMG {
+	BORDER-TOP-WIDTH: 0px;
+	BORDER-BOTTOM-WIDTH: 0px;
+	BORDER-LEFT-WIDTH: 0px;
+	BORDER-RIGHT-WIDTH: 0px;
+	DISPLAY: block;
+}
+/* ---------------------------------------------- */
+
+UL {
+	PADDING-TOP: 0px;
+	PADDING-BOTTOM: 0px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	MARGIN: 0px;
+}
+UL#smenus {
+	BORDER-TOP: #98AF85 1px solid;
+	BORDER-BOTTOM: #98AF85 1px solid;
+	BORDER-LEFT: #98AF85 1px solid;
+	BORDER-RIGHT: #98AF85 1px solid;
+	WIDTH: 152px;
+}
+UL#smenus LI {
+	FONT-WEIGHT: bold;
+	FLOAT: left;
+	WIDTH: 152px;
+	COLOR: #004F34;
+	LINE-HEIGHT: 26px;
+	background-color:#D7F0D5;
+}
+UL#smenus LI SPAN {
+	PADDING-LEFT: 17px;
+	FONT: bold 11px/26px Arial, Helvetica, sans-serif;
+	background-color:#D7F0D5;
+}
+UL#smenus UL {
+	LIST-STYLE-TYPE: none
+}
+UL#smenus UL LI A {
+	PADDING-LEFT: 10px;
+	FONT-SIZE: 11px;
+	COLOR: #004F34;
+	TEXT-DECORATION: none;
+}
+UL#smenus UL LI A.bold {
+	FONT-WEIGHT: bold;
+}
+UL#smenus UL LI A:hover {
+	PADDING-LEFT: 10px;
+	FONT-SIZE: 11px;
+	COLOR: #004F34;
+	TEXT-DECORATION: underline;
+}
+UL#smenus UL LI A:hover SPAN {
+	TEXT-DECORATION: underline;
+}
+UL#smenus UL LI {
+	BORDER-TOP: #98AF85 1px solid;
+	FLOAT: left;
+	FONT: 11px/26px Arial, Helvetica, sans-serif;
+	WIDTH: 152px;
+	HEIGHT: 26px;
+	background-color:#CC3300;
+}
+UL#smenus UL LI#space {
+	BORDER-TOP: #98AF85 1px solid;
+	FLOAT: left;
+/*	FONT: 11px/26px Arial, Helvetica, sans-serif;*/
+	WIDTH: 155px;
+	HEIGHT: 1px;
+	background-color:#FFFFFF;
+}
+UL#smenus UL LI {
+	background-color: #D7F0D5;
+}
+UL#smenus UL LI A {
+	DISPLAY: block;
+	PADDING-LEFT: 10px;
+/*	BACKGROUND: url(imagens/mn_Seta.gif) no-repeat 136px 50%;*/
+	WIDTH: 152px
+}
+UL#smenus UL LI A.seta {
+    BACKGROUND: url(imagens/mn_Seta.gif) no-repeat 136px 50%;
+}
+UL#smenus UL LI.over {
+	background-color:#D7F0D5;
+	WIDTH: 158px;
+}
+UL#smenus UL LI.over DIV {
+	DISPLAY: block; Z-INDEX: 10
+}
+UL#smenus UL LI DIV {
+	BORDER-BOTTOM: #98AF85 1px solid;
+	BORDER-LEFT: #98AF85 1px solid;
+	BORDER-RIGHT: #98AF85 1px solid;
+ 	MARGIN-TOP: -28px;
+	DISPLAY: none;
+	LEFT: 158px;
+	FLOAT: left;
+	WIDTH: 152px;
+	POSITION: absolute
+}
+UL#smenus UL LI DIV UL LI {
+	BACKGROUND: #D7F0D5;
+	BORDER-LEFT: #98AF85 8px solid;
+	WIDTH: 152px;
+	BORDER-RIGHT-WIDTH: 0px
+}
+UL#smenus UL LI DIV UL LI.sover {
+	BORDER-LEFT-COLOR: #FEEAC0;
+	BACKGROUND-COLOR: #D7F0D5
+}
+UL#smenus UL LI DIV UL LI A {
+	BACKGROUND: none transparent scroll repeat 0% 0%
+}
+UL#smenus LI.dial {
+	BORDER-TOP-WIDTH: 0px;
+	BORDER-BOTTOM-WIDTH: 0px;
+	BORDER-LEFT-WIDTH: 0px;
+	BORDER-RIGHT: #98AF85 1px solid;
+	BACKGROUND-IMAGE: none;
+	PADDING-TOP: 10px;
+	HEIGHT: 90px;
+	TEXT-ALIGN: center
+}
+UL#smenus LI.dial A {
+	DISPLAY: block
+}
+UL#smenus LI.dial IMG {
+	BORDER-TOP-WIDTH: 0px;
+	BORDER-BOTTOM-WIDTH: 0px;
+	BORDER-LEFT-WIDTH: 0px;
+	BORDER-RIGHT-WIDTH: 0px;
+	DISPLAY: block;
+}

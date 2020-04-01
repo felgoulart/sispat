@@ -1,0 +1,9 @@
+/*============================================================================*/
+/*                  WebInsight System Factory  - INITIAL                      */
+/*============================================================================*/
+
+/* TinyMCE specific rules */
+body.mceContentBody {
+    background-color: #E7ECF2;
+    border:1px solid #D3D4D8;
+}

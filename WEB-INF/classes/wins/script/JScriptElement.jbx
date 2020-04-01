@@ -1,0 +1,13 @@
+[PropertyInfo]
+childs,java.util.List,false,false,childs,childs,true,<default>
+count,int,false,false, , ,false,<default>
+id,String,false,false,id,id,true,<default>
+parent,siof.script.JScriptElement,false,false,parent,parent,true,<default>
+type,String,false,false, , ,true,<default>
+style,String,false,false,style,style,true,<default>
+styleClass,String,false,false,styleClass,styleClass,true,<default>
+[IconNames]
+
+
+
+

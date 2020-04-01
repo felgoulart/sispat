@@ -1,0 +1,45 @@
+[PropertyInfo]
+accesskey,String,false,false, , ,true,<default>
+componentType,String,false,false, , ,true,<default>
+converter,String,false,false, , ,true,<default>
+debugString,String,false,false, , ,true,<default>
+dir,String,false,false, , ,true,<default>
+disabled,String,false,false, , ,true,<default>
+disabledClass,String,false,false, , ,true,<default>
+enabledClass,String,false,false, , ,true,<default>
+immediate,String,false,false, , ,true,<default>
+lang,String,false,false, , ,true,<default>
+log,org.apache.commons.logging.Log,false,false, , ,false,<default>
+onblur,String,false,false, , ,true,<default>
+onchange,String,false,false, , ,true,<default>
+onclick,String,false,false, , ,true,<default>
+ondblclick,String,false,false, , ,true,<default>
+onfocus,String,false,false, , ,true,<default>
+onkeydown,String,false,false, , ,true,<default>
+onkeypress,String,false,false, , ,true,<default>
+onkeyup,String,false,false, , ,true,<default>
+onmousedown,String,false,false, , ,true,<default>
+onmousemove,String,false,false, , ,true,<default>
+onmouseout,String,false,false, , ,true,<default>
+onmouseover,String,false,false, , ,true,<default>
+onmouseup,String,false,false, , ,true,<default>
+onselect,String,false,false, , ,true,<default>
+readonly,String,false,false, , ,true,<default>
+refDescField,String,false,false, , ,false,<default>
+reference,String,false,false, , ,false,<default>
+refKeyField,String,false,false, , ,false,<default>
+rendererType,String,false,false, , ,true,<default>
+required,String,false,false, , ,true,<default>
+size,String,false,false, , ,true,<default>
+style,String,false,false, , ,true,<default>
+styleClass,String,false,false, , ,true,<default>
+tabindex,String,false,false, , ,true,<default>
+title,String,false,false, , ,true,<default>
+validator,String,false,false, , ,true,<default>
+value,String,false,false, , ,true,<default>
+valueChangeListener,String,false,false, , ,true,<default>
+[IconNames]
+
+
+
+

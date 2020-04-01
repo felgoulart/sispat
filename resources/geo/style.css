@@ -1,0 +1,301 @@
+/* Always set the map height explicitly to define the size of the div element that contains the map. */
+#map {
+    height: 100%;
+}
+
+/* #map {background: transparent url(https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif) no-repeat center center;} */
+
+/* Makes the page fill the window. */
+html,body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* infoWindow style 
+.gm-style-iw {
+}
+*/
+.gm-style-iw {
+    width: 250px !important;
+    top: 0px !important;
+    left: 0px !important;
+    background-color: white;
+}
+
+.gmsiw-p {
+    width: 250px !important; 
+    height: 250px !important;   
+}
+.gmsiw-pp {
+    left: 26px !important;
+    top: 20px !important;
+}
+
+.gmsiw-hide {
+    display: none !important;
+}
+
+.gmsiw-arrow {
+    left: 115px !important;
+    top: 242px !important;
+}
+
+.iw-container .iw-content {
+    line-height: 18px;
+    margin-right: 1px;
+    padding: 3px 5px 26px 4px;
+    max-height: 170px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-bottom: 0px;
+}
+
+.iw-container .iw-content img {
+    width: 224px;
+}
+
+.iw-container {
+    
+}
+
+.iw-container .iw-title {
+    padding: 5px;
+    margin: 1px;
+    font-weight: bold;
+}
+
+.iw-container .iw-header {
+    padding: 5px;
+    margin: 1px;
+}
+
+.iw-container .iw-header span {
+    width: 50%;
+    height: 25px;
+    vertical-align: middle;
+}
+
+.iw-container .iw-header .survey {
+    padding-top: 5px;
+}
+
+.iw-container .iw-header .details {
+    margin-left: -3px;
+}
+
+.iw-container .iw-header .details img {
+    vertical-align: middle;
+    padding: 5px;
+    padding-top: 1px;
+}
+
+/* Busca por BP e latLon */
+
+.searchBox {
+    position: absolute;
+    z-index: 1;
+    height: 40px;
+    overflow: hidden;
+    direction: ltr;
+    top: 10px;
+    left: 190px;
+    display: table-cell;
+    vertical-align: middle;
+    color: rgb(0, 0, 0);
+    font-family: Roboto, Arial, sans-serif;
+    user-select: none;
+    font-size: 18px;
+    background-color: rgb(255, 255, 255);
+    border-bottom-right-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
+    background-clip: padding-box;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    min-width: 61px;
+    border-left: 0px;
+    font-weight: 500;
+    width: 495px;
+}
+
+#searchField {
+    height: 100%;
+    border-style: inherit;
+    font-size: inherit;
+    float: left;
+    width: 370px;
+    padding: 0px 17px;
+    border-bottom-left-radius: inherit;
+    border-top-left-radius: inherit;
+}
+
+#searchButton {
+    border-style: inherit;
+    font-size: inherit;
+    padding: 0px 17px;
+    float: right;
+    height: 100%;
+    border-bottom-right-radius: inherit;
+    border-top-right-radius: inherit;
+    background-color: inherit;
+}
+
+#searchButton:hover {
+    background: rgb(235,235,235);
+    cursor: pointer;
+}
+
+.coordsBox {
+    border-radius: 3px 3px 3px 3px;
+    font-family: Roboto, Arial, sans-serif;
+    color: rgb(68, 68, 68);
+    position: absolute;
+    background-color: white;
+    bottom: 0px;
+    z-index: 1;
+    font-size: 10px;
+    right: 45%;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 16px;
+    opacity: 0.70;
+}
+
+.coordsBox span {
+    position: relative;
+    top: -3px;
+}
+
+.coordsBox input {
+    position: relative;
+    top: 3px;
+    width: 10px;
+}
+
+/* BP Type menu */
+.bpTypeBox {
+    position: absolute;
+    z-index: 1;
+    background-color: white;
+    right: 10px;
+    top: 53px;
+    border-radius: 3px 3px 3px 3px;
+    padding: 5px 5px 5px 5px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 12px;
+    width: 230px;
+    cursor: pointer;
+    margin-left: -5px;
+}
+
+.bpTypeBox .title {
+    height: 40px;
+    padding: 13px;
+    background-color: lightgray;
+    margin-top: -5px;
+    margin-left: -5px;
+    margin-right: -5px;
+    border-radius: 3px 3px 0px 0px;
+    height: 16px;
+    line-height: 15px;
+    color: rgb(0, 0, 0);
+    font-family: Roboto, Arial, sans-serif;
+    user-select: none;
+    font-size: 18px;
+}
+
+.bpTypeBox .group {
+    padding: 8px 5px 5px 5px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #F4F6F6;
+}
+
+.bpTypeBox .group:hover {
+    background-color: #BDBDBD;
+}
+
+.bpTypeBox .group input {
+    float: right;
+    margin-right: 1px;
+    margin-top: 0px;  
+}
+
+.bpTypeBox .bpType {
+    padding: 2px 0px 2px 0px;
+    border-left-color: lightgray;
+    border-left-style: solid;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    border-left-width: thick;
+    width: 235px;
+}
+
+.bpTypeBox .bpType img {
+    vertical-align: middle;
+    width: 23px;
+    height: 23px;
+    padding-left: 5px;
+}
+
+.bpTypeBox .bpType input {
+    float: right;
+    margin-right: 23px;
+}
+
+.bpTypeBox .bpType .typeTitle {
+    padding-left: 5px;
+}
+
+.bpTypeBox .bpType:hover {
+    padding: 2px 0px 2px 0px;
+    border-left-color: #FFFF00;
+    border-left-style: solid;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    border-left-width: thick;
+    width: 235px;
+    background-color: lightgray;
+}
+
+#collapseTypeBox {
+    background-color: lightgray;
+    box-shadow: none;
+}
+
+#bpTypeForm {
+    overflow-x: hidden;
+    height: 463px;
+    width: 240px;
+    top: 15px;
+    margin-left: -5px;
+}
+
+.gmapsRightButton {
+    right: 0px;
+    top: 43px;
+    z-index: 1;
+    background: none rgb(255, 255, 255);
+    margin: 10px;
+    padding: 0px;
+    position: absolute;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 2px;
+    height: 40px;
+    width: 40px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    overflow: hidden;
+}
+
+.gmapsRightButton:hover {
+    background-color: rgb(235,235,235);
+    cursor: pointer;
+}
+
+.gmapsRightButton img {
+    width: 20px;
+    padding: 10px;
+}   

@@ -1,0 +1,4812 @@
+package appl.bean;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.*;
+import java.text.*;
+
+import javax.faces.component.UIData;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
+import javax.servlet.http.HttpServletRequest;
+
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.LoginException;
+import appl.data.IXLocoDesemp;
+import appl.data.Userx;
+import appl.data.Help;
+import appl.data.Helpr;
+import appl.data.Trans;
+import javax.faces.application.FacesMessage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Date;
+import java.math.BigDecimal;
+import org.apache.commons.beanutils.ConvertUtils;
+import java.util.Locale;
+import java.text.NumberFormat;
+
+//ANTT Export Imports
+import wins.libs.utils.AnttUtils;
+import wins.libs.utils.ExportException;
+import wins.libs.utils.CsvUtils;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import appl.data.Accr;
+import appl.data.Codf;
+import appl.data.Convs;
+import appl.data.Solic;
+import wins.libs.utils.CsvException;
+import appl.data.Mssg;
+import appl.data.Param;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.io.IOException;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.record.ContinueRecord;
+
+
+public abstract class CadastroBean extends FacesBean {
+    public Map<String, Object> pkmap = new HashMap<String, Object>();
+    //public HashMap<String, String> convsTTList = new HashMap<String, String>(); //zz
+    public ArrayList propCDTTList = new ArrayList() ;     // Frame Cols ArrayList
+
+    
+    private Boolean assist;
+	private boolean canSearchBack;
+	private boolean canUpdate;
+    private boolean canInserir;
+    private boolean canExcluir;
+    private boolean canAlterar;
+    private boolean canCancelar;
+    private boolean canPesquisar;
+    private boolean canUpload;
+    private boolean canDownload;
+    public boolean resetParms = true;
+
+    public char data[] = {'"'};
+    public String dq = new String(data);
+
+    private boolean canReportPdf;
+    private boolean canReportXls;
+    private boolean canAction01;
+    private boolean canAction02;
+    private boolean canAction03;
+    private boolean canAction04;
+    private boolean canAction05;
+    private boolean canAction06;
+    private boolean canAction07;
+    private boolean canAction08;
+    private boolean canAction09;
+    private boolean canAction10;
+    private boolean canAction11;
+    private boolean canAction12;
+    private boolean canAction13;
+    private boolean canAction14;
+    private boolean canAction15;
+    private boolean canAction16;
+    private boolean canAction17;
+    private boolean canAction18;
+    private boolean canAction19;
+    private boolean canAction20;
+
+    private boolean hasHelpSpcSfm;
+    private boolean hasHelpSpcRfm;
+    public boolean hasHelpComSfm;
+    public boolean hasHelpComRfm;
+
+    public String helpx;
+    public Integer helpy;
+
+    public int importErrorFlag;
+    public int ckk;
+    public String linex;
+    public String[] content = new String[2000];    // Text file content
+    public ArrayList col_id_list = new ArrayList() ;     // Frame Cols ArrayList
+
+    public String trans_cd_hpus;
+    public String trans_cd_hgen_sfm;
+    public String trans_cd_hgen_rfm;
+    public String trans_cd_hcom_sfm;
+    public String trans_cd_hcom_rfm;
+    public String trans_cd_help_sfm;
+    public String trans_cd_help_rfm;
+
+    public Integer validateAll = 0;
+    public String tipo1; // Object, Codification Code Name
+    public String ufmv; // Stub Update Flag String
+    //public String vfini = "199999999999999999999999999000";
+    public String vfini =   "19999999999999999999999999900000000000000000000000";
+
+    public StringBuffer vfbuffer;
+    public Integer mvsq; // Multivalued Stub Active Record Sequence
+    public Object objtval; // Multivalued Stub Active Record Sequence
+    boolean result = false;
+    public String upflag;
+    public Integer tab;
+    public Integer vf; public Integer vfmax; public String vfstr; public char vfchar;
+    //public Integer ps = 28; //  Position at tabsvf that stores currrent's tab row vf
+    public Integer ps = 48; //  Position at tabsvf that stores currrent's tab row vf
+    public Integer pe = ps+1;
+    //public Integer psvc = 27; // Position at tabsvf that stores the highest tabs vf. Used in tabsvc
+    public Integer psvc = 47; // Position at tabsvf that stores the highest tabs vf. Used in tabsvc
+    public String tabsvc;
+    public Integer msgqtx; // Message Window line Counter. Used by
+    public Integer codfqt; // Codification Window line Counter. Used by
+    public Integer reload;
+    public BigDecimal bdec;
+    public BigDecimal bdecret;
+    public static String lang_cd_var; // Language
+    public static String impexcfg_var; // Language
+    public static String lang_cd_var_desc ;
+    public static String lang_cd_var_vc ;
+
+    protected StringBuffer flds_vfsb;
+
+    public String tipo;          // Transction Name handled by SalvaType.jsp & SalvaAssit.jsp
+    public String tran;          // Transction Name handled by SalvaType.jsp & SalvaAssit.jsp
+    public String tbakcad;        // Return Transaction Name handled by SalvaType.jsp & SalvaAssit.jsp
+    public String tbakmenu;        // Return Transaction Name handled by SalvaType.jsp & SalvaAssit.jsp
+    public String valuex;        // Transction value handled by SalvaValue.jsp
+    public String goBackBean;    // Return Transction Name handled by goBack() method
+    protected String tabs_vc;
+    protected String tabs_vf;
+    protected String flds_vf;
+
+    public String objt_pk; // primary key of the application
+    public String aa;
+
+    // Image Upload Processing vars
+    private String cadbeanx;
+    public String getCadbeanx() {
+        return cadbeanx;
+    }
+    public void setCadbeanx(String cadbeanx) {
+        this.cadbeanx = cadbeanx;
+    }
+
+    // Acess Security Control Flags
+
+    public boolean hasNext = false;
+    public boolean hasPrev = false;
+    public boolean goBack = false;
+    public boolean canUpdt = false;
+    public boolean canCopy = false;
+    public boolean canDelt = false;
+    public boolean canInst = false;
+    public boolean canSrch = false;
+    public boolean canSrchOnly = false;
+    public boolean canCanc = false;
+    public boolean canRpdf = false;
+    public boolean canRxls = false;
+    public boolean canAc01 = false;
+    public boolean canAc02 = false;
+    public boolean canAc03 = false;
+    public boolean canAc04 = false;
+    public boolean canAc05 = false;
+    public boolean canAc06 = false;
+    public boolean canAc07 = false;
+    public boolean canAc08 = false;
+    public boolean canAc09 = false;
+    public boolean canAc10 = false;
+    public boolean canAc11 = false;
+    public boolean canAc12 = false;
+    public boolean canAc13 = false;
+    public boolean canAc14 = false;
+    public boolean canAc15 = false;
+    public boolean canAc16 = false;
+    public boolean canAc17 = false;
+    public boolean canAc18 = false;
+    public boolean canAc19 = false;
+    public boolean canAc20 = false;
+
+    public boolean goBackDone = false;
+    public boolean canInstDone = false;
+    public boolean canUpdtDone = false;
+    public boolean canCopyDone = false;
+    public boolean canDeltDone = false;
+    public boolean canSrchDone = false;
+    public boolean canCancDone = false;
+    public boolean canRpdfDone = false;
+    public boolean canRxlsDone = false;
+    public boolean canAc01Done = false;
+    public boolean canAc02Done = false;
+    public boolean canAc03Done = false;
+    public boolean canAc04Done = false;
+    public boolean canAc05Done = false;
+    public boolean canAc06Done = false;
+    public boolean canAc07Done = false;
+    public boolean canAc08Done = false;
+    public boolean canAc09Done = false;
+    public boolean canAc10Done = false;
+    public boolean canAc11Done = false;
+    public boolean canAc12Done = false;
+    public boolean canAc13Done = false;
+    public boolean canAc14Done = false;
+    public boolean canAc15Done = false;
+    public boolean canAc16Done = false;
+    public boolean canAc17Done = false;
+    public boolean canAc18Done = false;
+    public boolean canAc19Done = false;
+    public boolean canAc20Done = false;
+
+    public String button = "";
+
+    // Rule Formation Password
+    private Integer pass_leng_min = 8;
+    private Integer pass_leng_max = 20;
+    private Integer pass_comp_upper = 1;
+    private Integer pass_comp_lower = 1;
+    private Integer pass_comp_number = 1;
+    private Integer pass_comp_special = 1;
+
+    protected ListIterator list_itrx;
+    protected List pesqData;
+    protected List pesqData1;
+    protected List pesqData2;
+    protected List pesqMesg;
+    protected UIData pesqTable;
+    protected UIData pesqTable1;
+    protected UIData pesqTable2;
+    protected int currentLine;
+    protected int pageLength = 15;
+    protected int firstentry = 0;
+    protected boolean hasNextPage;
+    protected boolean hasPrevPage;
+    public int maxResults = 400; // 99999
+    protected int maxResultsTot = 400; // 99999
+    protected int maxResultsIni = 400;  // 300;
+    //protected int maxResults = 700;
+    protected String filter;
+    protected String order;
+
+    protected Boolean novox;
+
+    private DataObject bean;
+    private State state;
+
+    public CadastroBean() {
+        goBackDone = false;
+    	canInstDone = false;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canDeltDone = false;
+        canSrchDone = false;
+        canSrchOnly = false;
+        canCancDone = false;
+        reset();  // commented on 09/02/14
+        resetInitialFilters();  // 110905
+    }
+
+    public void setMesg_var (String mesg_var) {
+        this.mesg_var = mesg_var;
+    }
+    public String getMesg_var() {
+        return mesg_var; 
+    }
+
+    public void setXmesg_rc (Integer xmesg_rc) {
+        this.xmesg_rc = xmesg_rc;
+    }
+    public Integer getXmesg_rc() {
+        return xmesg_rc; 
+    }
+
+    public void setXmesg_st (String xmesg_st) {
+        this.xmesg_st = xmesg_st;
+    }
+    public String getXmesg_st() {
+        return xmesg_st; 
+    }
+
+    public void setXhelp_rc (String xhelp_rc) {
+        this.xhelp_rc = xhelp_rc;
+    }
+    public String getXhelp_rc() {
+        return xhelp_rc; 
+    }
+
+    public void setTrans_tt(String trans_tt) {
+        this.trans_tt = trans_tt; }
+    public String getTrans_tt() {
+        return trans_tt; 
+    }
+
+    public void setTabsvf(String tabsvf) {
+        this.tabsvf = tabsvf; }
+    public String getTabsvf() {
+        return tabsvf; 
+    }
+
+    public void setTabsvc(String tabsvc) {
+        this.tabsvc = tabsvc; }
+    public String getTabsvc() {
+        return tabsvc; 
+    }
+
+    public void setTabsvf_in(String tabsvf_in) {
+        this.tabsvf_in = tabsvf_in; }
+    public String getTabsvf_in() {
+        return tabsvf_in; 
+    }
+
+    public void setTabsvf_tr(String tabsvf_tr) {
+        this.tabsvf_tr = tabsvf_tr; }
+    public String getTabsvf_tr() {
+        return tabsvf_tr; 
+    }
+
+    public void setTabsvf_tp(String tabsvf_tp) {
+        this.tabsvf_tp = tabsvf_tp; }
+    public String getTabsvf_tp() {
+        return tabsvf_tp; 
+    }
+
+    public void setObjt_pk(String objt_pk) {
+        this.objt_pk = objt_pk;
+    }
+    public String getObjt_pk() {
+        return objt_pk;
+    }
+
+    public void setMsgqtx(Integer msgqtx) {
+        this.msgqtx = msgqtx; }
+    public Integer getMsgqtx() {
+        return msgqtx; 
+    }
+    public void setCodfqt(Integer codfqt) {
+        this.codfqt = codfqt; }
+    public Integer getCodfqt() {
+        return codfqt; 
+    }
+
+    public void setImpexcfg_var(String impexcfg_var) {
+       // this.impexcfg_var = impexcfg_var;
+    }
+    public String getImpexcfg_var() {
+        this.impexcfg_var = impexcfg_var; 
+    	return impexcfg_var; 
+    }
+
+    public void setLang_cd_var(String lang_cd_var) {
+        this.lang_cd_var = lang_cd_var; }
+    public String getLang_cd_var() {
+    	lang_cd_var = loc;
+        return lang_cd_var; 
+    }
+    public void setLang_cd_var_desc (String lang_cd_var_desc) {this.lang_cd_var_desc = lang_cd_var_desc;}
+    public void setLang_cd_var_vc (String lang_cd_var_vc) {this.lang_cd_var_vc = lang_cd_var_vc;}
+    public String getLang_cd_var_desc() {return lang_cd_var_desc; }
+    public String getLang_cd_var_vc() {return lang_cd_var_vc; }
+
+
+    public void setPesqData2(List pesqData2) {
+        this.pesqData2 = pesqData2;
+    }
+    public void setPesqData1(List pesqData1) {
+        this.pesqData1 = pesqData1;
+    }
+    public void setPesqData(List pesqData) {
+        this.pesqData = pesqData;
+    }
+    public void setPesqMesg(List pesqMesg) {
+        this.pesqMesg = pesqMesg;
+    }
+
+    public void setCanAlterar(boolean canAlterar) {
+        this.canAlterar = canAlterar;
+    }
+
+    public void setCanPesquisar(boolean canPesquisar) {
+        this.canPesquisar = canPesquisar;
+    }
+    
+    public void setCanUpdate(boolean canUpdate) {
+        this.canUpdate = canUpdate;
+    }
+
+    public void setCanInserir(boolean canInserir) {
+        this.canInserir = canInserir;
+    }
+
+    public void setCanCancelar(boolean canCancelar) {
+        this.canCancelar = canCancelar;
+    }
+
+    public void setCanReportPdf(boolean canReportPdf) {
+        this.canReportPdf = canReportPdf;
+    }
+
+    public void setCanReportXls(boolean canReportXls) {
+        this.canReportXls = canReportXls;
+    }
+
+    //
+    public void setPesqTable(UIData pesqTable) {
+        this.pesqTable = pesqTable;
+    }
+    public void setPesqTable1(UIData pesqTable1) {
+        this.pesqTable1 = pesqTable1;
+    }
+    public void setPesqTable2(UIData pesqTable2) {
+        this.pesqTable2 = pesqTable2;
+    }
+
+    public void setCurrentLine(int currentLine) {
+        this.currentLine = currentLine;
+    }
+
+    public void setPageLength(int pageLength) {
+        this.pageLength = pageLength;
+    }
+
+    public void setHasNextPage(boolean hasNextPage) {
+        this.hasNextPage = hasNextPage;
+    }
+
+    public void setHasPrevPage(boolean hasPrevPage) {
+        this.hasPrevPage = hasPrevPage;
+    }
+
+    public void setBean(DataObject bean) {
+        this.bean = bean;
+    }
+
+    public void setCanExcluir(boolean canExcluir) {
+        this.canExcluir = canExcluir;
+    }
+    public void setCanAction01(boolean canAction01) {
+        this.canAction01 = canAction01;
+    }
+    public void setCanAction02(boolean canAction02) {
+        this.canAction02 = canAction02;
+    }
+    public void setCanAction03(boolean canAction03) {
+        this.canAction03 = canAction03;
+    }
+    public void setCanAction04(boolean canAction04) {
+        this.canAction04 = canAction04;
+    }
+    public void setCanAction05(boolean canAction05) {
+        this.canAction05 = canAction05;
+    }
+    public void setCanAction06(boolean canAction06) {
+        this.canAction06 = canAction06;
+    }
+    public void setCanAction07(boolean canAction07) {
+        this.canAction07 = canAction07;
+    }
+    public void setCanAction08(boolean canAction08) {
+        this.canAction08 = canAction08;
+    }
+    public void setCanAction09(boolean canAction09) {
+        this.canAction09 = canAction09;
+    }
+    public void setCanAction10(boolean canAction10) {
+        this.canAction10 = canAction10;
+    }
+    public void setCanAction11(boolean canAction11) {
+        this.canAction11 = canAction11;
+    }
+    public void setCanAction12(boolean canAction12) {
+        this.canAction12 = canAction12;
+    }
+    public void setCanAction13(boolean canAction13) {
+        this.canAction13 = canAction13;
+    }
+    public void setCanAction14(boolean canAction14) {
+        this.canAction14 = canAction14;
+    }
+    public void setCanAction15(boolean canAction15) {
+        this.canAction15 = canAction15;
+    }
+    public void setCanAction16(boolean canAction16) {
+        this.canAction16 = canAction16;
+    }
+    public void setCanAction17(boolean canAction17) {
+        this.canAction17 = canAction17;
+    }
+    public void setCanAction18(boolean canAction18) {
+        this.canAction18 = canAction18;
+    }
+    public void setCanAction19(boolean canAction19) {
+        this.canAction19 = canAction19;
+    }
+    public void setCanAction20(boolean canAction20) {
+        this.canAction20 = canAction20;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
+    }
+
+    public List getPesqData2() {
+        return pesqData2;
+    }
+    public List getPesqData1() {
+        return pesqData1;
+    }
+    public List getPesqData() {
+        return pesqData;
+    }
+    public List getPesqMesg() {
+        return pesqMesg;
+    }
+    public void setCanSearchBack(boolean canUpdate) {
+        this.canSearchBack = canSearchBack;
+    }
+    public boolean isCanSearchBack()  {
+        return canSearchBack;
+    }
+    public void setCanUpload(boolean canUpload) {
+        this.canUpload = canUpload;
+    }
+    public boolean isCanUpload()  {
+        return canUpload;
+    }
+    public void setCanDownload(boolean canDownload) {
+        this.canDownload = canDownload;
+    }
+    public boolean isCanDownload()  {
+        return canDownload;
+    }
+
+    // Access Security Validation Methods
+
+    public boolean isCanUpdate() throws SQLException, LoginException {
+
+    	if (canAlterar && !canUpdtDone) {
+            canUpdt = canAlterar && getLoginInfo().canDoAction(getActionName("UPDT"),getLoginInfo().getUserx_id_role() );
+            canUpdtDone = true;
+        }
+    	
+    	//if (canInserir && !canInstDone) {
+        //    canInst = canInserir && getLoginInfo().canDoAction(getActionName("INST"),getLoginInfo().getUserx_id_role() );
+        //    canInstDone = true;
+        //}
+
+        //return (isCanInserir() && canInserir) || (isCanAlterar() && canAlterar);
+        //return true;
+        return canUpdt;
+    }
+
+    public boolean isCanInserir() throws SQLException, LoginException {
+        if (canInserir && !canInstDone) {
+            canInst = canInserir && getLoginInfo().canDoAction(getActionName("INST"),getLoginInfo().getUserx_id_role() );
+            canInstDone = true;
+        }
+        return canInst;
+    }
+
+    public boolean isHasNext() {
+        return hasNext;
+    }
+    public boolean isHasPrev() {
+        return hasPrev;
+    }
+    public boolean isGoBack() throws SQLException, LoginException {
+        //if (!goBackDone) {
+        	String goBackBean = (String)getSession().getAttribute("goBackBean");
+        	if (goBackBean == null) {goBack = false; } else {goBack = true;}
+            //getSession().setAttribute("goBackBean", null);
+        	goBackDone = true;
+        //}
+        return goBack;
+    }
+
+    public boolean isCanAlterar() throws SQLException, LoginException {
+        if (canAlterar && !canUpdtDone) {
+            canUpdt = canAlterar && getLoginInfo().canDoAction(getActionName("UPDT"),getLoginInfo().getUserx_id_role() );
+            canUpdtDone = true;
+        }
+        return canUpdt;
+    }
+
+    public boolean isCanCopy() throws SQLException, LoginException {
+        if (canAlterar && !canCopyDone) {
+            canCopy = canAlterar && getLoginInfo().canDoAction(getActionName("COPY"),getLoginInfo().getUserx_id_role() );
+            canCopyDone = true;
+        }
+        return canCopy;
+    }
+
+    public boolean isCanExcluir() throws SQLException, LoginException {
+        if (canExcluir && !canDeltDone) {
+            canDelt = canExcluir && getLoginInfo().canDoAction(getActionName("DELT"), getLoginInfo().getUserx_id_role());
+            canDeltDone = true;
+        }
+        return canDelt;
+    }
+
+    public boolean isCanCancelar() {
+        //return canInst;
+        return canCancelar;
+    }
+
+    public boolean isHasHelpSpcSfm() {
+        return hasHelpSpcSfm;
+    }
+    public boolean isHasHelpSpcRfm() {
+        return hasHelpSpcRfm;
+    }
+    public boolean isHasHelpComSfm() {
+        return hasHelpComSfm;
+    }
+    public boolean isHasHelpComRfm() {
+        return hasHelpComRfm;
+    }
+
+    public boolean isCanPesquisar() throws SQLException, LoginException {
+        if (canSrchOnly == false) {
+            if (canPesquisar && !canSrchDone) {
+                canSrch = getLoginInfo().canDoAction(getActionName("SRCH"),getLoginInfo().getUserx_id_role() );
+                canSrchDone = true;
+            }
+            return canSrch;
+        }
+        return true;
+    }
+
+    public boolean isCanReportPdf() throws SQLException, LoginException {
+        if (!canRpdfDone) {
+            canRpdf = getLoginInfo().canDoAction(getActionName("RPDF"),getLoginInfo().getUserx_id_role() );
+        }
+        canRpdfDone = true;
+        return canRpdf;
+    }
+
+    public boolean isCanReportXls() throws SQLException, LoginException {
+        if (!canRxlsDone) {
+            canRxls = getLoginInfo().canDoAction(getActionName("RXLS"),getLoginInfo().getUserx_id_role() );
+        }
+        canRxlsDone = true;
+        return canRxls;
+    }
+
+    public boolean isCanAction1() throws SQLException, LoginException { // qqq
+        if (!canAc01Done) {canAc01 = getLoginInfo().canDoAction(getActionName("AC01"),getLoginInfo().getUserx_id_role() ); }
+        canAc01Done = true; return canAc01;}
+    public boolean isCanAction2() throws SQLException, LoginException {
+        if (!canAc02Done) {canAc02 = getLoginInfo().canDoAction(getActionName("AC02"),getLoginInfo().getUserx_id_role() ); }
+        canAc02Done = true; return canAc02;}
+    public boolean isCanAction3() throws SQLException, LoginException {
+        if (!canAc03Done) {canAc03 = getLoginInfo().canDoAction(getActionName("AC03"),getLoginInfo().getUserx_id_role() ); }
+        canAc03Done = true; return canAc03;}
+    public boolean isCanAction4() throws SQLException, LoginException {
+        if (!canAc04Done) {canAc04 = getLoginInfo().canDoAction(getActionName("AC04"),getLoginInfo().getUserx_id_role() ); }
+        canAc04Done = true; return canAc04;}
+    public boolean isCanAction5() throws SQLException, LoginException {
+        if (!canAc05Done) {canAc05 = getLoginInfo().canDoAction(getActionName("AC05"),getLoginInfo().getUserx_id_role() ); }
+        canAc05Done = true; return canAc05;}
+    public boolean isCanAction6() throws SQLException, LoginException {
+        if (!canAc06Done) {canAc06 = getLoginInfo().canDoAction(getActionName("AC06"),getLoginInfo().getUserx_id_role() ); }
+        canAc06Done = true; return canAc06;}
+    public boolean isCanAction7() throws SQLException, LoginException {
+        if (!canAc07Done) {canAc07 = getLoginInfo().canDoAction(getActionName("AC07"),getLoginInfo().getUserx_id_role() ); }
+        canAc07Done = true; return canAc07;}
+    public boolean isCanAction8() throws SQLException, LoginException {
+        if (!canAc08Done) {canAc08 = getLoginInfo().canDoAction(getActionName("AC08"),getLoginInfo().getUserx_id_role() ); }
+        canAc08Done = true; return canAc08;}
+    public boolean isCanAction9() throws SQLException, LoginException {
+        if (!canAc09Done) {canAc09 = getLoginInfo().canDoAction(getActionName("AC09"),getLoginInfo().getUserx_id_role() ); }
+        canAc09Done = true; return canAc09;}
+    public boolean isCanAction10() throws SQLException, LoginException {
+        if (!canAc10Done) {canAc10 = getLoginInfo().canDoAction(getActionName("AC10"),getLoginInfo().getUserx_id_role() ); }
+        canAc10Done = true; return canAc10;}
+    public boolean isCanAction11() throws SQLException, LoginException {
+        if (!canAc11Done) {canAc11 = getLoginInfo().canDoAction(getActionName("AC11"),getLoginInfo().getUserx_id_role() ); }
+        canAc11Done = true; return canAc11;}
+    public boolean isCanAction12() throws SQLException, LoginException {
+        if (!canAc12Done) {canAc12 = getLoginInfo().canDoAction(getActionName("AC12"),getLoginInfo().getUserx_id_role() ); }
+        canAc12Done = true; return canAc12;}
+    public boolean isCanAction13() throws SQLException, LoginException {
+        if (!canAc13Done) {canAc13 = getLoginInfo().canDoAction(getActionName("AC13"),getLoginInfo().getUserx_id_role() ); }
+        canAc13Done = true; return canAc13;}
+    public boolean isCanAction14() throws SQLException, LoginException {
+        if (!canAc14Done) {canAc14 = getLoginInfo().canDoAction(getActionName("AC14"),getLoginInfo().getUserx_id_role() ); }
+        canAc14Done = true; return canAc14;}
+    public boolean isCanAction15() throws SQLException, LoginException {
+        if (!canAc15Done) {canAc15 = getLoginInfo().canDoAction(getActionName("AC15"),getLoginInfo().getUserx_id_role() ); }
+        canAc15Done = true; return canAc15;}
+    public boolean isCanAction16() throws SQLException, LoginException {
+        if (!canAc16Done) {canAc16 = getLoginInfo().canDoAction(getActionName("AC16"),getLoginInfo().getUserx_id_role() ); }
+        canAc16Done = true; return canAc16;}
+    public boolean isCanAction17() throws SQLException, LoginException {
+        if (!canAc17Done) {canAc17 = getLoginInfo().canDoAction(getActionName("AC17"),getLoginInfo().getUserx_id_role() ); }
+        canAc17Done = true; return canAc17;}
+    public boolean isCanAction18() throws SQLException, LoginException {
+        if (!canAc18Done) {canAc18 = getLoginInfo().canDoAction(getActionName("AC18"),getLoginInfo().getUserx_id_role() ); }
+        canAc18Done = true; return canAc18;}
+    public boolean isCanAction19() throws SQLException, LoginException {
+        if (!canAc19Done) {canAc19 = getLoginInfo().canDoAction(getActionName("AC19"),getLoginInfo().getUserx_id_role() ); }
+        canAc19Done = true; return canAc19;}
+    public boolean isCanAction20() throws SQLException, LoginException {
+        if (!canAc20Done) {canAc20 = getLoginInfo().canDoAction(getActionName("AC20"),getLoginInfo().getUserx_id_role() ); }
+        canAc20Done = true; return canAc20;}
+
+    // Refresh Execute Caller------------------------------------------------
+    public String refresh() throws SQLException, LoginException {
+        doUpdate();
+        //loadBeanVal();
+        //loadBean();
+        return tipo;
+    }
+
+    // Table Handling
+    public UIData getPesqTable() {
+        return pesqTable;
+    }
+    // Table Handling
+    public UIData getPesqTable1() {
+        return pesqTable1;
+    }
+    // Table Handling
+    public UIData getPesqTable2() {
+        return pesqTable2;
+    }
+
+    public int getCurrentLine() {
+        return currentLine;
+    }
+
+    public int getPageLength() {
+        return pageLength;
+    }
+
+    public boolean isHasNextPage() {
+        return hasNextPage;
+    }
+
+    public boolean isHasPrevPage() {
+        return hasPrevPage;
+    }
+
+    public DataObject getBean() {
+        return bean;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public int getMaxResults() {
+        return maxResults;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setCampo(String campo) {
+        getSession().setAttribute("campo", campo);
+    }
+
+    public String getCampo() {
+        return (String) getSession().getAttribute("campo");
+    }
+    public String getUfmv() {
+        return ufmv;
+    }
+    public Integer getMvsq() {
+        return mvsq;
+    }
+    public Integer getPs() {
+        return ps;
+    }
+
+    private String getActionName(String action) {
+        //String className = getClass().getName();
+        //className = className.substring(className.lastIndexOf(".") + 1, className.length());
+        //className = className.substring(0, 1).toLowerCase() +
+        //            className.substring(1, className.length());
+        //int pos = className.indexOf("Diag");
+        //if (pos > 0) {
+        //    className = className.substring(0, pos) + "Bean";
+        //}
+        String objtx = ""; String oo = "";
+         objtx = (String)getSession().getAttribute("tipo");
+        if (objtx == null) {objtx = "    ";}
+        int pos = objtx.indexOf("cad");
+        if (pos < 0 ) {pos = objtx.indexOf("chdpsq");}
+        if (pos < 0 ) {pos = objtx.indexOf("psq");}
+        if (pos < 0 ) {pos = objtx.indexOf("pesq");}
+        if (pos < 0 ) {
+            oo = "@"+objtx.substring(1,objtx.length());
+        } else {
+        oo = objtx.substring(0,pos);
+        }
+        objtx = oo;
+        return objtx.toUpperCase() + "." + action;
+    }
+
+    public String doNovo()  throws SQLException, LoginException {  // logic section - Insert a New Record
+
+    	verifyHelpFromtrans(tipo);
+        tab_remember = false;
+        cancel_partial = false;
+        reset();
+        mesg_var = ""; xmesg_rc = 0;
+        validateAll=2;validate();
+        String destino = (String) (getSession().getAttribute("history"));
+        getSession().setAttribute("novo", true);
+        tipo = (String)getSession().getAttribute("tipo");
+
+        int ix = tipo.indexOf("cad");
+        if (ix < 0) {ix = tipo.indexOf("psq");}
+        String ttran = tipo.substring(0,ix);
+        trans_tt = getMessageByKey(ttran+"_TT");
+        setCanAlterar(true);
+        getSession().setAttribute(tipo, true); // Set assist true for goback buutons
+        // int ddn = tipo.indexOf("cad");
+        //return tipo.substring(0,ix)+"cad"; // return success + parametro para fazer a generalizaçao
+        return tipo; // return success + parametro para fazer a generalizaçao
+    }   
+
+    public Boolean valRecd_ts(Connection con) throws SQLException {
+        return true;
+    }
+
+    public void updateRecdTs() {
+        return;
+    }
+
+    public DataObject setTableAliasBean(DataObject dao) {
+        return dao;
+    }
+
+    public DataObject setProcedureNameBean(DataObject dao) {
+        return dao;
+    }
+
+    public DataObject setProcedureNameBean(DataObject dao, String proc) {
+        return dao;
+    }
+
+    public DataObject setDataValues(DataObject dao) throws SQLException, LoginException {
+        return dao;
+    }
+
+    public String doAlterar() throws SQLException, ValidatorException, LoginException { // @save
+        setState(State.ALTERANDO);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("updt"),getLoginInfo().getUserx_id_role());
+            msgqt = 0; mesg_var = ""; // 111023
+            if (!valRecd_ts(con)) { // @save Validate Lock via time stamp
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("valrecd_ts");
+                //return doMessage();
+                return "success";
+            } else if (!validate(con)) { // @save validate all fields
+                validateAll = 0;
+                xmesg_rc = 999;
+                if (mesg_var.length() == 0 ) { // 111023
+                	mesg_var = getMessageByKey("unsuccessfull_validate");
+                }
+                //return doMessage();
+                return "success";
+            }
+            if (resultMessage == false) {
+                // 100511   addErrorMessageByKey("msg_branco");
+            }
+            updateRecdTs(); // @save update time stamp for lock control
+            DataObject dao = (DataObject) getDataClass().newInstance(); // @save
+            dao = setTableAliasBean(dao); // @save
+            dao.loadFromBean(this); // @save load dao with data from bean
+            doBeforeUpdate(con, dao);    // @save
+            dao.update(con); // @save update record
+            dao.load(con);   // @save
+            dao.saveToBean(this); // @save Restore saved data to bean to get recd_ts in correct format
+            con.commit();
+            addErrorMessageByKey("success_alterar");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_alterar");
+            //return doMessage();
+            return "success";
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+            //return SQLExceptionError(ex, con);
+        	//mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+        	//System.out.println(getClass() + ": "+ex.toString());
+            log.error(getClass() + ": "+ex.toString());
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+    
+    public String doAlterarImports() throws SQLException, ValidatorException, LoginException { // @save
+        setState(State.ALTERANDO);
+        Connection con = DatabaseUtils.getConnection();
+        if (tabs_vf == null) { tabs_vf = tabsvf;} 
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("updt"),getLoginInfo().getUserx_id_role());
+            msgqt = 0; mesg_var = ""; // 111023
+
+        ///*
+            if (!valRecd_ts(con)) { // @save Validate Lock via time stamp
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("valrecd_ts");
+                //return doMessage();
+                return "success";
+            } else if (!validate(con)) { // @save validate all fields
+                validateAll = 0;
+                xmesg_rc = 999;
+                if (mesg_var.length() == 0 ) { // 111023
+                	mesg_var = getMessageByKey("unsuccessfull_validate");
+                }
+                //return doMessage();
+                return "success";
+            }
+            //*/
+
+            if (resultMessage == false) {
+                // 100511   addErrorMessageByKey("msg_branco");
+            }
+            updateRecdTs(); // @save update time stamp for lock control
+            DataObject dao = (DataObject) getDataClass().newInstance(); // @save
+            dao = setTableAliasBean(dao); // @save
+            dao.loadFromBean(this); // @save load dao with data from bean
+            doBeforeUpdate(con, dao);    // @save
+            dao.update(con); // @save update record
+            boolean test = dao.load(con);   // @save
+            //String pkx = dao.pks
+            dao.saveToBean(this); // @save Restore saved data to bean to get recd_ts in correct format
+
+            //pkmap = dao.getMapFields();
+            //String linex = pkmap.toString();
+        	//linex = dao.getMapFields().toString();
+
+            //String propx = ""; String propCD = "";  String propTT= "";
+     	    //ListIterator propCDTTIterator = propCDTTList.listIterator();
+            //while (propCDTTIterator.hasNext()) {
+            //    propx = ((String) (propCDTTIterator.next()));
+            //    propCD = propx.substring(0,propx.indexOf("-"));
+            //    propTT = propx.substring(propx.indexOf("-"),propx.length());
+            //    linex = linex.replace(propCD, propTT);
+            //}
+            mesg_var = getMessageByKey("success_alterar");
+        	if (!test) { 
+                if (linex != null ) {
+                	content[ckk] = ">>>> Registro a ser Atualizado não existe na Base de Dados";
+                	mesg_var = content[ckk];
+                	ckk = ckk + 1;
+                	content[ckk] = linex;
+                	ckk = ckk + 1;
+                	content[ckk] = "  ";
+                	ckk = ckk + 1;
+                	importErrorFlag = 1;
+                }
+            }
+            con.commit(); 
+            DatabaseUtils.releaseConnection(con);
+            addErrorMessageByKey("success_alterar");
+            xmesg_rc = 0;
+            //return doMessage();
+            return "success";
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	//return SQLExceptionError(ex, con);
+        	mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+        	if (linex != null ) {
+            	importErrorFlag = 1;
+        		content[ckk] = ">>>> Erro:"+ex.toString();
+        		ckk = ckk + 1;
+        		content[ckk] = linex;
+        		ckk = ckk + 1;
+        		content[ckk] = "   ";
+        		ckk = ckk + 1;
+            }
+        	//System.out.println(getClass() + ": "+ex.toString());
+            log.error(getClass() + ": "+ex.toString());
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    //package test;
+
+    //import java.io.File;
+    //import java.io.FileWriter;
+    //import java.io.IOException;
+    //import java.io.PrintWriter;
+
+/*    
+    public class WriteStringToFile2 {
+   	
+    	public static void main(String[] args) {	
+    		try {
+    			File file = new File("test2.txt");
+    			FileWriter fileWriter = new FileWriter(file);
+    			PrintWriter printWriter = new PrintWriter(fileWriter);
+    			printWriter.print("This is ");
+    			printWriter.print("a test");
+    			fileWriter.flush();
+    			fileWriter.close();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    }
+*/
+    public String doAlterarChld() throws SQLException, ValidatorException, LoginException { // @save
+        setState(State.ALTERANDO);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("updt"),getLoginInfo().getUserx_id_role());
+            msgqt = 0; mesg_var = ""; // 111023
+            if (!valRecd_ts(con)) { // @save Validate Lock via time stamp
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("valrecd_ts");
+                //return doMessage();
+                return "success";
+            } else if (!validate(con)) { // @save validate all fields
+                validateAll = 0;
+                xmesg_rc = 999;
+                if (mesg_var.length() == 0 ) { // 111023
+                	mesg_var = getMessageByKey("unsuccessfull_validate");
+                }
+                //return doMessage();
+                return "success";
+            }
+            if (resultMessage == false) {
+                // 100511   addErrorMessageByKey("msg_branco");
+            }
+            updateRecdTs(); // @save update time stamp for lock control
+            DataObject dao = (DataObject) getDataClass().newInstance(); // @save
+            dao = setTableAliasBean(dao); // @save
+            dao.loadFromBean(this); // @save load dao with data from bean
+            doBeforeUpdate(con, dao);    // @save
+            dao.update(con); // @save update record
+            dao.load(con);   // @save
+            dao.saveToBean(this); // @save Restore saved data to bean to get recd_ts in correct format
+            con.commit();
+            addErrorMessageByKey("success_alterar");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_alterar");
+            //return doMessage();
+            doSelecionar();
+            String tranchld = tipo.substring(0,tipo.length()-3)+"psq";;
+            return tranchld;
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	//return SQLExceptionError(ex, con);
+        	mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+        	//System.out.println(getClass() + ": "+ex.toString());
+            log.error(getClass() + ": "+ex.toString());
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doAlterarLogico() throws SQLException, ValidatorException, LoginException { // @save
+        setState(State.ALTERANDO);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("updt"),getLoginInfo().getUserx_id_role());
+            msgqt = 0; mesg_var = ""; // 111023
+            if (!valRecd_ts(con)) { // @save Validate Lock via time stamp
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("valrecd_ts");
+                //return doMessage();
+                return "success";
+            } else if (!validate(con)) { // @save validate all fields
+                validateAll = 0;
+                xmesg_rc = 999;
+                if (mesg_var.length() == 0 ) { // 111023
+                	mesg_var = getMessageByKey("unsuccessfull_validate");
+                }
+                //return doMessage();
+                return "success";
+            }
+            if (resultMessage == false) {
+                // 100511   addErrorMessageByKey("msg_branco");
+            }
+            updateRecdTs(); // @save update time stamp for lock control
+            DataObject dao = (DataObject) getDataClass().newInstance(); // @save
+            dao = setTableAliasBean(dao); // @save
+            dao.loadFromBean(this); // @save load dao with data from bean
+            dao.update(con); // @save update record
+            dao.load(con);   // @save
+            dao.saveToBean(this); // @save Restore saved data to bean to get recd_ts in correct format
+            con.commit();
+            addErrorMessageByKey("success_alterar");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_alterar");
+            //return doMessage();
+            return "success";
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	//return SQLExceptionError(ex, con);
+        	mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+        	//System.out.println(getClass() + ": "+ex.toString());
+            log.error(getClass() + ": "+ex.toString());
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String translateMesg1(String key) {
+        int keyll = key.length(); int keykk = 0; int keytk_start= 0; int keytk_end= 0; int start = 0;
+        String keytk = "";
+        String key1 = ""; String key2 = "";
+        String key1m = ""; String key2m = "";
+        int pos = key.indexOf("@"); int pos2 = key.indexOf(">");
+        String msgkey = "";
+        String msgkeym = "";
+        msgkey = key.substring(0,1);
+        if (pos >= 0 ) {
+            key1 = key.substring(0,pos);
+            if (pos2 < 0) {
+                msgkey = key.substring(pos+1,key.length());
+            }
+            if (pos2 >= 0) {
+                msgkey = key.substring(pos+1,pos2);
+                key2 = key.substring(pos2+1,key.length());
+            }
+        }
+
+        while(keykk <= keyll) {
+            keytk_start = key.indexOf("ptt:", start);
+            if (keytk_start >= 0) {
+                start = keytk_start;
+                keytk_end = key.indexOf("/", start);
+                keytk = key.substring(keytk_start+4,keytk_end)+"_tt";
+                msgkey = msgkey + getMessageByKey(keytk);
+                start = keytk_end + 1;
+                keykk = start; continue;
+            }
+            keytk_start = key.indexOf("txt:", start);
+            if (keytk_start >= 0) {
+                start = keytk_start;
+                keytk_end = key.indexOf("/", start);
+                keytk = key.substring(keytk_start+4,keytk_end);
+                msgkey = msgkey + keytk;
+                start = keytk_end + 1;
+                keykk = start; continue;
+            }
+
+            keytk_start = key.indexOf("key:", start);
+            if (keytk_start >= 0) {
+                start = keytk_start;
+                keytk_end = key.indexOf("/", start);
+                keytk = key.substring(keytk_start+4,keytk_end);
+                msgkey = msgkey + getMessageByKey(keytk);
+                start = keytk_end + 1;
+                keykk = start; continue;
+            }
+
+            keykk = keykk + 1;
+        }
+
+        String mesg = msgkey;
+        //if (key1.length() > 0){key1m = ">> "+getMessageByKey(key1);}
+        //if (key2.length() > 0){key2m = getMessageByKey(key2);}
+        //if (msgkey.length() > 0){msgkeym = getMessageByKey(msgkey);}
+        //String mesg = key1m+" "+msgkeym+" "+key2m;
+        //String mesg = "msg: "+getMessageByKey(key1)+""+getMessageByKey(msgkey)+""+getMessageByKey(key2);
+        return mesg;
+    }
+
+    public String LoginExceptionError(LoginException ex, Connection con) throws SQLException {
+        String key = "";
+        String message = ex.getMessage();
+        String driverName = con.getMetaData().getDriverName();
+
+        //System.out.println("message: "+ message);
+        //System.out.println("driverName: "+ driverName);
+
+        addErrorMessageByKey(key);
+        // number da Aba selecionada
+        String number = (String) (getSession().getAttribute(((String) getSession().getAttribute("cadbeanx"))+"x"));
+        //String number = "";
+        //Object oo = (getSession().getAttribute(((String) getSession().getAttribute("cadbeanx"))+"x"));
+        //if (oo != null) { number = (String) oo; }
+
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(0,'9'); // seta a posicao 0 do tabsvf com 9
+        vfbuffer.setCharAt(ps,'9');
+        vfbuffer.setCharAt(psvc,'9');
+        vfbuffer.setCharAt(Integer.parseInt(number),'9'); // seta a posicao da aba no tabsvf com 9
+        tabsvf = vfbuffer.toString();
+        return doMessage();
+    }
+
+    public String SQLExceptionError(SQLException ex, Connection con) throws SQLException {
+        String key = "";
+        String message = ex.getMessage();
+        String sqlState = ex.getSQLState();
+        Integer errorCode = ex.getErrorCode();
+        String driverName = con.getMetaData().getDriverName();
+
+        //System.out.println("message: "+ message);
+        //System.out.println("sqlState: "+ sqlState);
+        //System.out.println("errorCode: "+ errorCode);
+        //System.out.println("driverName: "+ driverName);
+        log.error(getClass() + "message: "+message);
+    	log.error(getClass() + "sqlState: "+sqlState);
+    	log.error(getClass() + "errorCode: "+errorCode.toString());
+    	log.error(getClass() + "driverName: "+driverName);
+
+        if (driverName.equals("Oracle JDBC driver")) {
+            if (errorCode == 1) { key = "dup_val_on_index"; }
+            else if(errorCode == 1400) { key = "dup_val_on_index";}
+            else if(errorCode == 1401) { key = "dup_val_on_index";}
+            else if(errorCode == 2292) { key = "foreing_key";}
+            else { key = "sqlerror1";
+                addErrorMessage("-- msg:"+errorCode);
+            }
+            addErrorMessageByKey(key);
+        	log.error(getClass() + ": "+key);
+        }
+        if (driverName.indexOf("MS SQL Server") >=0 ) {
+            if (errorCode == 1) { key = "dup_val_on_index"; }
+            else if (errorCode == 547) {
+                key = "sql_foreign_key_restriction";
+            }
+            else if(errorCode == 2627) { key = "dup_val_on_index";}
+            else if(errorCode == 1400) { key = "dup_val_on_index";}
+            else if(errorCode == 1401) { key = "dup_val_on_index";}
+            else if(errorCode == 2292) { key = "foreing_key";}
+            else { key = "sqlerror1";
+                addErrorMessage("-- msg:"+errorCode);
+            }
+            addErrorMessageByKey(key);
+        	log.error(getClass() + ": "+key);
+        }
+
+        //if (key.equals("sqlerror")) {
+        //    addErrorMessageByKey("sqlerror1");
+        //    addErrorMessage("  "+driverName+": "+errorCode);
+        //} else {
+        //    addErrorMessageByKey(key);
+        //}
+        // number da Aba selecionada
+
+        // String number = (String) (getSession().getAttribute(((String) getSession().getAttribute("cadbeanx"))+"x"));
+
+        String number = null;
+        Object aba = (getSession().getAttribute(((String) getSession().getAttribute("cadbeanx"))+"x"));
+        if (aba != null) {
+            number = aba.toString();
+        } else {
+            number = "1";
+        }
+
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(0,'9'); // seta a posicao 0 do tabsvf com 9
+        //vfbuffer.setCharAt(ps,'9');
+        vfbuffer.setCharAt(psvc,'9');
+        // vfbuffer.setCharAt(29,'9');
+        vfbuffer.setCharAt(49,'9');
+        vfbuffer.setCharAt(Integer.parseInt(number),'9'); // seta a posicao da aba no tabsvf com 9
+        tabsvf = vfbuffer.toString();
+        con.commit();
+        return doMessage();
+    }
+
+
+    /**
+     * doBeforeUpdate
+     *
+     * @param con Connection
+     * @param dao DataObject
+     * @throws SQLException
+     */
+    protected void doBeforeUpdate(Connection con, DataObject dao) throws SQLException {
+    }
+
+    public void doExcluir(Connection con, DataObject dao) throws SQLException, LoginException {  //@delete
+        try {
+            //getLoginInfo().checkDoAction(con, getActionName("delt"),getLoginInfo().getUserx_id_role());
+        	updateMrobOnChldDelete();
+        	dao = setTableAliasBean(dao);  //@delete
+            dao.loadFromBean(this);        //@delete
+            dao.delete(con);               //@delete
+            dao.update(con);               //@delete 
+            con.commit();           
+        } catch (SQLException ex){
+            SQLExceptionError(ex, con);
+        }
+    }
+
+//    public void doExcluir(DataObject dao) throws SQLException, LoginException {
+//        Connection con = DatabaseUtils.getConnection();
+//        try {
+//            con.setAutoCommit(false);
+//            doExcluir(con, dao);
+//            con.commit();
+//        } finally {
+//            DatabaseUtils.releaseConnection(con);
+//        }
+//    }
+
+    public String doExcluir() throws SQLException, LoginException { // @delete
+        setState(State.EXCLUINDO);
+       	updateMrobOnChldDelete();
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("delt"),getLoginInfo().getUserx_id_role());
+            DataObject dao = (DataObject) getDataClass().newInstance();
+
+            // 100511 doExcluir(con, dao);
+
+            dao = setTableAliasBean(dao); //@delete
+            dao.loadFromBean(this);       //@delete
+            dao.delete(con);              //@delete
+            dao.update(con);              //@delete 
+            con.commit();      
+
+            //addErrorMessageByKey("success_excluir");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_excluir");
+            //return doMessage();
+            return "success";
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	//return SQLExceptionError(ex, con);
+            xmesg_rc = 777;
+        	if (ex.toString().indexOf("constraint") >= 0)  {
+            	mesg_var = getMessageByKey("sqlerror4")+ ": "+ex.toString();
+            } else {
+            	mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+            }
+        	System.out.println(getClass() + ": "+ex.toString());
+            //con.close() ;
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doExcluirChld() throws SQLException, LoginException { // @delete
+        setState(State.EXCLUINDO);
+       	updateMrobOnChldDelete();
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("delt"),getLoginInfo().getUserx_id_role());
+            DataObject dao = (DataObject) getDataClass().newInstance();
+
+            // 100511 doExcluir(con, dao);
+
+            dao = setTableAliasBean(dao); //@delete
+            dao.loadFromBean(this);       //@delete
+            dao.delete(con);              //@delete
+            dao.update(con);              //@delete 
+            con.commit();      
+
+            //addErrorMessageByKey("success_excluir");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_excluir");
+            //return doMessage();
+            doSelecionar();
+            String tranchld = tipo.substring(0,tipo.length()-3)+"psq";;
+            return tranchld;
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	//return SQLExceptionError(ex, con);
+            xmesg_rc = 777;
+        	if (ex.toString().indexOf("constraint") >= 0)  {
+            	mesg_var = getMessageByKey("sqlerror4")+": "+ex.toString();
+            } else {
+            	mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+            }
+        	System.out.println(getClass() + ": "+ex.toString());
+            con.close() ;
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doExcluirLogico() throws SQLException, LoginException { // @save
+        String result = "";
+        if (cadbeanx != null && !"".trim().equals("")) {
+            cadbeanx = getParameter("cadbeanx");
+        }
+        getSession().setAttribute("cadbeanx", cadbeanx);
+        if (canAlterar == true) {
+            result = doAlterarLogico(); // @save
+        }
+        return result;
+    }
+
+    public String doExcluirOld() throws SQLException, LoginException { //@delete
+        setState(State.EXCLUINDO);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("delt"),getLoginInfo().getUserx_id_role());
+            DataObject dao = (DataObject) getDataClass().newInstance();
+
+            // 100511 doExcluir(con, dao);
+
+            dao = setTableAliasBean(dao); //@delete
+            dao.loadFromBeanOld(this);    //@delete
+            dao.delete(con);              //@delete
+            dao.update(con);              //@delete
+            con.commit();                    
+
+            //addErrorMessageByKey("success_excluir");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_excluir");
+            //return doMessage();
+            return "success";
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+        	//System.out.println(getClass() + ": "+ex.toString());
+        	log.error(getClass() + ": "+ex.toString());
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+    
+    public String doExcluirLinha() throws SQLException, LoginException {
+        setState(State.EXCLUINDO);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("delt"),getLoginInfo().getUserx_id_role());
+
+            DataObject dao = (DataObject) getDataClass().newInstance();
+            String mvsqx = (String) getSession().getAttribute("mvsq");
+            ufmv = (String) getSession().getAttribute("ufmv");
+            mvsq = mvsq.parseInt((String) mvsqx);
+            dao = setTableAliasBean(dao);
+            dao.loadFromBean(this);
+            doBeforeUpdate(con, dao);
+            dao.saveOrUpdateChilds(con);
+            if (ufmv.substring(ps,pe).contains("0")) { mvsq = 0;}
+            con.commit();
+            if (validateDelete()) {
+                dao.loadTabsvf(this);
+                dao.update(con);}
+            con.commit();
+            addErrorMessageByKey("success_excluir");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_excluir");
+            //return doMessage();
+            return "success";
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+        	//System.out.println(getClass() + ": "+ex.toString());
+        	log.error(getClass() + ": "+ex.toString());
+        	return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doUpdate() throws SQLException, LoginException { // @save
+        String result = "";
+
+        if (cadbeanx != null && !"".trim().equals("")) {
+            cadbeanx = getParameter("cadbeanx");
+        }
+
+        getSession().setAttribute("cadbeanx", cadbeanx);
+
+        if (canInserir == true) {
+            result = doInserir(); // @save
+        } else if (canAlterar == true) {
+            result = doAlterar(); // @save
+        }
+        loadDesc();
+        return result;
+    }
+    public void loadDesc() throws SQLException {
+    }
+    public String doUpdate1Chld() throws SQLException, LoginException { // @save
+        String result = "";
+
+        if (cadbeanx != null && !"".trim().equals("")) {
+            cadbeanx = getParameter("cadbeanx");
+        }
+
+        getSession().setAttribute("cadbeanx", cadbeanx);
+
+        if (canInserir == true) {
+            result = doInserirChld(); // @save
+        } else if (canAlterar == true) {
+            result = doAlterarChld(); // @save
+        }
+        return result;
+    }
+
+    public String doUpdate1() throws SQLException, LoginException { // @save
+        String result = "";
+
+        if (cadbeanx != null && !"".trim().equals("")) {
+            cadbeanx = getParameter("cadbeanx");
+        }
+
+        getSession().setAttribute("cadbeanx", cadbeanx);
+
+       // if (canInserir == true) {
+        result = doExcluirOld();  // @save
+        result = doInserir(); // @save
+        //} else if (canAlterar == true) {
+        //}
+        return result;
+    }
+
+    public String doUpdate2Chld() throws SQLException, LoginException { // @save
+        String result = "";
+        if (cadbeanx != null && !"".trim().equals("")) {
+            cadbeanx = getParameter("cadbeanx");
+        }
+        getSession().setAttribute("cadbeanx", cadbeanx);
+       // if (canInserir == true) {
+        result = doExcluirOld();  // @save
+        result = doInserirChld(); // @save
+        //} else if (canAlterar == true) {
+        //}
+//        result = doAlterarChld(); // @save
+
+        return result;
+    }
+
+    public String doUpdateMd5() throws SQLException, LoginException, Exception { // @save
+        String result = "";
+
+        if (cadbeanx != null && !"".trim().equals("")) {
+            cadbeanx = getParameter("cadbeanx");
+        }
+
+        getSession().setAttribute("cadbeanx", cadbeanx);
+
+        if (canInserir == true) {
+            result = doInserir();  // @save
+        } else if (canAlterar == true) {
+            result = doAlterar();  // @save
+        }
+        return result;
+    }
+    
+    public String doInserir() throws SQLException, LoginException { // @save
+        setState(State.INSERINDO);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("inst"),getLoginInfo().getUserx_id_role());
+            msgqt = 0;
+            if (tabs_vf == null) { tabs_vf = tabsvf;} 
+            if (!valRecd_ts(con)) {
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("unsuccessfull_validate");
+                //return doMessage();
+                return "success";
+            } else if (!validate(con)) {
+                validateAll = 0;
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("unsuccessfull_validate");
+                //return doMessage();
+                return "success";
+            }
+            
+            if (resultMessage == false) {
+               // 100511 addErrorMessageByKey("msg_branco");
+            }
+            if (!validateDupAlternateKey()) {
+                return "success";
+            }
+            validateInserir();
+            updateMrobOnChldInsert();
+            DataObject dao = (DataObject) getDataClass().newInstance();
+            geraPks(con);
+            dao = setTableAliasBean(dao);
+            dao.loadFromBean(this);
+            // doBeforeInsert(con, dao); 
+            dao.save(con);
+            con.commit();
+            createImagesDirectory();
+            //validateInserir();
+
+            canAlterar = true;
+            canUpdtDone = false;
+            canCopyDone = false;
+            canExcluir = false;
+            canDeltDone = false;
+ 
+            canInserir = false;
+            canInstDone = false;
+
+            canCancelar = true;
+            getInsertedKey();
+            
+            getSession().setAttribute("novainclusao", true);
+            addErrorMessageByKey("success_inserir");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_inserir");
+            //return doMessage();
+            return "success";
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	//return SQLExceptionError(ex, con);
+            String rccodex = ex.toString();
+            if (rccodex.indexOf("duplicate key") >= 0) {
+                mesg_var = getMessageByKey("dup_val_on_index");
+                xmesg_rc = 777;
+            } else {
+            	//mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+            	mesg_var = "Erro : "+ex.toString();
+                System.out.println(getClass() + ": "+rccodex);
+            	log.error(getClass() + ": "+rccodex);
+            }
+            return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doInserirChld() throws SQLException, LoginException { // @save
+        setState(State.INSERINDO);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            con.setAutoCommit(false);
+            //getLoginInfo().checkDoAction(con, getActionName("inst"),getLoginInfo().getUserx_id_role());
+            msgqt = 0;
+            if (!valRecd_ts(con)) {
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("unsuccessfull_validate");
+                //return doMessage();
+                return "success";
+            } else if (!validate(con)) {
+                validateAll = 0;
+                xmesg_rc = 999;
+                mesg_var = getMessageByKey("unsuccessfull_validate");
+                //return doMessage();
+                return "success";
+            }
+            if (resultMessage == false) {
+               // 100511 addErrorMessageByKey("msg_branco");
+            }
+            if (!validateDupAlternateKey()) {
+                return "success";
+            }
+            validateInserir();
+            updateMrobOnChldInsert();
+            DataObject dao = (DataObject) getDataClass().newInstance();
+            geraPks(con);
+            dao = setTableAliasBean(dao);
+            dao.loadFromBean(this);
+            // doBeforeInsert(con, dao); 
+            dao.save(con);
+            con.commit();
+            createImagesDirectory();
+            //validateInserir();
+
+            canAlterar = true;
+            canUpdtDone = false;
+            canCopyDone = false;
+            canExcluir = false;
+            canDeltDone = false;
+            canInserir = false;
+            canInstDone = false;
+            canCancelar = true;
+            getInsertedKey();
+            
+            getSession().setAttribute("novainclusao", true);
+            addErrorMessageByKey("success_inserir");
+            xmesg_rc = 0;
+            mesg_var = getMessageByKey("success_inserir");
+            //return doMessage();
+            doSelecionar();
+            String tranchld = tipo.substring(0,tipo.length()-3)+"psq";;
+            return tranchld;
+            //return "success";
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (SQLException ex){
+        	//return SQLExceptionError(ex, con);
+            String rccodex = ex.toString();
+            if (rccodex.indexOf("duplicate key") >= 0) {
+                mesg_var = getMessageByKey("dup_val_on_index");
+                xmesg_rc = 777;
+            } else {
+            	mesg_var = getMessageByKey("sqlerror3")+ ": "+ex.toString();
+                //System.out.println(getClass() + ": "+rccodex);
+            	log.error(getClass() + ": "+rccodex);
+            }
+            return "success";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doMessage() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Iterator it = context.getMessages();
+        pesqMesg = new ArrayList();
+        msgqtx = msgqt;
+        while (it.hasNext()) {
+            FacesMessage msg = (FacesMessage)it.next();
+            String mesg = msg.getSummary();
+            String proc = mesg.substring(0,1);
+            String symb = mesg.substring(1,2);
+            mesg = mesg.substring(2,(mesg.length()));
+            pesqMesg.add(new CadMesgxBean(proc, symb, mesg));
+        }
+        return "message";
+    }
+
+    /**
+     * doBeforeInsert
+     *
+     * @param con Connection
+     * @param dao DataObject
+     * @throws SQLException
+     * @throws LoginException
+     */
+    protected void doBeforeInsert(Connection con, DataObject dao) throws SQLException, LoginException {
+    }
+
+    public String doPesquisar() throws SQLException, LoginException {
+        //System.out.println(getClass() + ".doPesquisar");
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            getLoginInfo().checkDoAction(con, getActionName("SRCH"),getLoginInfo().getUserx_id_role());
+            reloadPesqData(con);
+            getSession().removeAttribute("destino");
+            getSession().setAttribute("assist", false);
+            return "pesquisar";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    // Método alterado por Romão e Paulo
+    public String selRow() throws SQLException, LoginException {
+        String destino = (String) (getSession().getAttribute("destino"));
+        if (pesqTable.isRowAvailable()) {
+            DataObject dao = (DataObject) pesqTable.getRowData();
+            bean = dao;
+            if (destino == null || destino.equals("")) {
+                    dao.saveToBean(this);
+                    canAlterar = true;
+                    canCancelar = true;
+                    canExcluir = true;
+                    canInserir = false;
+                return "success";
+            } else {
+                CadastroBean cadBean = (CadastroBean) getSession().getAttribute(destino);
+                cadBean.loadPesqResult(dao);
+                String campo = (String) (getSession().getAttribute("campo").toString().substring(0, 6));
+                if (campo.equals("filtro")) {
+                    getSession().setAttribute("destino", null);
+                    return "success_filtro_" + destino;
+                } else {
+                    tipo = destino;
+                    Integer ll = tipo.length();
+                    tipo = tipo.substring(0, ll).toLowerCase();
+                    destino = tipo;
+                    return "success_" + destino;
+                }
+            }
+        } else { // cancelar
+            if (destino == null || destino.equals("")) {
+                return "success";
+            } else {
+                CadastroBean cadBean = (CadastroBean) getSession().getAttribute(destino);
+                cadBean.loadPesqResult(null);
+                String campo = (String) (getSession().getAttribute("campo").toString().substring(0, 6));
+                if (campo.equals("filtro")) {
+                    getSession().setAttribute("destino", null);
+                    return "success_filtro_" + destino;
+                } else {
+                    return "success_" + destino;
+                }
+            }
+        }
+    }
+
+    public String doObter() throws SQLException, LoginException { // @getrecd
+    	canAlterar = true;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = true;
+        canDeltDone = false;
+        canInserir = false;
+        canInstDone = false;
+        canCancelar = true;
+
+        //tipo = (String)getSession().getAttribute("tipo");
+        //System.out.println("tipo sess: "+tipo);
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("novainclusao", false);
+
+        // Getting Transaction Title Dynamically for Record Pages
+
+        //if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+        //    tipo = (String)getSession().getAttribute("tipo");
+        //} else {
+        //    tipo = getParameter("tipo");
+        //}
+
+        //System.out.println("tipo parm: "+tipo);
+        int ix = tipo.indexOf("cad");
+        if (ix < 0) {ix = tipo.indexOf("psq");}
+        String ttran = tipo.substring(0,ix);
+       	trans_tt = getMessageByKey(ttran+"_TT"); // @getrecd
+ 
+    	verifyHelpFromtrans(tipo);
+
+   //     Connection con = DatabaseUtils.getConnection();
+   //     try {
+   //     // HelpSpc existence verification
+  //  	String transx = tipo.replace("cad", "");
+  //      //Help help = new Help(nameUpper1(transx)+"Rfm",getLocale());
+  //      Help help = new Help("TransRfm","pt_BR");
+  //      help.load(con);
+  //      String ss = help.getHelp_nm();
+  //      hasHelpSpcRfm = false;
+  //      if (ss != null && ss.indexOf("nok") < 0) {
+  //      	hasHelpSpcRfm = true;
+  //      }
+  //      } finally {
+  //          DatabaseUtils.releaseConnection(con);
+  //      }
+
+        return tipo; // @getrecd
+    }
+
+    public String doObternullSearchBack() throws SQLException, LoginException { // @getrecd
+    	canSearchBack = true;
+    	tab_remember = true;
+        cancel_partial = false; 
+        // reset();  // @getrecd
+        //getSession().setAttribute("ufmv", null); // commented  on 080909
+        mvsq = 0;
+        return doObter(); // @getrecd
+    }
+
+    public String doObternull() throws SQLException, LoginException { // @getrecd
+    	canSearchBack = false;
+    	tab_remember = true;
+        cancel_partial = false;
+        resetParms = false;
+
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo != null && tipo.contains("impexcfg") ) {} else {
+            reset();  // // @getrecd
+        }
+    	String hh = impexcfg_var;
+        //getSession().setAttribute("ufmv", null); // commented  on 080909
+        mvsq = 0;
+        return doObter(); // @getrecd
+    }
+    public String doObterNoReset() throws SQLException, LoginException { // @getrecd
+    	canSearchBack = false;
+    	tab_remember = true;
+        cancel_partial = false;
+        resetParms = false;
+        //reset();  // // @getrecd
+        //getSession().setAttribute("ufmv", null); // commented  on 080909
+        mvsq = 0;
+        return doObter(); // @getrecd
+    }
+    public String doObternullNext() throws SQLException, LoginException { // @getrecd
+    	canSearchBack = false;
+    	tab_remember = true;
+        cancel_partial = false;
+        //reset();  // // @getrecd
+        //getSession().setAttribute("ufmv", null); // commented  on 080909
+        mvsq = 0;
+        return doObterNext(); // @getrecd
+    }
+    public String doObternullPrev() throws SQLException, LoginException { // @getrecd
+    	canSearchBack = false;
+    	tab_remember = true;
+        cancel_partial = false;
+        //reset();  // // @getrecd
+        //getSession().setAttribute("ufmv", null); // commented  on 080909
+        mvsq = 0;
+        return doObterPrev(); // @getrecd
+    }
+
+    public String doObterNext() throws SQLException, LoginException { // @getrecd
+    	canAlterar = true;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = true;
+        canDeltDone = false;
+        canInserir = false;
+        canInstDone = false;
+        canCancelar = true;
+
+        tipo = (String)getSession().getAttribute("tipo");
+        //System.out.println("tipo sess: "+tipo);
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("novainclusao", false);
+
+        // Getting Transaction Title Dynamically for Record Pages
+        if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+            tipo = (String)getSession().getAttribute("tipo");
+        } else {
+            tipo = getParameter("tipo");
+        }
+        //System.out.println("tipo parm: "+tipo);
+        int ix = tipo.indexOf("cad");
+        if (ix < 0) {ix = tipo.indexOf("psq");}
+        String ttran = tipo.substring(0,ix);
+       	trans_tt = getMessageByKey(ttran+"_TT"); // @getrecd
+    	verifyHelpFromtrans(tipo);
+        return tipo; // @getrecd
+    }
+    public String doObterPrev() throws SQLException, LoginException { // @getrecd
+    	canAlterar = true;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = true;
+        canDeltDone = false;
+        canInserir = false;
+        canInstDone = false;
+        canCancelar = true;
+
+        tipo = (String)getSession().getAttribute("tipo");
+        //System.out.println("tipo sess: "+tipo);
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("novainclusao", false);
+
+        // Getting Transaction Title Dynamically for Record Pages
+        if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+            tipo = (String)getSession().getAttribute("tipo");
+        } else {
+            tipo = getParameter("tipo");
+        }
+        //System.out.println("tipo parm: "+tipo);
+        int ix = tipo.indexOf("cad");
+        if (ix < 0) {ix = tipo.indexOf("psq");}
+        String ttran = tipo.substring(0,ix);
+       	trans_tt = getMessageByKey(ttran+"_TT"); // @getrecd
+    	verifyHelpFromtrans(tipo);
+        return tipo; // @getrecd
+    }
+    
+    /**
+     * Retorna uma copia do Bean com as informações do Objeto
+     *
+     * @return Bean
+     */
+    public Object doObterBean() throws SQLException, LoginException {
+        return this;
+    }
+
+    /**
+     * Retorna uma copia do Bean com as informações do Objeto
+     * com o valor da PK do Objeto
+     *
+     * @param valor valor da PK do Objeto
+     * @return Bean
+     */
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+
+    /**
+     * Carrega o relatorio com os dados do Objeto
+     * com o valor da PK do Objeto
+     *
+     * @param valor valor da PK do Objeto
+     * @return HashMap parameters
+     */
+    public HashMap loadReport(String valor){
+        return null;
+    }
+
+
+    /**
+     * Carrega os atributos do Bean com os dados do Objeto
+     * com o valor da PK do Objeto vindo da sessão
+     *
+     */
+    public void loadBean() throws SQLException, LoginException {
+    }
+    public void loadBeanNext() throws SQLException, LoginException {
+    }
+    public void loadBeanPrev() throws SQLException, LoginException {
+    }
+
+    public void loadBeanVal() throws SQLException, LoginException {
+    }
+
+    /**
+     * Carrega os atributos do Bean com os dados do Objeto
+     * com o valor da PK do Objeto
+     *
+     * @param valor valor da PK do Objeto
+     */
+    public void loadBean(String valor) throws SQLException, LoginException {
+    }
+
+    public Boolean getNovox() {
+        novox = (Boolean) (getSession().getAttribute("novo"));
+        return novox;
+    }
+
+    protected void loadPesqResult(DataObject dao) throws SQLException {
+    }
+
+    public String doCancelar() {  // logic section - Cancel a Record Operation
+        setState(State.CANCELANDO);
+        tab_remember = false;
+        cancel_partial = false;
+        reset(); validate();
+        return "success";
+    }
+
+    public String doCancelarPartial() {
+        setState(State.CANCELANDO);
+        tab_remember = false;
+        cancel_partial = true;
+        reset(); validate();
+        return "success";
+    }
+
+    public String doLimpar() { // logic section - Clean Selection
+    	tab_remember = false;
+        cancel_partial = false;
+        resetParms = true;
+        reset();
+        resetFilters();
+        return "pesquisar";
+    }
+
+    public String doLimparPesq() throws SQLException, LoginException {
+        // Marked for Deprecation on 08/03/22 - Replaced by doSelecionar... mountFilter
+        //System.out.println(getClass() + ".doFilter");
+        cancel_partial = false;
+        resetParms = true;
+        reset();
+        resetFilters();
+    	//filter = null;
+        mountFilter();
+        return doSelecionar();
+    }
+
+    public String doProximaPagina() {
+        currentLine += pageLength;
+        int rowCount = pesqTable.getRowCount();
+        if ((currentLine + pageLength) > rowCount) {
+            currentLine = rowCount - pageLength;
+        }
+        hasNextPage = currentLine + pageLength < rowCount;
+        hasPrevPage = currentLine > 0;
+        return "pesquisar";
+    }
+
+    public String doPaginaAnterior() {
+        currentLine -= pageLength;
+        if (currentLine < 0) {
+            currentLine = 0;
+        }
+        hasNextPage = currentLine + pageLength < pesqTable.getRowCount();
+        hasPrevPage = currentLine > 0;
+        return "pesquisar";
+    }
+
+    protected String[] getParameters(String name) {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) context.getRequest();
+        return request.getParameterValues(name);
+    }
+
+    protected String getParameter(String name) {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) context.getRequest();
+        return request.getParameter(name);
+    }
+
+    protected void resetInitialFilters() {
+    }
+    protected void resetFilters() {
+    }
+
+    /**
+     * Limpa os campos da tela.
+     */
+    protected void reset() {
+
+         canAlterar = false;
+         canUpdt = false;
+         canUpdtDone = false;
+         canCopy = false;
+         canCopyDone = false;
+         canExcluir = false;
+         canDelt = false;
+         canDeltDone = false;
+         canInserir = true;
+         canInst = false;
+         canInstDone = false;
+         canCancelar = true;
+         canPesquisar = true;
+
+        filter = null;
+        order = null;
+        pesqData = null;  //  verificar que trans necessita que este seja comentado
+        pesqData1 = null;
+        pesqData2 = null;
+        mesg_var = null;
+        xmesg_rc = 0;
+    }
+
+    protected void loadFieldBean() {
+        flds_vfsb = new StringBuffer();
+        flds_vfsb.append(flds_vf);
+    }
+
+    /**
+     * Gera novas chaves primárias, usado durante inserts.
+     * @param con Connection
+     * @throws SQLException
+     */
+    protected void geraPks(Connection con) throws SQLException {
+    }
+
+    /**
+     * Retorna uma referencia ao DataObject que gerencia o acesso a dados.
+     * @return Class
+     */
+    protected abstract Class getDataClass();
+
+    protected boolean validate() {
+        // Calls all Field Validation Methods triggered by an Insert or an Update
+        validateAll = 1;
+        return true;
+    }
+    protected boolean validate(Connection con) throws SQLException {
+        validateAll = 1;
+        return validate();
+    }
+    protected void validateMax(StringBuffer vfbuffer) {  // Just for Main Records (Univalued
+        if (vf > vfmax) {vfmax = vf;}                    // vf and vfmax actually are vc and vcmax
+        vfbuffer.setCharAt(tab,vf.toString().charAt(0)); // Set the Max Tab Validation Status, where TAB > Cuurent Tab
+        tabsvf = vfbuffer.toString();
+    }
+    protected void validateMax(StringBuffer vfbuffer, List list, Integer mvsq, String chld_vc) {  // Gets Max Child Lines Status
+        // Object oo = list.get(mvsq); Map map1 = (Map) oo; map1.put(chld_vc, vf.toString());
+        if (vf > vfmax) {
+            vfmax = vf;
+        }
+        vfbuffer.setCharAt(ps,vfmax.toString().charAt(0)); // Set Tab Row Validation Status - Pos 28
+        vfbuffer.setCharAt(tab,vfmax(list, chld_vc).charAt(0)); // Set the Max Tab Validation Status
+        tabsvf = vfbuffer.toString();
+        String ss = "";
+    }
+    protected void vf(Integer vfinp) {                   // Updates the value of the Global vfmax
+        if (vfinp > vf) {vf = vfinp;}
+        return;
+    }
+    protected String vfmax(List list, String chld_vc) {  // Gets Max VC of a List of Child Record Rows
+        // chld_vc contains the Name of the chld_vc field
+        //vfmax = 0;
+        String val_field_vc = "";
+        for (int i = 0; i < list.size(); i++) {
+             if (i == mvsq) {i++; continue; }
+             Object rec = list.get(i);                 // Gets each row of a Child Record
+             Map map = (Map) rec;
+             val_field_vc = (String) map.get(chld_vc); // get the value of chld_vc of the current row
+             if (val_field_vc.length() > 0  ) {
+                 Integer i_val_field_vc = Integer.parseInt(val_field_vc);
+                 if (i_val_field_vc > vfmax ) {vfmax = i_val_field_vc;}  // Updates vfmax
+             }
+             if (vfmax == 9) {i = list.size(); } // terminates loop if vfmax is max
+        }
+        return vfmax.toString();
+    }
+
+    protected Integer listValSum100(List list, String chld_pp) {  // Gets Max VC of a List of Child Record Rows
+        // chld_pp contains the Name of the chld field
+        String value = ""; Integer sum = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+             Object rec = list.get(i);                 // Gets each row of a Child Record
+             if (rec instanceof Map) {
+                 Map map = (Map) rec;
+                 value = (String) map.get(chld_pp); // get the value of chld_vc of the current row
+                 if (value.length() > 0  ) {
+                     Integer val_field = Integer.parseInt(value);
+                     sum = sum + val_field;
+                 }
+             }
+        }
+        return sum;
+    }
+
+    protected boolean getListValOneYes(List list, String chld_pp) {  // Gets Max VC of a List of Child Record Rows
+        // chld_pp contains the Name of the chld field
+        String value = ""; boolean result = true; String mem = "";
+
+        for (int i = 0; i < list.size(); i++) {
+             Object rec = list.get(i);                 // Gets each row of a Child Record
+             if (rec instanceof Map) {
+                 Map map = (Map) rec;
+                 value = (String) map.get(chld_pp); // get the value of chld_vc of the current row
+                 if (value.length() > 0  ) {
+                     if (value.equals("S") && value.equals(mem) ) {result = false;}
+                     if (value.equals("S") ) {mem = value;}
+                 }
+             }
+        }
+        return result;
+    }
+
+    protected boolean valListUniqueValue(List list, String chld_pp, String thisvalue) {  // Gets Max VC of a List of Child Record Rows
+        // chld_pp contains the Name of the chld field
+        String value = ""; boolean result = true; String mem = ""; int kkdup = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+             Object rec = list.get(i);                 // Gets each row of a Child Record
+             if (rec instanceof Map) {
+                 Map map = (Map) rec;
+                 value = (String) map.get(chld_pp); // get the value of chld_vc of the current row
+                 value = value.trim();
+                 if (value.length() > 0  ) {
+                     if (value.equals(thisvalue) ) {
+                         kkdup = kkdup + 1;
+                         if (kkdup > 1) {result = false;}
+                     }
+                 }
+             }
+        }
+        return result;
+    }
+
+    protected boolean valListUniquePairOfValues(List list, String chld_pp1, String thisvalue1, String chld_pp2, String thisvalue2) {  // Gets Max VC of a List of Child Record Rows
+        // chld_pp contains the Name of the chld field
+        String value1 = ""; String value2 = ""; boolean result = true; int kkdup = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+             Object rec = list.get(i);                 // Gets each row of a Child Record
+             if (rec instanceof Map) {
+                 Map map = (Map) rec;
+                 value1 = (String) map.get(chld_pp1); // get the value of chld_vc of the current row
+                 value1 = value1.trim();
+                 value2 = (String) map.get(chld_pp2); // get the value of chld_vc of the current row
+                 value2 = value2.trim();
+                 if (value1.length() > 0 && value1.length() > 0 ) {
+                     if ( value1.equals(thisvalue1) && value2.equals(thisvalue2) ) {
+                         kkdup = kkdup + 1;
+                         if (kkdup > 1) {
+                             result = false; i = list.size() + 1;
+                         }
+                     }
+                 }
+             }
+        }
+        return result;
+    }
+
+    public String validateFieldOnChange(String value, String field) {
+        // Calls a Field Validation Method triggered by a onchange event (buscaValid)
+        // Calls validateMax
+        return validateFieldOnChange(value, field);
+    }
+    public String validateFieldOnChange(String value, String field, String _vf, String aba) {
+        // Calls a Field Validation Method triggered by a onchange event (buscaValid)
+        // Calls validateMax
+        return validateFieldOnChange(value, field, _vf, aba);
+    }
+    public String checkMaxFieldOnChange(String aba) {
+        return checkMaxFieldOnChange(aba);
+    }
+    public String checkVFMaxFieldOnChange(String aba) {
+        return checkVFMaxFieldOnChange(aba);
+    }
+
+    public String selMaxVc(String selbuffer) {
+        String result = "0"; 
+        return result;
+    }
+
+    public String selDivMaxVc(String selbuffer) {
+        String result = "0"; String value = "0";
+        int llselbuffer = selbuffer.length() - 1;
+        for (int i = 0; i <= llselbuffer; i++) {
+            value = Character.toString(selbuffer.charAt(i));
+            if (value.equals("9")) {i = llselbuffer; result = value;}
+            else if (value.equals("5")) {result = value;}
+        }
+        return result;
+    }
+    /*
+    protected String tabsvc(StringBuffer vfbuffer) {
+        Integer tabsvcmax = 0; Integer dd=0;
+        for (int i = 0; i < 27; i++) {
+             String xx = vfbuffer.substring(i,i+1);
+             dd = Integer.parseInt(xx);
+             if (dd > tabsvcmax ) {tabsvcmax = dd;}
+             if (tabsvcmax == 9) {i = 27;}
+        }
+        return tabsvcmax.toString();
+    }
+    */
+    protected void getInsertedKey() {
+    }
+    protected void validateInserir() {
+    }
+    protected void createImagesDirectory() {
+    }
+
+    protected void updateMrobOnChldInsert() throws SQLException {
+    }
+
+    protected boolean validateDupAlternateKey() {
+        return true;
+    }
+
+    protected boolean validateDelete() {
+        return true;
+    }
+    protected void updateMrobOnChldDelete() throws SQLException {
+    }
+
+    public String doValidate() throws SQLException, LoginException {
+        // Not in use... Meant for an option of processing validation with no insert/update
+        Connection con = DatabaseUtils.getConnection();
+        msgqt = 0;
+        try {
+            if (!validate(con)) {
+                return doMessage();
+            }
+            DataObject dao = (DataObject) getDataClass().newInstance();
+            addErrorMessageByKey("success_validate");
+            return doMessage();
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            return "failed";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doSelecionar() throws SQLException, LoginException { // @search
+    	String hh = impexcfg_var;
+    	//if (firstentry == 1) {mesg_var = "";xmesg_rc = 0;}
+        firstentry = 1;
+    	canAlterar = false;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = false;
+        canDeltDone = false;
+        canInserir = true;
+        canInstDone = false;
+        canCancelar = true;
+        if (codfqt == null) {codfqt = 0;}
+        if (reload == null) {reload = 0;}
+
+        getSession().setAttribute("novainclusao", false);
+        if (filter != null && filter.trim().equals("")) {
+            filter = null;
+        }
+        
+
+    	verifyHelpFromtrans(tipo);
+        Connection con = DatabaseUtils.getConnection();
+        //String tipo2 = "";
+        try {
+            String tran=""; int pos =0;
+            tipo = "";
+            if (tipo1 == null) {tipo1 = ""; tran=tipo1; }
+
+            
+            if (tipo1.indexOf("C") == 0 ) {
+                tran=tipo1.substring(1,tipo1.length());
+                tipo = "codfpsq";tipo1 = "";
+            } else {
+                if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+                    tipo = (String)getSession().getAttribute("tipo");
+                    //tipo2 = (String)getSession().getAttribute("tipo");
+                } else {
+                    tipo = getParameter("tipo");
+                //pos = dd.indexOf("cad"); if (pos < 0 ) {pos = dd.indexOf("psq");}
+                //tran=dd.substring(0,pos);
+                }
+            }
+
+            if (canSrchOnly == false) {
+                getLoginInfo().checkDoAction(con, getActionName("SRCH"),getLoginInfo().getUserx_id_role());
+            }
+
+            // Getting Transaction Title Dynamically for Search Pages
+            if (tipo.indexOf("chdpsq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("chdpsq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            } else
+            if (tipo.indexOf("psq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("psq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            }
+            // Mount Unfoldable Filter for all Search Transactions
+            filter = null;
+            reload = 0;
+            mountFilter(); // @search
+
+            if (reload == 0) {
+                // Search Table
+                reloadPesqData(con); // @search
+            } else
+            if (reload == 1) {
+                // Search Table
+                mesg_var = getMessageByKey("selectViaFilters");
+            }
+
+//            dd = getParameter("page");
+//            getSession().removeAttribute("destino");
+//            getSession().setAttribute("assist", false);
+            return tipo;
+//            getSession().setAttribute("destino", getParameter("destino"));
+//            String page = getParameter("campo") + "pesq";
+//            return page;
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doSelecionar(String proc) throws SQLException, LoginException {
+        if (firstentry == 1) {mesg_var = "";xmesg_rc = 0;}
+        firstentry = 1;
+    	canAlterar = false;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = false;
+        canDeltDone = false;
+        canInserir = true;
+        canInstDone = false;
+        canCancelar = true;
+        if (codfqt == null) {codfqt = 0;}
+        if (reload == null) {reload = 0;}
+
+        getSession().setAttribute("novainclusao", false);
+        if (filter != null && filter.trim().equals("")) {
+            filter = null;
+        }
+        //verifyHelp(tipo);
+    	verifyHelpFromtrans(tipo);
+        Connection con = DatabaseUtils.getConnection();
+        //String tipo2 = "";
+        try {
+            String tran=""; int pos =0;
+            tipo = "";
+            if (tipo1 == null) {tipo1 = ""; tran=tipo1; }
+            if (tipo1.indexOf("C") == 0 ) {
+                tran=tipo1.substring(1,tipo1.length());
+                tipo = "codfpesq";tipo1 = "";
+            } else {
+                if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+                    tipo = (String)getSession().getAttribute("tipo");
+                    //tipo2 = (String)getSession().getAttribute("tipo");
+                } else {
+                    tipo = getParameter("tipo");
+                //pos = dd.indexOf("cad"); if (pos < 0 ) {pos = dd.indexOf("psq");}
+                //tran=dd.substring(0,pos);
+                }
+            }
+
+            if (canSrchOnly == false) {
+                getLoginInfo().checkDoAction(con, getActionName("SRCH"),getLoginInfo().getUserx_id_role());
+            }
+
+            // Getting Transaction Title Dynamically for Search Pages
+            if (tipo.indexOf("chdpsq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("chdpsq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            } else
+            if (tipo.indexOf("psq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("psq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            }
+            // Mount Unfoldable Filter for all Search Transactions
+            filter = null;
+            reload = 0;
+            mountFilter();
+
+            if (reload == 0) {
+                // Search Table
+                reloadPesqData(con, proc);
+            }
+//            dd = getParameter("page");
+//            getSession().removeAttribute("destino");
+//            getSession().setAttribute("assist", false);
+            return tipo;
+//            getSession().setAttribute("destino", getParameter("destino"));
+//            String page = getParameter("campo") + "pesq";
+//            return page;
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doSelecionarOnly() throws SQLException, LoginException {
+        if (firstentry == 1) {mesg_var = "";xmesg_rc = 0;}
+        firstentry = 1;
+    	canAlterar = false;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = false;
+        canDeltDone = false;
+        canInserir = true;
+        canInstDone = false;
+        canCancelar = true;
+        if (codfqt == null) {codfqt = 0;}
+        if (reload == null) {reload = 0;}
+
+        getSession().setAttribute("novainclusao", false);
+        canSrchOnly = true;
+        if (filter != null && filter.trim().equals("")) {
+            filter = null;
+        }
+        //verifyHelp(tipo);
+    	verifyHelpFromtrans(tipo);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            tran=""; int pos =0;
+            tipo = "";
+            if (tipo1 == null) {tipo1 = ""; tran=tipo1; }
+            if (tipo1.indexOf("C") == 0 ) {
+                tran=tipo1.substring(1,tipo1.length());
+                tipo = "codfpsq";tipo1 = "";
+            } else {
+                if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+                    //tipo = (String)getSession().getAttribute("tipo");
+                    while (tipo.length() == 0) {
+                        tipo = (String)getSession().getAttribute("tipo");
+                    }
+                    //System.out.println("Codf tipo while loop a:" + tipo);
+                    // String debug1 = "";  
+                } else {
+                    tipo = getParameter("tipo");
+                    if (tipo == null) { tipo = "";}
+                    while (tipo.length() == 0) {
+                        tipo = (String)getSession().getAttribute("tipo");
+                    }
+                    //System.out.println("Codf tipo while loop b:" + tipo);
+                    // String debug2 = "";  
+                }
+            }
+            if (tipo.indexOf("C") == 0 ) {
+                tran=tipo.substring(1,tipo.length());
+                tipo = "codfpsq";//tipo = "";
+            	trans_tt = getMessageByKey("pesq_codf_" + tran + "_title");
+            } else
+            // Getting Transaction Title Dynamically for Search Pages
+            if (tipo.indexOf("chdpsq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("chdpsq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            } else
+            if (tipo.indexOf("psq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("psq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            }
+            filter = null;
+            mountFilter();  // Mount Unfoldable Filter for all Search Transactions
+            reloadPesqData(con); // Search Table
+            return tipo;
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doSelecionarNullOnly() throws SQLException, LoginException {
+        if (codfqt == null) {codfqt = 0;}
+        if (reload == null) {reload = 0;}
+
+        if (firstentry == 1) {mesg_var = "";xmesg_rc = 0;}
+        firstentry = 1;
+        getSession().setAttribute("novainclusao", false);
+        if (filter != null && filter.trim().equals("")) {
+            filter = null;
+        }
+        //verifyHelp(tipo);
+        verifyHelpFromtrans(tipo);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            String tran=""; int pos =0;
+            tipo = "";
+            if (tipo1 == null) {tipo1 = ""; tran=tipo1; }
+            if (tipo1.indexOf("C") == 0 ) {
+                tran=tipo1.substring(1,tipo1.length());
+                tipo = "codfpesq";tipo1 = "";
+            } else {
+                if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+                    tipo = (String)getSession().getAttribute("tipo");
+                } else {
+                    tipo = getParameter("tipo");
+                }
+            }
+            // Getting Transaction Title Dynamically for Search Pages
+            if (tipo.indexOf("chdpsq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("chdpsq"));
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            } else
+            if (tipo.indexOf("psq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("psq"));
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            }
+            filter = null;  // Set filter to null
+            return tipo;
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doSelecionarNull() throws SQLException, LoginException {
+    	if (codfqt == null) {codfqt = 0;}
+        if (reload == null) {reload = 0;}
+
+        if (firstentry == 1) {mesg_var = "";xmesg_rc = 0;}
+        firstentry = 1;
+    	getSession().setAttribute("novainclusao", false);
+        if (filter != null && filter.trim().equals("")) {
+            filter = null;
+        }
+        //verifyHelp(tipo);
+    	verifyHelpFromtrans(tipo);
+        //verifyHelpCom(tipo);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            String tran=""; int pos =0;
+            tipo = "";
+            if (tipo1 == null) {tipo1 = ""; tran=tipo1; }
+            if (tipo1.indexOf("C") == 0 ) {
+                tran=tipo1.substring(1,tipo1.length());
+                tipo = "codfpesq";tipo1 = "";
+            } else {
+                if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+                    tipo = (String)getSession().getAttribute("tipo");
+                } else {
+                    tipo = getParameter("tipo");
+                }
+            }
+            getLoginInfo().checkDoAction(con, getActionName("SRCH"),getLoginInfo().getUserx_id_role());
+
+            if (tipo == null) {
+                tipo = (String)getSession().getAttribute("tipo");
+            }
+            if (tipo == null) {
+                tipo = getParameter("tipo");
+            }
+            
+            // Getting Transaction Title Dynamically for Search Pages
+            if (tipo.indexOf("chdpsq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("chdpsq"));
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            } else
+            if (tipo.indexOf("psq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("psq"));
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            }
+            filter = null;  // Set filter to null
+            return tipo;
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doSelecionarfromMenu() throws LoginException, SQLException { // @search ccc
+        return ""; // updbutton != 1 - end
+    }
+
+    public String doSelecionarBack() throws SQLException, LoginException {
+        canAlterar = false;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = false;
+        canDeltDone = false;
+        canInserir = true;
+        canInstDone = false;
+        canCancelar = true;
+        if (codfqt == null) {codfqt = 0;}
+        if (reload == null) {reload = 0;}
+        mesg_var = ""; xmesg_rc = 0;
+
+    	getSession().setAttribute("novainclusao", false);
+        if (filter != null && filter.trim().equals("")) {
+            filter = null;
+        }
+        //verifyHelp(tipo);
+    	verifyHelpFromtrans(tipo);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            String tran=""; int pos =0;
+            tipo = "";
+            if (tipo1 == null) {tipo1 = ""; tran=tipo1; }
+            if (tipo1.indexOf("C") == 0 ) {
+                tran=tipo1.substring(1,tipo1.length());
+                tipo = "codfpesq";tipo1 = "";
+            } else {
+                if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+                    tipo = (String)getSession().getAttribute("tipo");
+                } else {
+                    tipo = getParameter("tipo");
+                }
+            }
+            getLoginInfo().checkDoAction(con, getActionName("SRCH"),getLoginInfo().getUserx_id_role());
+
+            // Getting Transaction Title Dynamically for Search Pages
+            if (tipo.indexOf("chdpsq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("chdpsq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            } else
+            if (tipo.indexOf("psq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("psq"));
+                //trans_tt = getMessageByKey(ttran+"_TT_st");
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT");
+            }
+            return tipo;
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+    public String doSelecionarBackNoFilter() throws SQLException, LoginException {
+        canAlterar = false;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = false;
+        canDeltDone = false;
+        canInserir = true;
+        canInstDone = false;
+        canCancelar = true;
+        if (codfqt == null) {codfqt = 0;}
+        if (reload == null) {reload = 0;}
+        mesg_var = ""; xmesg_rc = 0;
+
+    	getSession().setAttribute("novainclusao", false);
+        if (filter != null && filter.trim().equals("")) {
+            filter = null;
+        }
+        //verifyHelp(tipo);
+    	verifyHelpFromtrans(tipo);
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            String tran=""; int pos =0;
+            tipo = "";
+            if (tipo1 == null) {tipo1 = ""; tran=tipo1; }
+            if (tipo1.indexOf("C") == 0 ) {
+                tran=tipo1.substring(1,tipo1.length());
+                tipo = "codfpesq";tipo1 = "";
+            } else {
+                if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+                    tipo = (String)getSession().getAttribute("tipo");
+                } else {
+                    tipo = getParameter("tipo");
+                }
+            }
+            getLoginInfo().checkDoAction(con, getActionName("SRCH"),getLoginInfo().getUserx_id_role());
+
+            // Getting Transaction Title Dynamically for Search Pages
+            if (tipo.indexOf("chdpsq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("chdpsq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            } else
+            if (tipo.indexOf("psq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("psq"));
+                //trans_tt = getMessageByKey(ttran+"_TT_st");
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT");
+            }
+            //mountFilter(); // Mount Unfoldable Filter for all Search Transactions
+            //reloadPesqData(con); // Search Table
+            return tipo;
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public String doReturn() throws SQLException, LoginException {
+        return tbakcad;
+    }
+    public String doReturnMenu() throws SQLException, LoginException {
+    	getSession().setAttribute("tipoantsuper",null);
+    	String menux = (String)getSession().getAttribute("tbakmenu");
+    	return menux;
+    }
+
+    protected void reloadPesqData() throws SQLException, LoginException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            reloadPesqData(con);
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    protected void reloadPesqData(Connection con) throws SQLException, LoginException { // @search
+        if (getParameter("campo") != null) {
+            setCampo(getParameter("campo"));
+        }
+        try {
+            DataObject dao = (DataObject) getDataClass().newInstance();
+            dao = setTableAliasBean(dao);      // @search
+            dao = setProcedureNameBean(dao);   // @search
+            String transx = ""+getClass(); transx = transx.replace("class appl.bean.Cad","");
+            transx = transx.replace("Bean","");
+            log.error("Transaction: "+transx + " user: "+getLoginInfo().getUserx_id_login());
+            dao = setDataValues(dao);          // @search
+            dao.setLoadChilds(true);           // @search
+
+            if (filter != null && filter.trim().equals("")) {
+                filter = null;
+            }
+            pesqData = dao.findFilterSorted(con, filter, order, maxResults); // @search
+            currentLine = 0;
+            hasNextPage = pesqData.size() > pageLength;
+            codfqt = pesqData.size();
+            hasPrevPage = false;
+         //   if (pesqData.size() == maxResults) {
+         //       mesg_var = getMessageByKey("maxResultsExceeded");
+         //   }		
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+    }
+
+    protected void reloadPesqData(Connection con, String proc) throws SQLException, LoginException {
+        if (getParameter("campo") != null) {
+            setCampo(getParameter("campo"));
+        }
+        try {
+            DataObject dao = (DataObject) getDataClass().newInstance();
+            dao = setTableAliasBean(dao);
+            dao = setProcedureNameBean(dao, proc);
+
+            String transx = ""+getClass(); transx = transx.replace("class appl.bean.Cad","");
+            transx = transx.replace("Bean","");
+            log.error("Transaction: "+transx + " user: "+getLoginInfo().getUserx_id_login());
+
+            dao = setDataValues(dao);
+            dao.setLoadChilds(true);
+
+            if (filter != null && filter.trim().equals("")) {
+                filter = null;
+            }
+            //pesqData = dao.findFilterSorted(con, filter, order, maxResults);
+            pesqData = dao.findFilterSorted(con, filter, order, -1);
+            currentLine = 0;
+            hasNextPage = pesqData.size() > pageLength;
+            codfqt = pesqData.size();
+            hasPrevPage = false;
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    public String removeAllBlanks(String string) {
+        if (string != null) {
+            string = string.replaceAll(" ", "");
+        }
+        return string;
+    }
+
+    public boolean isDate(String data) {
+        try {
+            DateFormat.getDateInstance().parse(data);
+            return true;
+        } catch (ParseException ex) {
+            return false;
+        }
+    }
+
+    // Validation Callers -------------------------------------------------------------------------
+    public String valEntryString(String vf, String string, String propname) {
+        msgkey = ""; vf(0); int vfint = Integer.parseInt(vf); String att="";
+        if (string == null || string.trim().equals("")) {
+            if (vf.equals("5")) {att= "key:fillOptional/@";}
+            if (vf.equals("9")) {att= "key:fill/@";}
+            msgkey = vf+att+"ptt:"+propname+"/"; vf(vfint);
+            if (!vf.equals("0") && validateAll == 1){ errorList.add(msgkey); }
+            return vf;
+        } else {
+            vf(0); return "0";
+        }
+    }
+    // Validation Callers -------------------------------------------------------------------------
+    public String addErrorList(String vf, String string, String propname) {
+        msgkey = ""; vf(0); String att="";
+            if (vf.equals("5")) {att= "key:fillOptional/@";}
+            if (vf.equals("9")) {att= "key:fill/@";}
+            if (vf.equals("n")) {att= "key:mustBeNumeric/@";vf="9";}
+            int vfint = Integer.parseInt(vf);
+            msgkey = vf+att+"ptt:"+propname+"/"; vf(vfint);
+            if (!vf.equals("0") && validateAll == 1){ errorList.add(msgkey); }
+            return vf;
+    }
+    public String valEntryNumber(String vf, Integer number, String propname) {
+        msgkey = ""; vf(0); int vfint = Integer.parseInt(vf); String att="";
+        if (number == null || number.equals("")) {
+            if (vf.equals("5")) {att= "key:fillOptional/@";}
+            if (vf.equals("9")) {att= "key:fill/@";}
+            msgkey = att+"ptt:"+propname+"/"; vf(vfint);
+            if (!vf.equals("0") && validateAll == 1){ errorList.add(msgkey); }
+            return vf;
+        } else {
+            vf(0); return "0";
+        }
+    }
+    public String valEntryLong(String vf, Long number, String propname) {
+        msgkey = ""; vf(0); int vfint = Integer.parseInt(vf); String att="";
+        if (number == null || number.equals("")) {
+            if (vf.equals("5")) {att= "key:fillOptional/@";}
+            if (vf.equals("9")) {att= "key:fill/@";}
+            msgkey = att+"ptt:"+propname+"/"; vf(vfint);
+            if (!vf.equals("0") && validateAll == 1){ errorList.add(msgkey); }
+            return vf;
+        } else {
+            vf(0); return "0";
+        }
+    }
+    public String valEntryBigDecimal(String vf, Number number, String propname) {
+        msgkey = ""; vf(0); int vfint = Integer.parseInt(vf); String att="";
+        if (number == null || number.equals("")) {
+            if (vf.equals("5")) {att= "key:fillOptional/@";}
+            if (vf.equals("9")) {att= "key:fill/@";}
+            msgkey = att+"ptt:"+propname+"/"; vf(vfint);
+            if (!vf.equals("0") && validateAll == 1){ errorList.add(msgkey); }
+            return vf;
+        } else {
+            vf(0); return "0";
+        }
+    }
+    public String valEntryBoolean(String vf, Boolean booleanx, String propname) {
+        msgkey = ""; vf(0); int vfint = Integer.parseInt(vf); String att="";
+        if (booleanx == null || booleanx.equals("")) {
+            if (vf.equals("5")) {att= "key:fillOptional/@";}
+            if (vf.equals("9")) {att= "key:fill/@";}
+            msgkey = att+"ptt:"+propname+"/"; vf(vfint);
+            if (!vf.equals("0") && validateAll == 1){ errorList.add(msgkey); }
+            return vf;
+        } else {
+            vf(0); return "0";
+        }
+    }
+    public String valEntryDate(String vf, Date date, String propname) {
+        msgkey = ""; vf(0); int vfint = Integer.parseInt(vf); String att="";
+        if (date == null || date.equals("")) {
+            if (vf.equals("5")) {att= "key:fillOptional/@";}
+            if (vf.equals("9")) {att= "key:fill/@";}
+            msgkey =att+"ptt:"+propname+"/"; vf(vfint);
+            if (!vf.equals("0") && validateAll == 1){ errorList.add(msgkey); }
+            return vf;
+        } else {
+            vf(0); return "0";
+        }
+    }
+
+    public String difFromString(String vc, String string, String nameString, String stringOther, String nameStringOther) {
+        if (!vc.equals("0") ) { return vc; }
+        String st = removeAllBlanks(string); String stOther = removeAllBlanks(stringOther);
+        if ((st != null && st.length() == 0) || (stOther != null && stOther.length() == 0 )) {return "0";}
+        if (st != null && !st.equals(stOther) ) {
+            vf(0); return "0";
+        } else {
+            msgkey = "key:correct/@ptt:"+nameString+"/@key:msg_equals/@@ptt:"+nameStringOther+"/"; vf(9);
+            if (validateAll == 1){ errorList.add(msgkey); }
+            return "9";
+        }
+    }
+
+    public String difFromNumber(String vc, int number, String nameNumber, int numberOther, String nameNumberOther) {
+        if (!vc.equals("0") ) { return vc; }
+        if (number != numberOther ) {
+            vf(0); return "0";
+        } else {
+            msgkey = "key:correct/@ptt:"+nameNumber+"/key:msg_equals/@@ptt:"+nameNumberOther+"/"; vf(9);
+            if (validateAll == 1){ errorList.add(msgkey); }
+            return "9";
+        }
+    }
+
+    public String equFromString(String vc, String string, String nameString, String stringOther, String nameStringOther) {
+        if (!vc.equals("0") ) { return vc; }
+        String st = removeAllBlanks(string); String stOther = removeAllBlanks(stringOther);
+        //if ((st != null && st.length() == 0) || (stOther != null && stOther.length() == 0 )) {return "0";}
+        if (st != null && st.equals(stOther) ) {
+            vf(0); return "0";
+        } else {
+            msgkey = "key:correct/@ptt:"+nameString+"/@key:msg_different/@@ptt:"+nameStringOther+"/"; vf(9);
+            if (validateAll == 1){ errorList.add(msgkey); }
+            return "9";
+        }
+    }
+
+    public String equFromNumber(String vc, int number, String nameNumber, int numberOther, String nameNumberOther) {
+        if (!vc.equals("0") ) { return vc; }
+        if (number == numberOther ) {
+            vf(0); return "0";
+        } else {
+            msgkey = "key:correct/@ptt:"+nameNumber+"/key:msg_different/@@ptt:"+nameNumberOther+"/"; vf(9);
+            if (validateAll == 1){ errorList.add(msgkey); }
+            return "9";
+        }
+    }
+
+    public String greaterThanPrev(String vc, int number, int numberPrev, String nameNumberPrev) {
+        if (!vc.equals("0") ) { return vc; }
+        if (number > numberPrev ) {
+            vf(0); return "0";
+        } else {
+            msgkey = "key:correct/@key:msg_equals/@@ptt:"+nameNumberPrev+"/"; vf(9);
+            if (validateAll == 1){ errorList.add(msgkey); }
+            return "9";
+        }
+    }
+
+    public String afterPrevDate(String vc, Date val, Date valPrev, String namePrev) {
+        if (!vc.equals("0") ) { return vc; }
+        if (valPrev == null  ) {
+            msgkey = "key:msg_fill_other/@@ptt:"+namePrev+"/"; vf(9);
+            if (validateAll == 1){ errorList.add(msgkey); }
+            return "9";
+        } else
+        if (val.after(valPrev) ) {
+            vf(0); return "0";
+        } else {
+            msgkey = "key:correct/@key:msg_before/@@ptt:"+namePrev+"/"; vf(9);
+            if (validateAll == 1){ errorList.add(msgkey); }
+            return "9";
+        }
+    }
+
+    public String fullName(String vc, String val, String name) {
+        if (!vc.equals("0") ) { return vc; }
+        String ss = val.trim();
+        if (ss.indexOf(" ") >= 0 ) {
+            msgkey = "key:correct/@key:msg_full_name/@@ptt:"+name+"/"; vf(9);
+            if (validateAll == 1){ errorList.add(msgkey); }
+            return "9";
+        } else {
+            vf(0); return "0";
+        }
+    }
+
+    public String listSum100(String vc, List list, String propname) {
+        if (!vc.equals("0") ) { return vc; }
+        if (validateAll == 0) { return vc; }
+
+        Integer sum = listValSum100(list,propname);
+        if (sum < 100 ) { vf(5);
+            msgkey = "key:alert_total/@@ptt:repcr_pc_responsability/@@txt:"+sum.toString()+"/@@key:val_less100/";
+            errorList.add(msgkey);
+            return "5";
+        } else
+        if (sum > 100 ) { vf(9);
+            msgkey = "key:alert_total/@@ptt:repcr_pc_responsability/@@txt:"+sum.toString()+"/@@key:val_greater100/";
+            errorList.add(msgkey);
+            return "9";
+        } else { vf(0);
+            return "0";}
+    }
+
+    public String listOneYes(String vc, List list, String prop, String propname) {
+        if (!vc.equals("0") ) { return vc; }
+        if (validateAll == 0) { return vc; }
+
+        boolean flag= getListValOneYes(list,propname);
+        if (!flag ) { vf(9);
+            msgkey = "ptt:repcr_in_main/@@key:already_marked/";
+            errorList.add(msgkey);
+            return "9";
+        } else { vf(0);
+            return "0";}
+    }
+
+    public String listUniqueValue(String vc, List list, String prop, String propname) {
+        if (!vc.equals("0") ) { return vc; }
+        if (validateAll == 0) { return vc; }
+
+        boolean flag= valListUniqueValue(list,propname,prop);
+        if (!flag ) { vf(9);
+            msgkey = "ptt:"+propname+"/@@key:already_marked/";
+            errorList.add(msgkey);
+            return "9";
+        } else { vf(0);
+            return "0";
+        }
+    }
+
+    public String listUniquePairOfValues(String vc, List list, String prop1, String propname1, String prop2, String propname2) {
+        if (!vc.equals("0") ) { return vc; }
+        if (validateAll == 0) { return vc; }
+        boolean flag= valListUniquePairOfValues(list,propname1,prop1.toString(),propname2,prop2.toString());
+        if (!flag ) { vf(9);
+            msgkey = "ptt:boeo_id_envd/txt: - /ptt:boeo_sq_boob/@@key:already_marked/";
+            errorList.add(msgkey);
+            return "9";
+        } else { vf(0);
+            return "0";
+        }
+    }
+
+    // End of Validation Callers ----------------------------------------------------------------
+
+    public String doFilterPesquisar() throws SQLException, LoginException {
+        // Marked for Deprecation on 08/03/22 - Replaced by doSelecionar... mountFilter
+        return doFilter();
+    }
+
+    public String doFilter() throws SQLException, LoginException {
+        // Marked for Deprecation on 08/03/22 - Replaced by doSelecionar... mountFilter
+        //System.out.println(getClass() + ".doFilter");
+        filter = null;
+        mountFilter();
+        return doSelecionar();
+    }
+
+    public String doFilterPk() throws SQLException, LoginException {
+        //System.out.println(getClass() + ".doFilterPk");
+        filter = null;
+        mountFilterPk();
+        return doSelecionar();
+    }
+
+    protected void mountFilter() {
+    }
+
+    protected void mountFilterPk() {
+    }
+
+    protected void addFieldToFilter(String field, String value) {
+        if (value == null || value.trim().equals("")) {
+            return;
+        }
+
+        if (filter == null) {
+            filter = "";
+        }
+
+        if (filter.length() > 0) {
+            filter += " AND ";
+        }
+
+        if (value.equals("nulo")) {
+            filter += " " + field + " is null ";
+        } else if (value.equals("notnull")) {
+            filter += " " + field + " is not null ";
+        } else {
+            filter += " upper(" + field + ") LIKE '%" + value.toUpperCase() + "%'";
+        }
+        String aa = "";
+    }
+
+    protected void addFieldToFilterPk(String field, String value) {
+        if (value == null || value.trim().equals("")) {
+            return;
+        }
+
+        if (filter == null) {
+            filter = "";
+        }
+
+        if (filter.length() > 0) {
+            filter += " AND ";
+        }
+
+        if (value.equals("nulo")) {
+            filter += " " + field + " is null ";
+        } else {
+            filter += " upper(" + field + ") = '" + value.toUpperCase() + "'";
+        }
+    }
+
+    protected void addFieldToOrder(String field, boolean isDesc) {
+        if (order == null) {
+            order = "";
+        }
+
+        if (order.length() > 0) {
+            order += ", ";
+        }
+
+        order += field + ((isDesc) ? "" : " desc");
+    }
+    public static enum State {
+        INSERINDO, ALTERANDO, EXCLUINDO, CANCELANDO
+    }
+
+    public Boolean convertSNBoolean(Object objtval) {
+        Boolean val = false;
+        if (objtval.equals("N")) { val = false ; }
+        if (objtval.equals("S")) { val = true ; }
+        return val;
+    }
+
+    public Boolean convertSNBooleanx(Object objtval) {
+        Boolean val = false;
+        if (objtval.equals("X")) { val = true ; } else { val = false; }
+        return val;
+    }
+
+    public Integer toInteger(String value) {
+        if (value == null || value.trim().equals("")) {
+            return null;
+        } else {
+            return Integer.parseInt((String) value);
+        }
+    }
+    public Double toDouble(String value) {
+        if (value == null || value.trim().equals("")) {
+            return null;
+        } else {
+            return Double.parseDouble((String) value);
+        }
+    }
+
+    public BigDecimal convertDecimal(String value) {
+        int pos = value.indexOf(",") + 1;
+        if (pos == value.length() ) {
+            value = value + "0";
+        }
+        String ret;
+        if (value.equals("")) {
+            value = null;
+            return null;
+        }
+        Locale locale = new Locale("pt", "BR");
+        if(locale.equals(new Locale("pt", "BR"))) {
+            String str1 = value.replace(".", "*");
+            String str2 = str1.replace(",", "&");
+            String str3 = str2.replace("*", ",");
+            ret = str3.replace("&", ".");
+        } else {
+            String str1 = value.replace(",", "*");
+            String str2 = str1.replace(".", "&");
+            String str3 = str2.replace("*", ".");
+            ret = str3.replace("&", ",");
+        }
+        ret = ret.replace(",", ".");
+        if (ret.equals("")) {
+            ret =  "0";
+        }
+
+        //bdec = (BigDecimal) ConvertUtils.lookup(BigDecimal.class).convert(BigDecimal.class, ret);
+        //double xbdec = 1234.5678;
+        // NumberFormat nf = NumberFormat.getNumberInstance(locale);
+        //nf.setMaximumFractionDigits(1);
+        //nf.setMinimumFractionDigits(1);
+        //System.out.println(nf.format(xbdec));
+        //Object oo = nf.format(bdec);
+        //ret = nf.format(bdec);
+        //bdecret = (BigDecimal) nf.format(ret);
+
+        //ret = ret.replace(",", ".");
+        //bdecret = (BigDecimal) oo;
+        //return bdecret;
+        //return (BigDecimal) oo;
+        return (BigDecimal) ConvertUtils.lookup(BigDecimal.class).convert(BigDecimal.class, ret);
+    }
+
+    public String parseDate(String date, String pattern) {
+        // Pattern = "dd/mm/yyyy hh:mm:ss";
+        String date_str = date;
+        if (date != null && pattern != null) {
+            if (pattern.equalsIgnoreCase("dd/mm/yyyy hh:mm")) {
+                int date_ini = date.lastIndexOf(":");
+                date_str = date.substring(0, date_ini);
+            } else if (pattern.equalsIgnoreCase("dd/mm/yyyy")) {
+                int date_ini = date.indexOf(" ");
+                if (date_ini > 0) {
+                	date_str = date.substring(0, date_ini);
+                }
+            } else if (pattern.equalsIgnoreCase("hh:mm:ss")) {
+                int date_ini = date.indexOf(" ");
+                date_str = date.substring(date_ini,date.length());
+            } else if (pattern.equalsIgnoreCase("hh:mm")) {
+                int date_ini = date.indexOf(" ");
+                int date_fin = date.lastIndexOf(":");
+                date_str = date.substring(date_ini,date_fin);
+            }
+            return date_str;
+        }
+        return null;
+    }
+
+    public String valPassword(String vf, String pass, String propname) {
+        Integer pass_quan_upper = 0;
+        Integer pass_quan_lower = 0;
+        Integer pass_quan_number = 0;
+        Integer pass_quan_special = 0;
+
+        Boolean flag_val = true;
+        Integer mesg_val = null;
+        String mesg_str = null;
+        String mesg_key = null;
+
+        StringBuffer s = new StringBuffer(pass.length());
+        s.append(pass);
+        for (int i = 0; i < pass.length(); i++) {
+            char ch = (char) s.charAt(i);
+            if(Character.isDigit(ch)) {
+                pass_quan_number++;
+            } else if(Character.isUpperCase(ch)) {
+                pass_quan_upper++;
+            } else if(Character.isLowerCase(ch)) {
+                pass_quan_lower++;
+            } else {
+                pass_quan_special++;
+            }
+        }
+
+        //System.out.println("INFO: No Of Digits:" +pass_quan_number);
+        //System.out.println("INFO: No Of Uppercase Characters:" +pass_quan_upper);
+        //System.out.println("INFO: No Of Lowercase Characters:" +pass_quan_lower);
+        //System.out.println("INFO: No Of Other Characters:" +pass_quan_special);
+        //System.out.println("INFO: Length Characters:" +pass.length());
+
+        if (pass.length() < pass_leng_min) {
+            mesg_key = "val_length_min_chars";
+            mesg_str = "VALIDATE: Length min characters";
+            mesg_val = pass_leng_min;
+        } else if (pass.length() > pass_leng_max) {
+            mesg_key = "val_length_max_chars";
+            mesg_str = "VALIDATE: Length max characters";
+            mesg_val = pass_leng_max;
+        } else if (pass_comp_upper > pass_quan_upper) {
+            mesg_key = "val_complexity_upper_min_chars";
+            mesg_str = "VALIDATE: Complexity Upper min characters";
+            mesg_val = pass_comp_upper;
+        } else if (pass_comp_lower > pass_quan_lower) {
+            mesg_key = "val_complexity_lower_min_chars";
+            mesg_str = "VALIDATE: Complexity Lower min characters";
+            mesg_val = pass_comp_lower;
+        } else if (pass_comp_number > pass_quan_number) {
+            mesg_key = "val_complexity_number_min_chars";
+            mesg_str = "VALIDATE: Complexity Number min characters";
+            mesg_val = pass_comp_number;
+        } else if (pass_comp_special > pass_quan_special) {
+            mesg_key = "val_complexity_special_min_chars";
+            mesg_str = "VALIDATE: Complexity Special min characters";
+            mesg_val = pass_comp_special;
+        } else {
+            flag_val = false;
+        }
+
+        msgkey = ""; vf(0); int vfint = Integer.parseInt(vf); String att="";
+        if (flag_val == true) {
+            //System.out.println(mesg_str + ": " + mesg_val);
+        	log.error(mesg_str + ": " + mesg_val);
+            if (vf.equals("5")) {att= "key:fillOptional/@";}
+            if (vf.equals("9")) {att= "key:fill/@";}
+            msgkey = vf+att+"ptt:"+propname+"/"; vf(vfint);
+            if (!vf.equals("0") && validateAll == 1){ errorList.add(msgkey); }
+            return vf;
+        } else {
+            vf(0); return "0";
+        }
+
+    }
+
+    //------------ ANTT Export Methods 
+    /**
+     * Metodo que carrega a lista de convs baseado no tipo de bem patrimonial (Ex: LC)
+     * @author Wendel Silvério
+     * 
+     * @return
+     */
+    public List<Convs> carregaConvs(final String tipo) {
+	List<Convs> results = null;
+	DataObject dao = null;
+	try {
+	    dao = (DataObject) Class.forName("appl.data.Convs").newInstance();
+	    Connection con = null;
+	    con = DatabaseUtils.getConnection();
+	    results = (List<Convs>) dao.find(con, new String[]{"convs_id_impex"}, new String[]{tipo});
+	} catch (InstantiationException e) {
+	    e.printStackTrace();
+	} catch (IllegalAccessException e) {
+	    e.printStackTrace();
+	} catch (ClassNotFoundException e) {
+	    e.printStackTrace();
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	}
+
+	return results;
+    }
+
+    public String doSelecionarExp(String proc) throws SQLException, LoginException {
+ 
+    	//   cadVhengbean.doSelecionarExportXls()
+    	//      cadVhengbean.doSelecionarAssetAnttExpLeased;
+    	//      - ret = super.doSelecionarExp("AssetVhengExpLeased_lov"); // Generate pesqdata
+    	//        - mountFilter, reloadPesqData                 
+    	//	  - String subtype = "LC-" + "GIGFER-EX";
+    	//      - super.deliveryExcel(subtype, subtype);
+    	//	     - HttpHelpers.responseExcel(prepareToExport(pesqData, tipoDeBp), "Plan1", nomeDoArquivoSemExtensao);
+    	//		   - prepareToExport
+    	if (firstentry == 1) {mesg_var = "";xmesg_rc = 0;}
+        firstentry = 1;
+    	canAlterar = false;
+        canUpdtDone = false;
+        canCopyDone = false;
+        canExcluir = false;
+        canDeltDone = false;
+        canInserir = true;
+        canInstDone = false;
+        canCancelar = true;
+        if (codfqt == null) {codfqt = 0;}
+        if (reload == null) {reload = 0;}
+
+        getSession().setAttribute("novainclusao", false);
+        if (filter != null && filter.trim().equals("")) {
+            filter = null;
+        }
+        //verifyHelp(tipo);
+    	verifyHelpFromtrans(tipo);
+        Connection con = DatabaseUtils.getConnection();
+        //String tipo2 = "";
+        try {
+            String tran=""; int pos =0;
+            tipo = "";
+            if (tipo1 == null) {tipo1 = ""; tran=tipo1; }
+            if (tipo1.indexOf("C") == 0 ) {
+                tran=tipo1.substring(1,tipo1.length());
+                tipo = "codfpesq";tipo1 = "";
+            } else {
+                if (getParameter("tipo") == null || getParameter("tipo").equals("")) {
+                    tipo = (String)getSession().getAttribute("tipo");
+                    //tipo2 = (String)getSession().getAttribute("tipo");
+                } else {
+                    tipo = getParameter("tipo");
+                //pos = dd.indexOf("cad"); if (pos < 0 ) {pos = dd.indexOf("psq");}
+                //tran=dd.substring(0,pos);
+                }
+            }
+
+            if (canSrchOnly == false) {
+                getLoginInfo().checkDoAction(con, getActionName("SRCH"),getLoginInfo().getUserx_id_role());
+            }
+
+            // Getting Transaction Title Dynamically for Search Pages
+            if (tipo.indexOf("chdpsq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("chdpsq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            } else
+            if (tipo.indexOf("psq") > 0) {
+                String ttran = tipo.substring(0, tipo.indexOf("psq"));
+                ttran = ttran.toLowerCase();
+                trans_tt = getMessageByKey(ttran+"_TT_st");
+            }
+            // Mount Unfoldable Filter for all Search Transactions
+            filter = null;
+            reload = 0;
+            mountFilter();
+
+            // Execute reloadPesqData allways evem if filters are empy
+            //if (reload == 0) {   
+                // Search Table
+                reloadPesqData(con, proc);
+            //}
+//            dd = getParameter("page");
+//            getSession().removeAttribute("destino");
+//            getSession().setAttribute("assist", false);
+            return tipo;
+//            getSession().setAttribute("destino", getParameter("destino"));
+//            String page = getParameter("campo") + "pesq";
+//            return page;
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    /**
+     * Metodo que converte os campos do banco de dados em campos baseado nas regras da tabela Convs
+	 * 
+	 * @author Wendel Silvério
+	 * 
+	 * @return
+	 * @throws ExportException
+	 */
+    public String[][] prepareToExport(final List<? extends DataObject> dtos, String tipo)
+			throws SQLException, ExportException {
+	  List<Convs> convsList = new ArrayList<Convs>();
+      convsList.addAll(carregaConvs(tipo));
+      HashMap<String, String> convsColIndexHashMap = new HashMap<String, String>(); 
+      
+      //DataFormat fmt = workbook.createDataFormat();
+      //CellStyle textStyle = workbook.createCellStyle();
+      //textStyle.setDataFormat(fmt.getFormat("@"));
+      //worksheet.setDefaultColumnStyle(0, textStyle);
+
+      /* Ordena as colunas pelo valor da coluna convs_sq */
+		Collections.sort(convsList, new Comparator<Convs>() {
+			//@Override
+			public int compare(Convs cA, Convs cB) {
+                //String convs_sqxa = cA.getConvs_sq();
+                //if (convs_sqxa.contains("-")) {
+                //	convs_sqxa = convs_sqxa.replace("-1", ""); 
+                //}
+                //String convs_sqxb = cB.getConvs_sq();
+                //if (convs_sqxb.contains("-")) {
+                //	convs_sqxb = convs_sqxb.replace("-1", ""); 
+                //}
+                return Integer.valueOf(cA.getConvs_sq()).compareTo(Integer.valueOf(cB.getConvs_sq()));
+                //return Integer.valueOf(convs_sqxa).compareTo(Integer.valueOf(convs_sqxb));
+			}
+		});
+
+		int headerOffset = 1;
+		String colIndexx = "";
+		String[][] table = new String[dtos.size() + headerOffset][convsList.size()];
+
+	/* Cabeçalho */
+		for (Integer colIndex = 0; colIndex < convsList.size(); colIndex++) {
+			Convs convs = convsList.get(colIndex);
+			// table[0][colIndex] = convs.getConvs_tt_orgdes();
+			String ttx = convs.getConvs_tt_orgdes();
+			if (convs.getConvs_cd().contains("batch")) {
+				ttx = "LoteImportação";  
+            }
+			if (convs.getConvs_sq().contains("-1")) {
+            	continue;  
+            }
+			// 151125 table[0][colIndex] = convs.getConvs_sq()+"-"+ttx;
+			table[0][colIndex] = ttx;
+
+			//table[0][colIndex] = convs.getConvs_sq();
+			convsColIndexHashMap.put(convs.getConvs_sq(),colIndex.toString());
+		}
+
+		//String aaa = "LC";
+        //if ( aaa.contains("LC") ) {
+    	//	return table;
+        //}
+
+        /* Conteúdo */
+		for (int rowIndex = 0; rowIndex < dtos.size(); rowIndex++) {
+			Map row = dtos.get(rowIndex).getMapFields();
+           	
+            // Processando Colunas declaradas na Convs            	
+           	String convs_cdx = "";
+            String convs_cdx_prev = "";  
+			//System.out.println("rowIndex: "+rowIndex);
+            for (int colIndex = 0; colIndex < convsList.size(); colIndex++) {
+				Convs convs = convsList.get(colIndex);
+	           	convs_cdx = convs.getConvs_cd();
+
+	           	// Processa apenas 1 vez colunas de um mesmo elemento de dado 
+	           	if (convs_cdx.equals(convs_cdx_prev)) { continue; }  
+
+	           	// Carrega dados da Convs
+	           	String convs_tp_orgdes =  convs.getConvs_tp_orgdes();
+	           	String tpRegra =          convs.getConvs_tp_regra();
+	           	String convs_idx =        convs.getConvs_id_impex();
+	           	String convs_tp_regrax =  convs.getConvs_tp_regra();
+	           	String convs_cd_codffkx = convs.getConvs_cd_codffk();
+
+	        	//System.out.println("convs_id:        "+convs.getConvs_id_impex());
+	        	//System.out.println("convs_cd:        "+convs.getConvs_cd());
+	        	//System.out.println("convs_tp_regra:  "+convs.getConvs_tp_regra());
+	        	//System.out.println("convs_cd_codffk: "+convs.getConvs_cd_codffk());
+
+				Object valuex = row.get(convs.getConvs_cd());
+	        	if (convs_cdx.contains("_nap")) {
+					valuex = row.get(convs_cdx);
+                    if (valuex == null) {
+                    	convs_cdx = convs_cdx.replace("_nap", "");    	
+    					valuex = row.get(convs_cdx);
+                    }
+	        	}
+                if (valuex == null) { // Pula elementos com valor nulo
+                	continue;
+                }
+
+                convs_cdx_prev = convs_cdx; // Salva elemento de dado corrente
+                String value = valuex.toString();
+
+				if (value != null && tpRegra != null && !tpRegra.equals("OK")) {
+					try {
+						Codf codf = new Codf(convs.getConvs_cd_codffk(), value, "pt_BR");
+						//codf.load(DatabaseUtils.getConnection());
+                        Connection conx = DatabaseUtils.getConnection();
+						codf.load(conx);
+                        if (codf != null) {
+							if (tpRegra.equals("DC")) {         // Exporta Descritivo de Codf
+								value = codf.getCodf_ds();
+							} else if (tpRegra.equals("CT")) {  // Exporta Traduçãp de Codf
+								
+								String grupo = tipo.split("-")[1];
+								//String xxx = codf.getCodf_supid().split(",");
+								String xxx = null; 
+								if (xxx == null ) {} else {
+									for (String codfValue : codf.getCodf_supid().split(",")) {
+										if(codfValue.trim().startsWith(grupo)){
+											value = codfValue.split("-")[1];
+											break;
+										}
+									}
+								}
+							}
+                        }
+                        DatabaseUtils.releaseConnection(conx);
+					} catch (SQLException e) {
+						throw new ExportException(e);
+					}
+				}
+				
+                String exsq = convs.getConvs_sq(); 
+                // Carrega Dados de Solicitante
+                if ( value == null) { value = "xxx";}
+                value = value.trim(); 
+                colIndexx = convsColIndexHashMap.get(exsq);
+            	int colIndey = Integer.parseInt(colIndexx);
+				if (value != null && value.contains("00:00:00.0")) {
+					value = value.replace("00:00:00.0", "");
+				}
+				//if( Pattern.matches("[0-9]{1,9}[.]{1,1}[0-9]{1,9}", value)  ) {
+				if( Pattern.matches("[0-9]{1,9}[.]{1,1}[0-9]{1,9}", value)  ) {
+					value = value.replace(".", ",");
+				} 
+				if (convs_cdx.contains("atvfx_km") ) { 
+				//	value = value.replace(".", ",");
+				} 
+				if (convs_cdx.contains("atvfx_cd_invty_ultm") && value.length() > 0 ) { 
+					//value = "'"+value;
+					value = " "+value;
+				}  
+
+				//if (convs_cdx.contains("atvfx_cd") && value.length() == 5 ) { 
+				if (convs_cdx.contains("atvfx_cd") && value.length() == 5 ) { 
+					//value = "'"+value;
+					//value = "0"+value; 
+					//value = "="+dq+"X0"+value+dq; 
+					value = "="+dq+"0"+value+dq; 
+				}  
+				if (convs_cdx.contains("atvfx_cd") && value.length() == 6 ) { 
+					//value = "'"+value;
+					//value = "="+dq+"X0"+value+dq; 
+					value = "="+dq+""+value+dq; 
+				}  
+				if (convs_cdx.contains("atvfx_cd") && value.length() == 7 ) { 
+					//value = "'"+value;
+					//value = "="+dq+"X0"+value+dq; 
+					value = "="+dq+""+value+dq; 
+				}  
+
+				//if( convs_tp_orgdes.contains("NU") && Pattern.matches("[0-9]{1,9}", value)  ) {
+				if( convs_tp_orgdes.contains("NXU") &&  // Made not active in 150211
+					( Pattern.matches("[0-9]{1,9}", value) ||  Pattern.matches("[0-9]{1,9}[,]{1,1}[0-9]{1,9}", value) ) ) {
+					value = AdicionaSeparadoresMilhar(value);
+				}
+
+				//160210 if( Pattern.matches("[0-9]{1,9}", value)  ) {
+				if( convs_tp_orgdes.contains("TX") && Pattern.matches("[0-9]{1,9}", value)  ) {
+				//	value = "'"+value;
+				} 
+				table[rowIndex + headerOffset][colIndey] = value;
+
+            }
+		}
+
+		return table;
+    }
+    // ----------------------------------------------------------------´´
+
+    protected String AdicionaSeparadoresMilhar(String value) {
+        int start = value.length();
+        int startb = start - 1;
+        int posmilhar = 0;
+        String bytex = "";  String valuez = "";
+    	while ( startb >= 0 ) { 
+    		bytex = value.substring(startb,start);	
+    		valuez =  bytex + valuez;
+            if (bytex.equals(",")) {
+                start  = start - 1;
+                startb = start - 1;
+            	posmilhar = 0; continue;
+            }	
+            posmilhar = posmilhar + 1;
+            if ( posmilhar == 3 && startb > 0) {
+        	    valuez =  "." + valuez; posmilhar = 0;  
+            }	
+            start  = start - 1;
+            startb = start - 1; 
+        }
+        return valuez;
+    }
+
+    public String[][] prepareToExportPjaus(final List<? extends DataObject> dtos, String tipo)
+		throws SQLException, ExportException {
+    	List<Convs> convsList = new ArrayList<Convs>();
+    	convsList.addAll(carregaConvs(tipo));
+    	HashMap<String, String> convsColIndexHashMap = new HashMap<String, String>(); 
+
+    	/* Ordena as colunas pelo valor da coluna convs_sq */
+    	Collections.sort(convsList, new Comparator<Convs>() {
+    	//@Override
+    		public int compare(Convs cA, Convs cB) {
+    			//String convs_sqxa = cA.getConvs_sq();
+    			//if (convs_sqxa.contains("-")) {
+    			//	convs_sqxa = convs_sqxa.replace("-1", ""); 
+    			//}
+    			//String convs_sqxb = cB.getConvs_sq();
+    			//if (convs_sqxb.contains("-")) {
+    			//	convs_sqxb = convs_sqxb.replace("-1", ""); 
+    			//}
+    			return Integer.valueOf(cA.getConvs_sq()).compareTo(Integer.valueOf(cB.getConvs_sq()));
+    			//return Integer.valueOf(convs_sqxa).compareTo(Integer.valueOf(convs_sqxb));
+    		}
+        });
+
+    	int headerOffset = 1;
+    	String colIndexx = "";
+    	String[][] table = new String[dtos.size() + headerOffset][convsList.size()];   
+
+    	/* Cabeçalho */
+    	for (Integer colIndex = 0; colIndex < convsList.size(); colIndex++) {
+    		Convs convs = convsList.get(colIndex);
+    		// table[0][colIndex] = convs.getConvs_tt_orgdes();
+    		String ttx = convs.getConvs_tt_orgdes();
+    		if (convs.getConvs_sq().contains("-1")) {
+    			continue;  
+    		}
+    		//160117  table[0][colIndex] = convs.getConvs_sq()+"-"+ttx;
+    		table[0][colIndex] = convs.getConvs_sq();
+    		convsColIndexHashMap.put(convs.getConvs_sq(),colIndex.toString());
+    	}
+
+    	/* Conteúdo */
+    	for (int rowIndex = 0; rowIndex < dtos.size(); rowIndex++) {
+    		Map row = dtos.get(rowIndex).getMapFields();
+
+    		// Carregando dados do Projeto para Compor Regras de Sequenciamento
+    		String pjaus_tp_objt = (String) row.get("pjaus_tp_objt"); 
+    		String pjaus_tp_espec_1 = (String) row.get("pjaus_tp_espec_1"); 
+    		String pjaus_tp_infc_viaferrea = (String) row.get("pjaus_tp_infc_viaferrea"); 
+    		String pjaus_tp_est_interf = (String) row.get("pjaus_tp_est_interf"); 
+    		String pjaus_tp_doc_linc_amb = (String) row.get("pjaus_tp_doc_linc_amb"); 
+    		String pjaus_id_solicitante = (String) row.get("pjaus_id_solicitante"); 
+
+    		if ( pjaus_tp_objt == null) { pjaus_tp_objt = ""; } 
+    		if ( pjaus_tp_espec_1 == null) { pjaus_tp_espec_1 = ""; } 
+    		if ( pjaus_tp_infc_viaferrea == null) { pjaus_tp_infc_viaferrea = ""; } 
+    		if ( pjaus_tp_est_interf == null) { pjaus_tp_est_interf = ""; } 
+    		if ( pjaus_tp_doc_linc_amb == null) { pjaus_tp_doc_linc_amb = ""; } 
+    		if ( pjaus_id_solicitante == null) { pjaus_id_solicitante = ""; } 
+   
+    		// Carregando dados do Solicitante
+    		String pjaus_tp_solicitante = ""; 
+    		String pjaus_tp_pop = ""; 
+    		String pjaus_nm_solic_fant = ""; 
+    		String pjaus_nm_solic_razs = ""; 
+    		String pjaus_nu_solic_telf = ""; 
+    		String pjaus_nu_solic_cnpj = ""; 
+    		Solic solic = new Solic(pjaus_id_solicitante);
+    		Connection con = DatabaseUtils.getConnection();
+    		try {
+    			solic.load(con);
+    			pjaus_tp_solicitante = solic.getSolic_tp_solicitante(); 
+    			pjaus_tp_pop        = solic.getSolic_tp_pop(); 
+    			pjaus_nm_solic_fant = solic.getSolic_nm_fantasia(); 
+    			pjaus_nm_solic_razs = solic.getSolic_nm_razaosocial(); 
+    			pjaus_nu_solic_telf = solic.getSolic_nu_tel(); 
+    			pjaus_nu_solic_cnpj = solic.getSolic_cd_cnpj(); 
+    		} finally {
+    			DatabaseUtils.releaseConnection(con);
+    		}
+	        if (pjaus_tp_solicitante == null) {
+	        	pjaus_tp_solicitante = "";
+	        }
+
+    		// Processando Colunas declaradas na Convs            	
+    		String convs_cdx = "";
+    		String convs_cdx_prev = "";  
+    		for (int colIndex = 0; colIndex < convsList.size(); colIndex++) {
+    			Convs convs = convsList.get(colIndex);
+    			convs_cdx = convs.getConvs_cd();
+
+    			// Processa apenas 1 vez colunas de um mesmo elemento de dado 
+    			if (convs_cdx.equals(convs_cdx_prev)) { continue; }  
+
+    			// Carrega dados da Convs
+    			String tpRegra =          convs.getConvs_tp_regra();
+    			String convs_idx =        convs.getConvs_id_impex();
+    			String convs_tp_regrax =  convs.getConvs_tp_regra();
+    			String convs_cd_codffkx = convs.getConvs_cd_codffk();
+
+    			//System.out.println("convs_id:        "+convs.getConvs_id_impex());
+    			//System.out.println("convs_cd:        "+convs.getConvs_cd());
+    			//System.out.println("convs_tp_regra:  "+convs.getConvs_tp_regra());
+    			//System.out.println("convs_cd_codffk: "+convs.getConvs_cd_codffk());
+
+    			Object valuex = row.get(convs.getConvs_cd());
+    			if (convs_cdx.contains("_nap")) {
+    				valuex = row.get(convs_cdx);
+    				if (valuex == null) {valuex = "";}
+    				if (valuex.equals("")) {
+    					convs_cdx = convs_cdx.replace("_nap", "");    	
+    					valuex = row.get(convs_cdx);
+    				}
+    			}
+    			if (valuex == null) { // Pula elementos com valor nulo
+    				continue;
+    			}
+
+    			convs_cdx_prev = convs_cdx; // Salva elemento de dado corrente
+    			String value = valuex.toString();
+
+    			if (value != null && tpRegra != null && !tpRegra.equals("OK")) {
+    				try {
+    					Codf codf = new Codf(convs.getConvs_cd_codffk(), value, "pt_BR");
+    					codf.load(DatabaseUtils.getConnection());
+    					if (codf != null) {
+    						if (tpRegra.equals("DC")) {
+    							value = codf.getCodf_ds();
+    						} else
+    						if (tpRegra.equals("CT")) {
+    							String grupo = tipo.split("-")[1];
+    							//String xxx = codf.getCodf_supid().split(",");
+						
+    							for (String codfValue : codf.getCodf_supid().split(",")) {
+    								if(codfValue.trim().startsWith(grupo)){
+    									value = codfValue.split("-")[1];
+    									break;
+    								}
+    							}
+    					    }
+    					}
+			        } catch (SQLException e) {
+				        throw new ExportException(e);
+			        }
+		        }
+		
+                String exsq = convs.getConvs_sq(); 
+                // Carrega Dados de Solicitante
+                if ( convs_cdx.contains("pjaus_id_solicitante")) {  
+                    Integer colIndey = 0;
+        	        // Apenas se for Conessionaria
+        	        if (pjaus_tp_solicitante.equals("C")) {
+        		        colIndexx = convsColIndexHashMap.get("3");
+        		        colIndex = Integer.parseInt(colIndexx);
+        		        table[rowIndex + headerOffset][colIndex] = pjaus_nm_solic_razs;
+        	        }
+        	        // Apenas se for outros
+        	        if (pjaus_tp_solicitante.equals("O")) {
+        		        colIndexx = convsColIndexHashMap.get("004");
+        		        colIndey = Integer.parseInt(colIndexx);
+        		        table[rowIndex + headerOffset][colIndey] = pjaus_nm_solic_razs;
+        		        colIndexx = convsColIndexHashMap.get("021");
+        		        colIndey = Integer.parseInt(colIndexx);
+        		        table[rowIndex + headerOffset][colIndey] = pjaus_nm_solic_fant;
+        		        colIndexx = convsColIndexHashMap.get("022");
+        		        colIndey = Integer.parseInt(colIndexx);
+        		        table[rowIndex + headerOffset][colIndey] = pjaus_nu_solic_cnpj;
+        		        colIndexx = convsColIndexHashMap.get("023");
+        		        colIndey = Integer.parseInt(colIndexx);
+        		        table[rowIndex + headerOffset][colIndey] = pjaus_tp_pop;
+        		        colIndexx = convsColIndexHashMap.get("024");
+        		        colIndey = Integer.parseInt(colIndexx);
+                        table[rowIndex + headerOffset][colIndey] = pjaus_nu_solic_telf;
+        	        }
+                    continue; // Como ja foi carregasa na table, pula para proxima Convs
+                } else
+
+                    // Tipo de Objeto -  Especificações 1, 2 e Decrição de Objeto                 
+                if ( convs_cdx.contains("pjaus_tp_espec_1")) {  
+                    if (tipo.contains("AITTV")) { // Travessia
+            	        if (pjaus_tp_objt.equals("1") ) { exsq = "084";} // tobj=1 > exsq=84 
+            	        if (pjaus_tp_objt.equals("2") ) { exsq = "086";} // tobj=2 > exsq=86 
+            	        if (pjaus_tp_objt.equals("3") ) { exsq = "087";} // tobj=3 > exsq=87 
+            	        if (pjaus_tp_objt.equals("4") ) { exsq = "088";} // tobj=4 > exsq=88 
+            	        if (pjaus_tp_objt.equals("7") ) { exsq = "093";} // tobj=7 > exsq=93 
+            	        if (pjaus_tp_objt.equals("8") ) { exsq = "095";} // tobj=8 > exsq=95 
+                    }
+                } else               
+       	        if ( convs_cdx.contains("pjaus_tp_espec_2")) {
+                    if (tipo.contains("AITTV")) { // Travessia
+            	        if (pjaus_tp_objt.equals("1") && pjaus_tp_espec_1.equals("2") ) { exsq = "085";} // tobj=1 && toe1=2 > exsq=85 
+            	        if (pjaus_tp_objt.equals("4") && pjaus_tp_espec_1.equals("1") ) { exsq = "089";} // tobj=4 && toe1=1 > exsq=89 
+            	        if (pjaus_tp_objt.equals("7") && pjaus_tp_espec_1.equals("3") ) { exsq = "094";} // tobj=4 && toe1=1 > exsq=94 
+                    }
+       	        } else               
+                if ( convs_cdx.contains("pjaus_ds_objeto")) {   
+                    if (tipo.contains("AITTV")) { // Travessia
+            	        if (pjaus_tp_objt.equals("4") && pjaus_tp_espec_1.equals("4")) { exsq = "090";}  // tobj=4 && toe1=4 > exsq=90
+            	        if (pjaus_tp_objt.equals("8") && pjaus_tp_espec_1.equals("4")) { exsq = "096";}  // tobj=8 && toe1=4 > exsq=96
+            	        if (pjaus_tp_objt.equals("5")) { exsq = "91";}  // tobj=5 > exsq=91
+            	        if (pjaus_tp_objt.equals("6")) { exsq = "92";}  // tobj=5 > exsq=92
+                    }
+                    // if (tipo.equals("AITPS")) { }// Exploração de Publicidade - sem regra para exsq  }                
+                    if (tipo.contains("PAEPB")) { // Exploração de Publicidade
+            	        if (pjaus_tp_objt.equals("3")) { exsq = "078";}  // tobj=3 > exsq=78
+                    }                
+                    if (tipo.contains("PAETM")) { // Exploração de Terminal
+                    	if (pjaus_tp_objt.equals("1")) { exsq = "080";}  // tobj=3 > exsq=82
+            	        if (pjaus_tp_objt.equals("3")) { exsq = "082";}  // tobj=3 > exsq=82
+                    }                
+                    //if (tipo.equals("PAPSV")) {} // Exploração de Publicidade - sem regra para exsq  }                
+                    //if (tipo.equals("PAPUS")) {} // Permisãp de Uso - sem regra para exsq  }                
+                } else               
+                if ( convs_cdx.contains("pjaus_tp_infc_viaferrea")) {   // Estrutura de Onterferencia -  
+                    // if (tipo.equals("PAEPB")) { } // Exploração de Publicidade exsq=#76 
+        	        if (tipo.contains("PAETM")) {   // Exploração de Terminal
+            	        if (pjaus_tp_objt.equals("2")) { exsq = "081";}  // se tobj=3 > exsq=#82
+                    }                
+        	        if (tipo.contains("PAPSV")) {   // Prestação de Serviço
+            	        if (pjaus_tp_objt.equals("2")) { exsq = "073";}  
+            	        if (pjaus_tp_objt.equals("3")) { exsq = "073";}  
+        	        }                
+        	        if (tipo.contains("PAPUS")) {   // Permisão de Uso
+            	        if (pjaus_tp_objt.equals("2")) { exsq = "068";}  // se tobj=2 > exsq=#68
+                    }                
+                } else               
+       	        // Estrutra de Interferência e Descrição de Estrutura de Interferência	
+       	        if ( convs_cdx.contains("pjaus_vl_dist")) {
+                    if (tipo.contains("AITTV")) { // Travessia
+              	        if (pjaus_tp_infc_viaferrea.equals("1") ) { exsq = "047";} // tivf=1 > exsq=47 
+                    }
+                } else
+       	        if ( convs_cdx.contains("pjaus_vl_alt_interf")) {
+                    if (tipo.contains("AITTV")) { // Travessia
+              	        if (pjaus_tp_infc_viaferrea.equals("1") ) { exsq = "043";} // tivf=1 > exsq=43 
+                    }
+                } else
+       	        if ( convs_cdx.contains("pjaus_vl_prf_sub")) {
+                    if (tipo.contains("AITTV")) { // Travessia
+              	        if (pjaus_tp_infc_viaferrea.equals("2") ) { exsq = "051";} // tivf=2 > exsq=51 
+                    }
+                } else
+     	        if ( convs_cdx.contains("pjaus_tp_ten_interf")) {
+                    if (tipo.contains("AITTV")) { // Travessia
+              	        if (pjaus_tp_infc_viaferrea.equals("1") ) { exsq = "046";}  
+                    }
+     	        } else
+       	        if ( convs_cdx.contains("pjaus_in_est_tub_camisa")) {
+                    if (tipo.contains("AITTV")) { // Travessia
+             	        if (pjaus_tp_infc_viaferrea.equals("2") ) { exsq = "050";}  
+                    }
+     	        } else
+       	        if ( convs_cdx.contains("pjaus_in_est_fiacao")) {
+                    if (tipo.contains("AITTV")) { // Travessia
+             	        if (pjaus_tp_infc_viaferrea.equals("1") ) { exsq = "042";}  
+                    }
+      	        } else
+   		        if ( convs_cdx.contains("pjaus_vl_prf_sub")) {
+                    if (tipo.contains("AITTV")) { // Travessia
+            	        if (pjaus_tp_infc_viaferrea.equals("1") ) { exsq = "044";} // tivf=1 > exsq=44 
+            	        if (pjaus_tp_infc_viaferrea.equals("2") ) { exsq = "048";} // tivf=2 > exsq=48
+                    }
+                    if (tipo.contains("AITPS")) { // Passagem
+            	        if (pjaus_tp_infc_viaferrea.equals("3") ) { exsq = "052";} // tivf=1 > exsq=52 
+            	        if (pjaus_tp_infc_viaferrea.equals("4") ) { exsq = "055";} // tivf=2 > exsq=55
+            	        if (pjaus_tp_infc_viaferrea.equals("5") ) { exsq = "057";} // tivf=2 > exsq=57  
+                    }
+                } else
+                if ( convs_cdx.contains("pjaus_ds_est_interf_sub")) {  // Descritivo Outros  
+                    if (tipo.contains("AITTV")) {  // Travessia 
+            	        //se tivf=1 && tpei=6 > exsq=45
+            	        if (pjaus_tp_infc_viaferrea.equals("1") && pjaus_tp_est_interf.equals("6") ) { exsq = "045";} 
+            	        //se tivf=2 && tpei=3 > exsq=49   
+            	        if (pjaus_tp_infc_viaferrea.equals("2") && pjaus_tp_est_interf.equals("3") ) { exsq = "049";} 
+                    }
+                    if (tipo.contains("AITPS")) {  // Passagem 
+            	        if (pjaus_tp_infc_viaferrea.equals("3") && pjaus_tp_est_interf.equals("5") ) { exsq = "053";} 
+            	        if (pjaus_tp_infc_viaferrea.equals("4") && pjaus_tp_est_interf.equals("7") ) { exsq = "056";} 
+            	        if (pjaus_tp_infc_viaferrea.equals("5") && pjaus_tp_est_interf.equals("4") ) { exsq = "058";} 
+                    }
+                    if (tipo.contains("PAEPB")) {  // Exploração de Publicidade  
+            	        if (pjaus_tp_objt.equals("2") && pjaus_tp_infc_viaferrea.equals("3")  ) { exsq = "077";} // tobj=2 && tivf=3 > exsq=#77
+                    }                
+                    if (tipo.contains("PAETM")) {  // Exploração de Terminal  
+            	        if (pjaus_tp_objt.equals("1")) { exsq = "080";} // tobj=1 > exsq=#80
+                    }                
+        	        if (tipo.contains("PAPSV")) {   // Prestação de Serviço
+            	        if (pjaus_tp_objt.equals("1")) { exsq = "072";} 
+        		        if (pjaus_tp_objt.equals("4")) { exsq = "074";} 
+                    }                
+        	        if (tipo.contains("PAPUS")) {   // Permisão de Uso
+            	        if (pjaus_tp_objt.equals("1") && pjaus_tp_infc_viaferrea.equals("5") ) { exsq = "069";} // se objt=1 %% tivf=5  exsq=#69
+        		        if (pjaus_tp_objt.equals("1")) { exsq = "067";} // se objt=1 exsq=#67
+            	        if (pjaus_tp_objt.equals("3")) { exsq = "070";} // se objt=3 exsq=#70
+        	        }                
+                } else				
+                // Lincença Ambiental
+                if ( convs_cdx.contains("pjaus_nu_doc_linc_amb")) { // Mesmo para todas Transações
+        	        if (pjaus_tp_doc_linc_amb.equals("1") ) { exsq = "118";} // tdcl=1 > exsq=118
+        	        if (pjaus_tp_doc_linc_amb.equals("2") ) { exsq = "119";} // tdcl=2>exsq=119
+                } else
+                // Contrato 
+                if ( convs_cdx.contains("pjaus_du_contrato")) {     // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "018";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "038";}
+                } else               
+                if ( convs_cdx.contains("pjaus_tp_arrecadacao")) {  // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "007";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "027";}
+                } else               
+                if ( convs_cdx.contains("pjaus_ds_just_arr_nao_onerosa")) {  // Mesmo para todas Transações
+          	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "009";}
+                    if (pjaus_tp_solicitante.equals("O") ) {exsq = "029";}
+                } else               
+       	        if ( convs_cdx.contains("pjaus_pd_arrecadacao")) {  // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "012";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "032";}
+                } else               
+                if ( convs_cdx.contains("pjaus_ds_lei_isencao")) {  // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "008";}  
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "028";}
+                } else               
+                if ( convs_cdx.contains("pjaus_vl_contrato")) {    // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "017";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "037";}
+                } else               
+                if ( convs_cdx.contains("pjaus_vl_aval_tecnica")) { // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "013";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "033";}
+                } else               
+                if ( convs_cdx.contains("pjaus_vl_fiscalizacao")) { // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "014";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "034";}
+                } else               
+                if ( convs_cdx.contains("pjaus_vl_parc_arrc")) { // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "015";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "035";}
+                } else               
+                if ( convs_cdx.contains("pjaus_vl_prim_parc")) { // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "020";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "040";}
+                } else               
+                // Contrato Arrecadação 
+                if ( convs_cdx.contains("pjaus_vl_investimento_arr")) { // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "005";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "025";}
+                } else               
+                if ( convs_cdx.contains("pjaus_qt_part_lucros_arr")) { // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "006";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "026";}
+                } else               
+                if ( convs_cdx.contains("pjaus_dt_ini_arr")) { // Mesmo para todas Transações 
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "010";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "030";}
+                } else               
+                if ( convs_cdx.contains("pjaus_dt_trm_arr")) { // Mesmo para todas Transações
+        	        if (pjaus_tp_solicitante.equals("C") ) {exsq = "011";}
+        	        if (pjaus_tp_solicitante.equals("O") ) {exsq = "031";}
+                }                
+        
+                colIndexx = convsColIndexHashMap.get(exsq);
+    	        int colIndey = Integer.parseInt(colIndexx);
+		        if (value != null && value.contains("00:00:00.0")) {
+			        value = value.replace("00:00:00.0", "");
+		        }
+                table[rowIndex + headerOffset][colIndey] = value;   // 3322 8783
+    		}
+    	}
+    	return table;
+    }
+    
+    // ----------------------------------------------------------------´´
+	public String[][] converterParaAntt(final List<? extends DataObject> dtos, final String... tipos)
+			throws ExportException {
+		List<Convs> convsList = new ArrayList<Convs>();
+		for (String tipo : tipos) {
+			convsList.addAll(carregaConvs(tipo));
+		}
+		
+		/* Ordena as colunas pelo valor da coluna convs_sq */
+		Collections.sort(convsList, new Comparator<Convs>() {
+			@Override
+			public int compare(Convs cA, Convs cB) {
+				return Integer.valueOf(cA.getConvs_sq()).compareTo(Integer.valueOf(cB.getConvs_sq()));
+			}
+		});
+		
+		int headerOffset = 1;
+		
+		String[][] table = new String[dtos.size() + headerOffset][convsList.size()];
+		
+		/* Cabeçalho */
+		for (int colIndex = 0; colIndex < convsList.size(); colIndex++) {
+			Convs convs = convsList.get(colIndex);
+			table[0][colIndex] = convs.getConvs_tt_orgdes();
+		}
+		
+		/* Conteúdo */
+		for (int rowIndex = 0; rowIndex < dtos.size(); rowIndex++) {
+			Map row = dtos.get(rowIndex).getMapFields();
+			
+			for (int colIndex = 0; colIndex < convsList.size(); colIndex++) {
+				Convs convs = convsList.get(colIndex);
+				//  ExcelUtils.widthByColIndex.put(colIndex, Integer.parseInt(convs.getConvs_lg()));
+				String tpRegra = convs.getConvs_tp_regra();
+				
+				String convs_idx =        convs.getConvs_id_impex();
+				//String convs_tp_objtx =   convs.getConvs_tp_objt();
+				String convs_cdx =        convs.getConvs_cd();
+				String convs_tp_regrax =  convs.getConvs_tp_regra();
+				String convs_cd_codffkx = convs.getConvs_cd_codffk();
+				
+				//System.out.println("convs_id:        "+convs.getConvs_id_impex());
+				//System.out.println("convs_tp_objt:   "+convs.getConvs_tp_objt());
+				//System.out.println("convs_cd:        "+convs.getConvs_cd());
+				//System.out.println("convs_tp_regra:  "+convs.getConvs_tp_regra());
+				//System.out.println("convs_cd_codffk: "+convs.getConvs_cd_codffk());
+				
+				Object valuex = row.get(convs.getConvs_cd());
+				if (valuex == null) {
+					colIndex++; continue;             	
+				}
+				String value = row.get(convs.getConvs_cd()).toString();
+				
+				if (value != null && tpRegra != null && !tpRegra.equals("OK")) {
+					try {
+						Codf codf = new Codf(convs.getConvs_cd_codffk(), value, "pt_BR");
+						codf.load(DatabaseUtils.getConnection());
+						if (codf != null) {
+							if (tpRegra.equals("DC")) {
+								value = codf.getCodf_ds();
+							} else if (tpRegra.equals("CT")) {
+								value = codf.getCodf_supid();
+							}
+						}
+					} catch (SQLException e) {
+						throw new ExportException(e);
+					}
+				}
+				
+				// if (convs.getConvs_tp_antt().equals(AnttUtils.TEXTO)) {
+				// value = AnttUtils.formatarTexto(value);
+				// } else if (convs.getConvs_tp_antt().equals(AnttUtils.NUMERO))
+				// {
+				// value = AnttUtils.formatarNumero(value);
+				// } else if (convs.getConvs_tp_antt().equals(AnttUtils.DATA)) {
+				// value = AnttUtils.formatarData(value);
+				// }
+				
+				table[rowIndex + headerOffset][colIndex] = value;
+			}
+		}
+		
+		return table;
+	}
+
+    /**
+     * As regras devem ser implementadas na Instancia
+     * @author Wendel Silvério
+     * 
+     * @param coluna
+     * @param valor
+     * @return
+     */
+    protected Object chaveadorCF(final String coluna, final Object valor) {
+	return valor;
+    }
+
+    /**
+     * Metodo que carrega os tipos de bps relacionados ao tipode bp informado que devem estar parametrizados no banco de
+     * dados.
+     * @author Wendel Silvério
+     * 
+     * @param tipoDeBp
+     * @return
+     */
+    private List<Param> carregaParam(final String tipoDeBp){
+	List<Param> results = null;
+	DataObject dao = null;
+	try {
+	    dao = (DataObject) Class.forName("appl.data.Param").newInstance();
+	    Connection con = null;
+	    con = DatabaseUtils.getConnection();
+	    results = (List<Param>) dao.find(con, new String[]{"param_cd"}, new String[]{tipoDeBp});
+	} catch (InstantiationException e) {
+	    e.printStackTrace();
+	} catch (IllegalAccessException e) {
+	    e.printStackTrace();
+	} catch (ClassNotFoundException e) {
+	    e.printStackTrace();
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	}
+
+	return results;
+    }
+
+    /**
+     * Metodo que envia o arquivo csv gerado para o usuário
+     * @author Wendel Silvério
+     * 
+     * @param dtos
+     * @param nomeDoArquivoSemExtensao
+     * @throws Exception 
+     * @throws IOException 
+     * @throws SQLException
+     * @throws LoginException
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    public void entregarCsvAntt(final String proc, final String tipoDeBp, final String nomeDoArquivoSemExtensao) {
+
+	try {
+	    List<Param> tiposDeBpRelacionados = carregaParam(tipoDeBp);
+
+	    String[] tiposDeBp;
+	    List resultadosDasPesquisas = new ArrayList();
+	    if ((tiposDeBpRelacionados == null) || tiposDeBpRelacionados.isEmpty()) {
+		tiposDeBp = new String[] {tipoDeBp};
+		resultadosDasPesquisas.addAll(pesqData);
+	    } else {
+		
+		tiposDeBp = tiposDeBpRelacionados.get(0).getParam_vl().split(",");
+		
+		/* Define o sufixo que será usado pelas outras procedures */
+		String sufixo = "";
+		if(proc.endsWith("Own_lov")){
+		    sufixo = "Own_lov";
+		}else if(proc.endsWith("Leased_lov")){
+		    sufixo = "Leased_lov";
+		}
+
+		for (String tpBp : tiposDeBp) {
+		    String procTpBp = definirSubProcedure(tpBp, sufixo);
+		    resultadosDasPesquisas.addAll(loadPesqData(procTpBp));
+		}
+	    }
+
+	    if(resultadosDasPesquisas.isEmpty()){
+		throw new ExportException("Nenhum registro encontrado para geração do arquivo para ANTT");
+	    }
+	    
+	    HttpHelpers.responseExcel(converterParaAntt(resultadosDasPesquisas, tiposDeBp), "ANTT", nomeDoArquivoSemExtensao);
+
+		} catch (LoginException e) {
+			e.printStackTrace();
+			this.mesg_var = e.getMessage();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			this.mesg_var = e.getMessage();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			this.mesg_var = e.getMessage();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			this.mesg_var = e.getMessage();
+		} catch (IOException e) {
+			e.printStackTrace();
+			this.mesg_var = e.getMessage();
+		} catch (ExportException e) {
+			e.printStackTrace();
+			this.mesg_var = e.getMessage();
+		}
+    }
+    
+    /**
+     * Metodo que envia o arquivo csv gerado para o usuário
+     * @author Wendel Silvério
+     * 
+     * @param dtos
+     * @param nomeDoArquivoSemExtensao
+     * @throws Exception 
+     * @throws IOException 
+     * @throws SQLExceptionHttpHelpers
+     * @throws LoginException
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    public void deliveryExcel(final String tipoDeBp, final String nomeDoArquivoSemExtensao) {
+		try {
+			//if (pesqData.isEmpty()) {
+			//	throw new ExportException("Nenhum registro encontrado para geração do arquivo de exportação");
+			//}
+			HttpHelpers.responseExcel(prepareToExport(pesqData, tipoDeBp), "Plan1", nomeDoArquivoSemExtensao);
+			//HttpHelpers.enviarArquivo(content, uploadErrorFile, TipoDeArquivo.CSV);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			this.mesg_var = e.getMessage();
+		} catch (ExportException e) {
+			e.printStackTrace();
+			this.mesg_var = e.getMessage();
+     	} catch (SQLException e) {
+     		e.printStackTrace();
+     		this.mesg_var = e.getMessage();
+	    }
+    }
+    
+    /**
+     * Metodo que envia o arquivo csv gerado para o usuário
+     * @author Wendel Silvério
+     * 
+     * @param dtos
+     * @param nomeDoArquivoSemExtensao
+     * @throws Exception 
+     * @throws IOException 
+     * @throws SQLException
+     * @throws LoginException
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    public void entregarCsvAntt(final String tipoDeBp, final String nomeDoArquivoSemExtensao) {
+    	try {
+    		if (pesqData.isEmpty()) {
+    			throw new ExportException("Nenhum registro encontrado para geração do arquivo para ANTT");
+    		}
+    		HttpHelpers.responseExcel(converterParaAntt(pesqData, new String[] { tipoDeBp }), "ANTT", nomeDoArquivoSemExtensao);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		this.mesg_var = e.getMessage();
+    	} catch (ExportException e) {
+    		e.printStackTrace();
+    		this.mesg_var = e.getMessage();
+    	}
+    }
+    
+     /*
+     * Metodo que define as procedures dos tipos de bens relacionados     
+     * @author Wendel Silvério
+     * 
+     * @param proc
+     * @return
+     */
+    private String definirSubProcedure(String tipoDeBp, String sufixo) {
+    	String nomeDaProcedure = "";
+
+    	if(tipoDeBp.equals("VG")){nomeDaProcedure = "AssetVhwag";}
+    	else if(tipoDeBp.equals("LC")){nomeDaProcedure = "AssetVheng";}
+    	else if(tipoDeBp.equals("ED")){nomeDaProcedure = "AssetBldng";}
+    	else if(tipoDeBp.equals("TP")){nomeDaProcedure = "AssetYrdld";}
+    	else if(tipoDeBp.equals("TL")){nomeDaProcedure = "AssetLbdld";}
+    	else if(tipoDeBp.equals("LP")){nomeDaProcedure = "AssetMailn";}
+    	else if(tipoDeBp.equals("DP")){nomeDaProcedure = "AssetYrdsd";}
+    	else if(tipoDeBp.equals("LR")){nomeDaProcedure = "AssetExtln";}
+    	else if(tipoDeBp.equals("DC")){nomeDaProcedure = "AssetSidng";}
+    	else if(tipoDeBp.equals("PN")){nomeDaProcedure = "AssetLvlcr";}
+    	else if(tipoDeBp.equals("PS")){nomeDaProcedure = "AssetOvrps";}
+    	else if(tipoDeBp.equals("PI")){nomeDaProcedure = "AssetUndps";}
+    	else if(tipoDeBp.equals("TU")){nomeDaProcedure = "AssetTunnl";}
+    	else if(tipoDeBp.equals("PT")){nomeDaProcedure = "AssetBrdge";}
+    	else if(tipoDeBp.equals("VD")){nomeDaProcedure = "AssetViadt";}
+    	else if(tipoDeBp.equals("BU")){nomeDaProcedure = "AssetCulvt";}
+	
+    	return nomeDaProcedure+sufixo;
+    }
+    /**
+     * Metodo que carrega os dados de acordo com o tipo
+     * @author Wendel Silvério
+     * 
+     * @param tipo
+     * @return
+     * @throws SQLException 
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     * @throws LoginException 
+     */
+    public List<DataObject> loadPesqData(final String proc) throws SQLException, InstantiationException, IllegalAccessException, LoginException {
+	List results = null;
+	    DataObject dao = (DataObject) getDataClass().newInstance();
+	    dao = setTableAliasBean(dao);
+	    dao = setProcedureNameBean(dao, proc);
+	    dao = setDataValues(dao);
+	    dao.setLoadChilds(true);
+
+	    if ((filter != null) && filter.trim().equals("")) {
+		filter = null;
+	    }
+
+	    results = dao.findFilterSorted(DatabaseUtils.getConnection(), filter, order, maxResults);
+
+	    return results;
+    }
+    public void verifyHelp(String tipo) throws SQLException, LoginException { // @search
+        if (tipo == null) {return;}
+    	Connection con = DatabaseUtils.getConnection();
+        try {
+        	String transx = ""; String typ = ""; 
+            // HelpSpc existence verification
+            if (tipo.indexOf("psq") >= 0) {
+            	transx = tipo.replace("psq", ""); typ = "Sfm"; 
+            }
+            if (tipo.indexOf("cad") >= 0) {
+            	transx = tipo.replace("cad", ""); typ = "Rfm";
+            }
+            Help help = new Help(nameUpper1(transx)+typ,getLocale());
+            //Help help = new Help("TransSfm","pt_BR");
+            help.load(con);
+            String ss = help.getHelp_st();
+            if (typ.indexOf("Sfm") >= 0 ) { 
+            	hasHelpSpcSfm = false;
+            	if (ss != null && ss.indexOf("A") >= 0) {
+            		hasHelpSpcSfm = true;
+            	}
+            }
+            if (typ.indexOf("Rfm") >= 0 ) { 
+            	hasHelpSpcRfm = false;
+            	if (ss != null && ss.indexOf("A") >= 0) {
+            		hasHelpSpcRfm = true;
+            	}
+            }
+
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+    public void verifyHelpFromtrans(String tipo) throws SQLException, LoginException { // @search
+
+        if (tipo == null) {return;}
+    	//if (tipo != null) {return;}
+        Connection con = DatabaseUtils.getConnection();
+        try {
+        	String tranx = ""; String typ = "";
+            if (tipo.indexOf("psq") >= 0) {
+            	tranx = tipo.replace("psq", ""); typ = "Sfm"; 
+            } else
+            if (tipo.indexOf("cad") >= 0) {
+            	tranx = tipo.replace("cad", ""); typ = "Rfm";
+            }
+            tranx = tranx.toUpperCase();
+
+            Trans trans = new Trans(tranx);
+            trans.load(con);
+            trans_cd_hpus     = trans.getTrans_cd_hpus() ;
+            trans_cd_hgen_sfm = trans.getTrans_cd_hgen_sfm();
+            trans_cd_hgen_rfm = trans.getTrans_cd_hgen_rfm();
+            trans_cd_hcom_sfm = trans.getTrans_cd_hcom_sfm();
+            trans_cd_hcom_rfm = trans.getTrans_cd_hcom_rfm();
+            trans_cd_help_sfm = trans.getTrans_cd_help_sfm();
+            trans_cd_help_rfm = trans.getTrans_cd_help_rfm();
+
+            // Build rendering flag for specific helps 
+            if (tipo.indexOf("psq") >= 0) {
+            	tranx = tipo.replace("psq", ""); typ = "Sfm"; 
+            }
+            if (tipo.indexOf("cad") >= 0) {
+            	tranx = tipo.replace("cad", ""); typ = "Rfm";
+            }
+            Help help = new Help(nameUpper1(tranx)+typ,getLocale());
+            //Help help = new Help("TransSfm","pt_BR");
+            help.load(con);
+            String ss = help.getHelp_st();
+            if (typ.indexOf("Sfm") >= 0 ) { 
+            	hasHelpSpcSfm = false;
+            	if (ss != null && ss.indexOf("A") >= 0) {
+            		hasHelpSpcSfm = true;
+            	}
+            }
+            if (typ.indexOf("Rfm") >= 0 ) { 
+            	hasHelpSpcRfm = false;
+            	if (ss != null && ss.indexOf("A") >= 0) {
+            		hasHelpSpcRfm = true;
+            	}
+            }
+            
+            // Build rendering flag for commomn section helps 
+            if (trans_cd_hpus == null ) { trans_cd_hpus = "";}
+            if (trans_cd_hgen_sfm == null ) { trans_cd_hgen_sfm = "";}
+            if (trans_cd_hgen_rfm == null ) { trans_cd_hgen_rfm = "";}
+            if (trans_cd_hcom_sfm == null ) { trans_cd_hcom_sfm = "";}
+            if (trans_cd_hcom_rfm == null ) { trans_cd_hcom_rfm = "";}
+            if (trans_cd_help_sfm == null ) { trans_cd_help_sfm = "";}
+            if (trans_cd_help_rfm == null ) { trans_cd_help_rfm = "";}
+            hasHelpComSfm = false;  hasHelpComRfm = false; 
+            if (trans_cd_hcom_sfm.length() > 0 || trans_cd_hcom_rfm.length() > 0 ) {
+                if (trans_cd_hcom_sfm.length() > 0) {
+                    Help helpcomsfm = new Help(nameUpper1(trans_cd_hcom_sfm),getLocale());
+                    helpcomsfm.load(con);
+                    String stcomsfm = helpcomsfm.getHelp_st();
+                    hasHelpComSfm = false;
+                    if (ss != null && ss.indexOf("A") >= 0) {
+                    	hasHelpComSfm = true;
+                    }
+                }
+                if (trans_cd_hcom_rfm.length() > 0) {
+                    Help helpcomrfm = new Help(nameUpper1(trans_cd_hcom_rfm),getLocale());
+                    helpcomrfm.load(con);
+                    String stcomrfm = helpcomrfm.getHelp_st();
+                    hasHelpComRfm = false;
+                    if (ss != null && ss.indexOf("A") >= 0) {
+                    	hasHelpComRfm = true;
+                    }
+                }
+            }
+
+           // Build helpcad / helprvwpsq usage profile 
+            int qth = 0; helpx = "";
+            Helpr helpr = new Helpr("","","");
+        	List list = helpr.find(con, "helpr_cd_help", "");
+            if (trans_cd_hpus != null && trans_cd_hpus.length() > 0) {
+                list = helpr.find(con, "helpr_cd_help", trans_cd_hpus);
+            	qth = list.size();
+            	if (qth <= 1) {helpx = helpx + "1";} else if (qth > 1) {helpx = helpx + "2";} 
+            } else {helpx = helpx + "1";}
+
+            // sfm
+            if (trans_cd_hgen_sfm != null && trans_cd_hgen_sfm.length() > 0) {
+            	list = helpr.find(con, "helpr_cd_help", trans_cd_hgen_sfm);
+            	qth = list.size();
+            	if (qth <= 1) {helpx = helpx + "1";} else if (qth > 1) {helpx = helpx + "2";} 
+            } else {helpx = helpx + "1";}
+
+            if (trans_cd_hcom_sfm != null && trans_cd_hcom_sfm.length() > 0) {
+            	list = helpr.find(con, "helpr_cd_help", trans_cd_hcom_sfm);
+            	qth = list.size();
+            	if (qth <= 1) {helpx = helpx + "1";} else if (qth > 1) {helpx = helpx + "2";} 
+            } else {helpx = helpx + "1";}
+
+            if (trans_cd_help_sfm != null && trans_cd_help_sfm.length() > 0 ) {
+            	list = helpr.find(con, "helpr_cd_help", trans_cd_help_sfm);
+            	qth = list.size();
+            	if (qth <= 1) {helpx = helpx + "1";} else if (qth > 1) {helpx = helpx + "2";} 
+            } else {helpx = helpx + "1";}
+
+            // rfm
+            if (trans_cd_hgen_rfm != null  && trans_cd_hgen_rfm.length() > 0) {
+            	list = helpr.find(con, "helpr_cd_help", trans_cd_hgen_rfm);
+            	qth = list.size();
+            	if (qth <= 1) {helpx = helpx + "1";} else if (qth > 1) {helpx = helpx + "2";} 
+            } else {helpx = helpx + "1";}
+
+            if (trans_cd_hcom_rfm != null && trans_cd_hcom_rfm.length() > 0 ) {
+            	list = helpr.find(con, "helpr_cd_help", trans_cd_hcom_rfm);
+            	qth = list.size();
+            	if (qth <= 1) {helpx = helpx + "1";} else if (qth > 1) {helpx = helpx + "2";} 
+            } else {helpx = helpx + "1";}
+
+            if (trans_cd_help_rfm != null && trans_cd_help_rfm.length() > 0) {
+            	list = helpr.find(con, "helpr_cd_help", trans_cd_help_rfm);
+            	qth = list.size();
+            	if (qth <= 1) {helpx = helpx + "1";} else if (qth > 1) {helpx = helpx + "2";} 
+            } else {helpx = helpx + "1";}
+            
+   			xhelp_rc = helpx;
+
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public void verifyHelpCom(String tipo) throws SQLException, LoginException { // @search
+         String aaa = tipo;
+    }
+
+    public String nameUpper1(String name) { // Converts Names without special Characters to Uppercase
+        if (name == null) {return ("");}
+        if (name.length() == 0) {return (name);}
+        int iill = 0;
+        String up = (name.substring(0,1)).toUpperCase(); iill = name.length();
+        name = up+name.substring(1,iill);
+        return (name);
+    }
+
+    public String TrainQueryList_a() throws SQLException, LoginException { // @getrecd
+        return tipo; // @getrecd
+    }
+    public String CrewQueryList_a() throws SQLException, LoginException { // @getrecd
+        return tipo; // @getrecd
+    }
+
+    public String goBack() throws LoginException, SQLException {
+    	String beanToGo = getParameter("cadbeanx");
+    	goBackBean = (String)getSession().getAttribute("goBackBean");
+        if (goBackBean == null  ) {
+            return "importafcad";
+        	//return ((CadastroBean)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Importaf")).doObter();
+        }
+    	getSession().setAttribute("goBackBean", null);
+    	tipo = goBackBean.replace("cad",""); tipo = tipo.replace("Bean",""); tipo = tipo.toLowerCase();    
+    	getSession().setAttribute("tipo", tipo+"cad");
+        //return ((CadastroBean)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(goBackBean)).doSelecionarBack();
+    	//return ((CadastroBean)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(goBackBean)).doObter();
+        if (goBackBean.contains("TrainOpr")) {
+        	return ((CadastroBean)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(goBackBean)).TrainQueryList_a();
+        }
+        if (goBackBean.contains("CrewOpr")) {
+        	return ((CadastroBean)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(goBackBean)).CrewQueryList_a();
+        }
+        return "";
+    }
+    public String chldImage(String vx) {
+        String result = "";
+        if (vx == null) { vx = "0"; }
+        if (vx.equals("0")) {
+             result = "../imagens/btRegEmpty.png";
+        }
+        if (vx.equals("1")) {
+             result = "../imagens/btReg.png";
+        }
+    	return result;
+    }
+    public String chldImgImage(String vx) {
+        String result = "";
+        if (vx == null) { vx = "0"; }
+        if (vx.equals("0")) {
+             result = "../imagens/pictureoff.png";
+        }
+        if (vx.equals("1")) {
+             result = "../imagens/picture.png";
+        }
+    	   return result;
+    }
+
+    public void saveGeo(String bp, String nat, String tp_cfasttp, Double longitude, Double latitude) throws SQLException {
+		List<String> tpGeoExistentes = Arrays.asList("BU","DP", "ED", "LP", "PI", "PN", "PS", "PT", "TL", "TP", "TU");
+		if(tpGeoExistentes.contains(tp_cfasttp)) {
+			String bpparcela = bp + "000";
+			String sql = "INSERT INTO MRS_GEO_" + tp_cfasttp + " (BP, BPPARCELA, GEOMETRY) VALUES (" + bp + ", " + bpparcela + ", geometry::STGeomFromText('POINT (" + longitude + " " + latitude + ")', 4618))";
+    		Connection congeo =  DatabaseUtils.getConnection();
+			Statement stmt = congeo.createStatement();
+			stmt.execute(sql);
+			stmt.close();
+	    	DatabaseUtils.releaseConnection(congeo);
+		} 
+	}
+
+    // Verifies whether Tabular Forms are to be shown in Assist Mode
+    public Boolean getAssist() {
+        assist = true;
+        assist = (Boolean) (getSession().getAttribute(tipo));
+        if (assist == null) {assist = true;}
+        return assist;
+    }
+    public Boolean getAssistx() {
+        Boolean result = true;
+    	Boolean assista = getAssist();
+        if (assista == null) {result= true;}
+        if (assista == true) {result = false;} 
+        if (assista == false) {result = true;}
+        return result;
+    }
+
+    public void loafSheet() {
+    }
+
+    public void deliveryCsv(final String tipoDeBp, final String nomeDoArquivoSemExtensao) {
+    	try {
+    		HttpHelpers.responseCsv(prepareToExport(pesqData, tipoDeBp), nomeDoArquivoSemExtensao);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		this.mesg_var = e.getMessage();
+    	} catch (ExportException e) {
+    		e.printStackTrace();
+    		this.mesg_var = e.getMessage();
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		this.mesg_var = e.getMessage();
+    	}
+    }
+
+    public void deliveryCsvPjaus(final String tipoDeBp, final String nomeDoArquivoSemExtensao) {
+    	try {
+    		HttpHelpers.responseCsv(prepareToExportPjaus(pesqData, tipoDeBp), nomeDoArquivoSemExtensao);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		this.mesg_var = e.getMessage();
+    	} catch (ExportException e) {
+    		e.printStackTrace();
+    		this.mesg_var = e.getMessage();
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		this.mesg_var = e.getMessage();
+    	}
+    }
+
+    public String validateKeyFromSession(String valorz) {   
+    	String tranAnt = "";
+    	if (valorz == null) {
+    		tranAnt = (String) getSession().getAttribute("tbak");
+    		if (tranAnt != null ) {
+    			getSession().setAttribute("tipoantsuper",null);
+    			if (tranAnt.length() > 0 ) {
+    	           return tranAnt;
+    			}
+    		}
+    	}
+        return "succes";
+    }
+
+}

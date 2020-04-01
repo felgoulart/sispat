@@ -1,0 +1,1453 @@
+package appl.bean;
+    
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import wins.report.jasperRunner;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import java.util.List;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.fileupload.FileItem;
+import appl.data.Obdoc;
+// ---------------------------------------
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import wins.libs.LoginException;
+import appl.libs.IIBeanUtils;
+public class CadObdocBean extends CadastroBean {
+        protected static Log log = LogFactory.getLog(CadObdocBean.class);
+    public int xtab = 0;
+    // Tabs Validation Status
+    private String idx;
+    private String idxm;
+    private int idxmtot;
+    private boolean idxflag;
+    private String tbakloc;
+    private String alterando;
+    private Boolean assistnovo;
+    private String filter;
+    private String vc;
+    public String role = "";
+    public int imgskk = 0;
+    public int fileskk = 0;
+    public String fileUploaded= "";
+    private int maxResultsTrn = 0;
+    
+    // Building Fields Validation Map ---------------
+    private static Map<String, Integer> i_fields = new HashMap<String, Integer>(); static {
+        i_fields.put("obdoc_tp", 1);
+        i_fields.put("obdoc_cd_file", 2);
+        i_fields.put("obdoc_tp_cfasttp", 3);
+        i_fields.put("obdoc_nm", 4);
+        i_fields.put("obdoc_dt", 5);
+        i_fields.put("obdoc_ds", 6);
+        i_fields.put("obdoc_ct", 7);
+        i_fields.put("obdoc_nm_file", 8);
+    } // 222
+    
+    private FileItem file;
+    // Declaring Validation Map -------------------
+    private HashMap<String, StringBuffer> i_divns = new HashMap<String, StringBuffer>();
+    // ii.properties---------------------------------------
+    private String xbutn_id;
+    private String xuserx_id_login;
+    private String obdoc_vc;
+    private String tabs_vf;
+    private String tabs_vf_old;
+    private String obdoc_vf;
+    private String user_cd;
+    private Date recd_ts;
+    private String recd_ts_str;
+    private String recd_ts_dt;
+    private String obdoc_id;
+    private String obdoc_id_old ;
+    private String obdoc_id_desc;
+    private Integer obdoc_sq;
+    private Integer obdoc_sq_old ;
+    private String obdoc_sq_vc;
+    private String obdoc_tp;
+    private String obdoc_tp_desc;
+    private String obdoc_tp_vc;
+    private String obdoc_cd_file;
+    private String obdoc_cd_file_desc;
+    private String obdoc_cd_file_vc;
+    private String obdoc_tp_cfasttp;
+    private String obdoc_tp_cfasttp_desc;
+    private String obdoc_tp_cfasttp_vc;
+    private String obdoc_nm;
+    private String obdoc_nm_vc;
+    private Date obdoc_dt;
+    private String obdoc_dt_str;
+    private String obdoc_dt_dt;
+    private String obdoc_dt_vc;
+    private String obdoc_ds;
+    private String obdoc_ds_vc;
+    private String obdoc_ct;
+    private String obdoc_ct_vc;
+    private String obdoc_nm_file;
+    private String obdoc_nm_file_vc;
+    private String flds_vf_ref;
+    // Filters------------------------------------------
+    private String fil_obdoc_vc;
+    private String fil_obdoc_id;
+    private String fil_obdoc_tp;
+    private String fil_obdoc_cd_file;
+    private String fil_obdoc_tp_cfasttp;
+    private String fil_obdoc_ds;
+    private String fil_obdoc_nm_file;
+    // Orders------------------------------------
+    private FileItem obdoc_file;
+    // Constructor--------------------------------------
+    public CadObdocBean() { 
+    } // 333
+    
+    // Returns a Reference to the Associared DataObject-
+    protected Class getDataClass() { return Obdoc.class;}
+    // Working Variables Methods-------------------------
+    public void setAlterando(String alterando) { this.alterando = alterando; }
+    public String getAlterando() { return alterando;} 
+    
+    // Setters -----------------------------------------
+    public void setXbutn_id (String xbutn_id) {
+        this.xbutn_id = xbutn_id;
+    }
+    public void setXuserx_id_login (String xuserx_id_login) {
+        this.xuserx_id_login = xuserx_id_login;
+    }
+    public void setObdoc_vc (String obdoc_vc) {this.obdoc_vc = obdoc_vc;}
+    public void setTabs_vf (String tabs_vf) {this.tabs_vf = tabs_vf;}
+    public void setObdoc_vf (String obdoc_vf) {this.obdoc_vf = obdoc_vf;}
+    
+    public void setFlds_vfsb (StringBuffer flds_vfsb) {this.flds_vfsb = flds_vfsb;}
+    
+    public void setUser_cd (String user_cd) {this.user_cd = user_cd;}
+    
+    public void setRecd_ts (Date recd_ts) {this.recd_ts = recd_ts;}
+    
+    public void setObdoc_id (String obdoc_id) {this.obdoc_id = obdoc_id;}
+    public void setObdoc_id_desc (String obdoc_id_desc) {this.obdoc_id_desc = obdoc_id_desc;}
+    
+    public void setObdoc_sq (Integer obdoc_sq) {this.obdoc_sq = obdoc_sq;}
+    public void setObdoc_tp (String obdoc_tp) {this.obdoc_tp = obdoc_tp;}
+    public void setObdoc_tp_desc (String obdoc_tp_desc) {this.obdoc_tp_desc = obdoc_tp_desc;}
+    public void setObdoc_tp_vc (String obdoc_tp_vc) {this.obdoc_tp_vc = obdoc_tp_vc;}
+    public void setObdoc_cd_file (String obdoc_cd_file) {this.obdoc_cd_file = obdoc_cd_file;}
+    public void setObdoc_cd_file_desc (String obdoc_cd_file_desc) {this.obdoc_cd_file_desc = obdoc_cd_file_desc;}
+    public void setObdoc_cd_file_vc (String obdoc_cd_file_vc) {this.obdoc_cd_file_vc = obdoc_cd_file_vc;}
+    public void setObdoc_tp_cfasttp (String obdoc_tp_cfasttp) {this.obdoc_tp_cfasttp = obdoc_tp_cfasttp;}
+    public void setObdoc_tp_cfasttp_desc (String obdoc_tp_cfasttp_desc) {this.obdoc_tp_cfasttp_desc = obdoc_tp_cfasttp_desc;}
+    public void setObdoc_tp_cfasttp_vc (String obdoc_tp_cfasttp_vc) {this.obdoc_tp_cfasttp_vc = obdoc_tp_cfasttp_vc;}
+    public void setObdoc_nm (String obdoc_nm) {this.obdoc_nm = obdoc_nm;}
+    public void setObdoc_nm_vc (String obdoc_nm_vc) {this.obdoc_nm_vc = obdoc_nm_vc;}
+    
+    public void setObdoc_dt (Date obdoc_dt) {this.obdoc_dt = obdoc_dt;}
+    public void setObdoc_dt_str (String obdoc_dt_str) {
+       this.obdoc_dt_str = obdoc_dt_str; }
+    public void setObdoc_dt_vc (String obdoc_dt_vc) {this.obdoc_dt_vc = obdoc_dt_vc;}
+    
+    public void setObdoc_ds (String obdoc_ds) {this.obdoc_ds = obdoc_ds;}
+    public void setObdoc_ds_vc (String obdoc_ds_vc) {this.obdoc_ds_vc = obdoc_ds_vc;}
+    public void setObdoc_ct (String obdoc_ct) {this.obdoc_ct = obdoc_ct;}
+    public void setObdoc_ct_vc (String obdoc_ct_vc) {this.obdoc_ct_vc = obdoc_ct_vc;}
+    public void setObdoc_nm_file (String obdoc_nm_file) {this.obdoc_nm_file = obdoc_nm_file;}
+    public void setObdoc_nm_file_vc (String obdoc_nm_file_vc) {this.obdoc_nm_file_vc = obdoc_nm_file_vc;}
+    // Filter Setters-----------------------------------
+    public void setFil_obdoc_vc (String fil_obdoc_vc) {this.fil_obdoc_vc = fil_obdoc_vc;}
+    public void setFil_obdoc_id (String fil_obdoc_id) {this.fil_obdoc_id = fil_obdoc_id;}
+    public void setFil_obdoc_tp (String fil_obdoc_tp) {this.fil_obdoc_tp = fil_obdoc_tp;}
+    public void setFil_obdoc_cd_file (String fil_obdoc_cd_file) {this.fil_obdoc_cd_file = fil_obdoc_cd_file;}
+    public void setFil_obdoc_tp_cfasttp (String fil_obdoc_tp_cfasttp) {this.fil_obdoc_tp_cfasttp = fil_obdoc_tp_cfasttp;}
+    public void setFil_obdoc_ds (String fil_obdoc_ds) {this.fil_obdoc_ds = fil_obdoc_ds;}
+    public void setFil_obdoc_nm_file (String fil_obdoc_nm_file) {this.fil_obdoc_nm_file = fil_obdoc_nm_file;}
+    // Order Setters---------------------------
+    public FileItem getFile() {
+        return file;
+    }
+    public void setFile(FileItem file) {
+        this.file = file;
+    }
+    
+    // Getters -----------------------------------------
+    public String getIdxm() {
+        return idxm; 
+    }
+    public boolean isIdxflag() {
+        return idxflag; 
+    }
+    public String getXbutn_id() {
+        return xbutn_id; 
+    }
+    public String getXuserx_id_login() {
+        return xuserx_id_login; 
+    }
+    public String getObdoc_vc() {return obdoc_vc; }
+    public String getTabs_vf() {return tabs_vf; }
+    public String getObdoc_vf() {return obdoc_vf; }
+    
+    public StringBuffer getFlds_vfsb() {return flds_vfsb; }
+    
+    public String getUser_cd() {return user_cd; }
+    
+    public Date getRecd_ts() {return recd_ts; }
+    
+    public String getObdoc_id() {return obdoc_id; }
+    public String getObdoc_id_old() {return obdoc_id_old; }
+    public String getObdoc_id_desc() {return obdoc_id_desc; }
+    
+    public Integer getObdoc_sq() {return obdoc_sq; }
+    public Integer getObdoc_sq_old() {return obdoc_sq_old; }
+    public String getObdoc_tp() {return obdoc_tp; }
+    public String getObdoc_tp_desc() {return obdoc_tp_desc; }
+    public String getObdoc_tp_vc() {return obdoc_tp_vc; }
+    public String getObdoc_cd_file() {return obdoc_cd_file; }
+    public String getObdoc_cd_file_desc() {return obdoc_cd_file_desc; }
+    public String getObdoc_cd_file_vc() {return obdoc_cd_file_vc; }
+    public String getObdoc_tp_cfasttp() {return obdoc_tp_cfasttp; }
+    public String getObdoc_tp_cfasttp_desc() {return obdoc_tp_cfasttp_desc; }
+    public String getObdoc_tp_cfasttp_vc() {return obdoc_tp_cfasttp_vc; }
+    public String getObdoc_nm() {return obdoc_nm; }
+    public String getObdoc_nm_vc() {return obdoc_nm_vc; }
+    
+    public Date getObdoc_dt() {return obdoc_dt; }
+    public String getObdoc_dt_str() {
+        return obdoc_dt_str;}
+    public String getObdoc_dt_vc() {return obdoc_dt_vc; }
+    
+    public String getObdoc_ds() {return obdoc_ds; }
+    public String getObdoc_ds_vc() {return obdoc_ds_vc; }
+    public String getObdoc_ct() {return obdoc_ct; }
+    public String getObdoc_ct_vc() {return obdoc_ct_vc; }
+    public String getObdoc_nm_file() {return obdoc_nm_file; }
+    public String getObdoc_nm_file_vc() {return obdoc_nm_file_vc; }
+    // Filter Getters-----------------------------------
+    public String getFil_obdoc_vc() {return fil_obdoc_vc; }
+    public String getFil_obdoc_id() {return fil_obdoc_id; }
+    public String getFil_obdoc_tp() {return fil_obdoc_tp; }
+    public String getFil_obdoc_cd_file() {return fil_obdoc_cd_file; }
+    public String getFil_obdoc_tp_cfasttp() {return fil_obdoc_tp_cfasttp; }
+    public String getFil_obdoc_ds() {return fil_obdoc_ds; }
+    public String getFil_obdoc_nm_file() {return fil_obdoc_nm_file; }
+    // Order Getters-----------------------------
+    
+    protected boolean validateParms() { 
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadObdocBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        obdoc_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,obdoc_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+    //  for childMainRecord
+        return result; 
+    }   //  End of Validate 
+    
+    public String doFileUpload() throws LoginException, Exception { // check
+        String result = "";
+        if (file == null || file.get() == null || file.get().length == 0) {
+            mesg_var = getMessageByKey("insertAFile");
+            return result;
+        }
+        createFilesDirectory();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String filx = file.getName();;
+        filx = filx.replace("%","");
+        filx = filx.replace("@","");
+        filx = filx.replace("!","");
+        filx = filx.replace("*","");
+        filx = filx.replace("#","");
+        filx = filx.replace("$","");
+        filx = filx.replace("&","");
+        filx = filx.replace("$","");
+        filx = filx.replace("*","");
+        int start = filx.lastIndexOf("\\")+1;
+        String filex = filx.substring(start,filx.length());
+        filex = obdoc_id + "-" + obdoc_tp + "-" + filex ;
+        /* Caminho Absoluto docs */
+        File myFile = new File("c:/sispat_mrs_files/" + filex);
+        OutputStream os = new FileOutputStream(myFile);
+        //os.write(imagem.get());
+        os.write(file.get());
+        os.flush();
+        os.close();
+        obdoc_nm_file = myFile.getName();
+        Obdoc obdoc = new Obdoc();
+        obdoc.setObdoc_dt(obdoc_dt);
+        obdoc.setObdoc_id(obdoc_id);
+        obdoc.setObdoc_nm_file(obdoc_nm_file);
+        getSession().setAttribute("fileUploaded", filex);
+        result = doUpdate();
+        result = "success";
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            PreparedStatement ps_file = con1.prepareStatement("update wbrl_asset set file_vx = '1' where asset_id like ?");
+            ps_file.setString(1, "%"+obdoc_id+"%");
+            ResultSet rs_file = ps_file.executeQuery();
+            } catch (Exception ex) {
+                return "success";
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+                   xmesg_rc = 777;
+                   mesg_var = getMessageByKey("msg_fileUploaded");
+        return result;
+    }
+    
+    protected boolean validate() { // @save @getrecd  
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadObdocBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        obdoc_tp_vc = valObdoc_tp(obdoc_tp); 
+        obdoc_cd_file_vc = valObdoc_cd_file(obdoc_cd_file); 
+        obdoc_tp_cfasttp_vc = valObdoc_tp_cfasttp(obdoc_tp_cfasttp); 
+        obdoc_nm_vc = valObdoc_nm(obdoc_nm); 
+        try {
+            obdoc_dt = simpleDateFormat.parse(obdoc_dt_str.replace("/", "-"));
+            setObdoc_dt(obdoc_dt);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        obdoc_dt_vc = valObdoc_dt(obdoc_dt); 
+        obdoc_ds_vc = valObdoc_ds(obdoc_ds); 
+        obdoc_ct_vc = valObdoc_ct(obdoc_ct); 
+        obdoc_nm_file_vc = valObdoc_nm_file(obdoc_nm_file); 
+    
+        validateMax(vfbuffer); addErrorMessageFromErrorList(); 
+        addAttribute("validateOn"+tab, "1");
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        obdoc_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,obdoc_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+    //  for childMainRecord
+        return result; 
+    }   //  End of Validate 
+    public void updateRecdTs() {
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            if (result) {
+                this.recd_ts = new Date();
+            }
+        } catch (Exception ex) { ex.getMessage(); }
+    }
+    
+    protected void validateInserir() {
+        StringBuffer vfbuffer = new StringBuffer();
+        if (tabs_vf != null) {
+            vfbuffer.append(tabs_vf);
+            vfbuffer.setCharAt(49,'0');
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf;
+        }
+    } 
+    protected void updateMrobOnChldInsert() throws SQLException {
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            PreparedStatement ps_file = con1.prepareStatement("update wbrl_Asset set obdoc_vx = '1' where asset_id like ?");
+            ps_file.setString(1, "%"+obdoc_id+"%");
+            ResultSet rs_file = ps_file.executeQuery();
+            } catch (Exception ex) {
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    protected void updateMrobOnChldDelete() throws SQLException {
+        if (codfqt > 1) {return;}
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            PreparedStatement ps_file = con1.prepareStatement("update wbrl_Asset set obdoc_vx = '0' where asset_id like ?");
+            ps_file.setString(1, "%"+obdoc_id+"%");
+            ResultSet rs_file = ps_file.executeQuery();
+            } catch (Exception ex) {
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    
+    public String validateFieldOnChange(String value, String field) {
+        String result = null;
+        vf = 0; int i_field = 0; int valueInteger=0; Date valueDate = null; BigDecimal valueBigDecimal = null;
+    if (i_fields.containsKey(field)) {
+        i_field = i_fields.get(field);
+    }
+        switch (i_field) {
+        // Fields Validation Methods Switch 
+           case 1: result = valObdoc_tp(value); break;
+           case 2: result = valObdoc_cd_file(value); break;
+           case 3: result = valObdoc_tp_cfasttp(value); break;
+           case 4: result = valObdoc_nm(value); break;
+           case 5: valueDate = (Date) ConvertUtils.lookup(Date.class).convert(Timestamp.class, value ); result = valObdoc_dt(valueDate); break;
+           case 6: result = valObdoc_ds(value); break;
+           case 7: result = valObdoc_ct(value); break;
+           case 8: result = valObdoc_nm_file(value); break;
+        } // 111
+        return result;
+    }
+    public String checkMaxFieldOnChange(String divn) {
+        vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(Integer.parseInt(divn),selMaxVc(divn).charAt(0));
+        vfbuffer.setCharAt(psvc,selMaxVc(divn).charAt(0));
+        tabsvf = vfbuffer.toString();
+        return vfbuffer.toString();
+    }
+    public String checkVFMaxFieldOnChange(String divn) {
+        return retSelBuffer(divn);
+    }
+    public String retSelBuffer(String divn) {
+        String selBuffer = null;
+        selBuffer = flds_vfsb.toString();
+        return selBuffer;
+    }
+    
+    // Main Record (Univalued) Field Validation Methods...
+    
+    public Boolean valRecd_ts(Connection con) throws SQLException {
+        msgkey = "";
+        Obdoc Obdocx = new Obdoc(obdoc_id, obdoc_sq);
+        Obdocx.loadUfmv(this);
+        Obdocx.setLoadChilds(true);
+        Obdocx.load(con);
+        Date recd_ts_db = Obdocx.getRecd_ts();
+        if (recd_ts_db == null || this.recd_ts == null) {
+            recd_ts_db = new Date();
+        	   this.recd_ts = recd_ts_db;
+        }
+        String tsdb = recd_ts_db.toString();
+        String ts = this.recd_ts.toString();
+        if (!ts.equals(tsdb) ) {
+            msgkey = "key:valrecd_ts/";
+            errorList.add(msgkey);
+            addErrorMessageFromErrorList();
+            log.error("Obdoc lock event: key:"+obdoc_id+", ts:"+ts+", tsdb:"+tsdb);
+            return false;
+        }
+        return true;
+    }
+    public String valObdoc_tp(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdoc_tp = "";
+            this.obdoc_tp_desc = "";
+        } else {
+            this.obdoc_tp = value;
+        }
+        obdoc_tp_vc = valEntryString("9", value,"Obdoc_obdoc_tp");
+        return obdoc_tp_vc;
+    }
+    public String valObdoc_cd_file(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdoc_cd_file = "";
+            this.obdoc_cd_file_desc = "";
+        } else {
+            this.obdoc_cd_file = value;
+        }
+        obdoc_cd_file_vc = valEntryString("0", value,"Obdoc_obdoc_cd_file");
+        return obdoc_cd_file_vc;
+    }
+    public String valObdoc_tp_cfasttp(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdoc_tp_cfasttp = "";
+            this.obdoc_tp_cfasttp_desc = "";
+        } else {
+            this.obdoc_tp_cfasttp = value;
+        }
+        Connection con;
+            try {
+                    con = DatabaseUtils.getConnection();
+      if (obdoc_id != null) {
+        PreparedStatement ps13 = con.prepareStatement("select asset_tp_cfasttp  from wbrl_asset where asset_id like '%"+obdoc_id.toString()+"%'");
+        ResultSet rs13 = ps13.executeQuery();
+        String asset_tp_cfasttp13_rs = "";
+        if (rs13.next()) {
+            asset_tp_cfasttp13_rs = rs13.getString("asset_tp_cfasttp");
+        }
+        ps13.close(); rs13.close();
+        this.obdoc_tp_cfasttp = asset_tp_cfasttp13_rs;
+        this.obdoc_tp_cfasttp_vc = "0";
+      }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        obdoc_tp_cfasttp_vc = valEntryString("0", value,"Obdoc_obdoc_tp_cfasttp");
+    //  for childMainRecord
+        if (value != null) { // 77zz 
+    //  for childMainRecord
+        } // end val 1
+        return obdoc_tp_cfasttp_vc;
+    }
+    public String valObdoc_nm(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdoc_nm = "";
+        } else {
+            this.obdoc_nm = value;
+        }
+        obdoc_nm_vc = valEntryString("0", value,"Obdoc_obdoc_nm");
+        return obdoc_nm_vc;
+    }
+    public String valObdoc_dt(Date value) {
+        this.obdoc_dt = value;
+        obdoc_dt_vc = valEntryDate("0", value,"Obdoc_obdoc_dt");
+        return obdoc_dt_vc;
+    }
+    public String valObdoc_ds(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdoc_ds = "";
+        } else {
+            this.obdoc_ds = value;
+        }
+        obdoc_ds_vc = valEntryString("0", value,"Obdoc_obdoc_ds");
+        return obdoc_ds_vc;
+    }
+    public String valObdoc_ct(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdoc_ct = "";
+        } else {
+            this.obdoc_ct = value;
+        }
+        obdoc_ct_vc = valEntryString("0", value,"Obdoc_obdoc_ct");
+        return obdoc_ct_vc;
+    }
+    public String valObdoc_nm_file(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdoc_nm_file = "";
+        } else {
+            this.obdoc_nm_file = value;
+        }
+        obdoc_nm_file_vc = valEntryString("0", value,"Obdoc_obdoc_nm_file");
+        return obdoc_nm_file_vc;
+    }
+    
+    protected void reset() {  
+     try {
+        super.reset(); 
+        // Set initial ABA Number
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("cadbeanx", "cadObdocBean");
+        if (tab_remember == true) {
+            getSession().getAttribute("cadObdocBeanx");
+        } else {
+            getSession().setAttribute("cadObdocBeanx", "1");
+        } 
+        ufmv = "00000000000000000000000000000000000000000000000000";
+        getSession().setAttribute("ufmv", ufmv);
+        // Tabs Validation Status
+        this.tabs_vf = null;
+        this.obdoc_vc = null;
+        vf = 0;
+        xmesg_st = "null";
+        // Reset of Main Record ii.properties-----------------
+        this.flds_vf = "0";
+    //  for childMainRecord
+        this.obdoc_vf = "0";
+        this.obdoc_vc = "0";
+        // Set initial tabsvf
+        tabsvf =    "90000000000000000000000000000000000000000000000909";
+        tabsvf_in = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tr = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tp = "90000000000000000000000000000000000000000000000000";
+        // Load flds_vf & chld_vfs into prop vcs;
+        Connection con = DatabaseUtils.getConnection();
+        // Reset Initial Stub Number--------------------------
+        this.xbutn_id = "1";
+        this.obdoc_id_old = null;
+    //  Reset Fks.2. --
+        this.obdoc_id = null; // Reset PK that is FK Unconditionally
+        this.obdoc_id_desc = null;
+        this.obdoc_sq_old = null;
+        this.obdoc_sq = null; // Reset PK not defined as FK Unconditionally
+        this.obdoc_tp = null; // Reset Codf --
+        this.obdoc_tp_desc = null;
+        this.obdoc_cd_file = "DG"; // simple iniv 
+        this.obdoc_cd_file_desc = IIBeanUtils.getCodfDesc(con, "DOCFD", obdoc_cd_file);
+        this.obdoc_tp_cfasttp = null; // Reset Codf --
+        this.obdoc_tp_cfasttp_desc = null;
+        this.obdoc_nm = null; // Reset of any other variable --
+        this.obdoc_dt = new Date(); // Initialized 10
+        obdoc_dt_str = new SimpleDateFormat("dd/MM/yyyy").format(obdoc_dt); 
+        this.obdoc_ds = null; // Reset of any other variable --
+        this.obdoc_ct = null; // Reset of any other variable --
+        this.obdoc_nm_file = null; // Reset of any other variable --
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        // Orders-Reset------------------------------------
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo.indexOf("psq") >= 0){
+            mesg_var = getMessageByKey("selectViaFiltersMagGlass");
+            xmesg_rc = 777;
+        } else {
+            mesg_var = "";
+            xmesg_rc = 0;
+        }
+    } catch (Exception ex) { ex.getMessage(); }
+    } // Closing Reset Method
+    // Filters-Reset------------------------------------
+    protected void resetFilters() {  
+        this.fil_obdoc_vc = null;
+        this.fil_obdoc_id = null;
+        this.fil_obdoc_tp = null;
+        this.fil_obdoc_cd_file = null;
+        this.fil_obdoc_tp_cfasttp = null;
+        this.fil_obdoc_ds = null;
+        this.fil_obdoc_nm_file = null;
+    }
+    
+    public String doNovoUpload() throws LoginException, SQLException { 
+        verifyHelpFromtrans(tipo);
+        tab_remember = false;
+        cancel_partial = false;
+        String obdoc_id_sav = obdoc_id;
+        reset();
+        obdoc_id = obdoc_id_sav;
+        mesg_var = ""; xmesg_rc = 0;
+        validateAll=2;validate();
+        String destino = (String) (getSession().getAttribute("history"));
+        getSession().setAttribute("novo", true);
+        tipo = (String)getSession().getAttribute("tipo");
+        int ix = tipo.indexOf("cad");
+        if (ix < 0) {ix = tipo.indexOf("psq");}
+        String ttran = tipo.substring(0,ix);
+        trans_tt = getMessageByKey(ttran+"_TT");
+        getSession().setAttribute(tipo, true); // Set assist true for goback buutons
+        setCanInserir(true);
+        if (obdoc_nm_file != null && obdoc_nm_file.length() > 0  ) {
+            setCanUpload(false);
+            setCanDownload(true);
+        } else {
+            setCanUpload(true);
+            setCanDownload(false);
+        }
+        return tipo;
+    }   
+    
+    public void loadDesc() throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+    
+        // Load FK Desc ------------------------
+        obdoc_id_desc = IIBeanUtils.getAsset_desc(con, obdoc_id);
+         obdoc_tp_desc = IIBeanUtils.getCodfDesc(con, "DOCBP", obdoc_tp, getLocale());
+         obdoc_cd_file_desc = IIBeanUtils.getCodfDesc(con, "DOCFD", obdoc_cd_file, getLocale());
+         obdoc_tp_cfasttp_desc = IIBeanUtils.getCodfDesc(con, "ASTTP", obdoc_tp_cfasttp, getLocale());
+    
+        } finally { DatabaseUtils.releaseConnection(con); }
+    }  //  End of loadDesc 
+    public String doObterBack() throws SQLException, LoginException { // @getrecd
+        String tbakx = (String) (getSession().getAttribute("tbak"));
+        if (tbakx.contains("cad")) { 
+           String result = super.doObter(); // @getrecd
+        } 
+       return tbakx; // @getrecd
+    } 
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObter() throws SQLException, LoginException { // @getrecd
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+       tipo ="obdoccad";
+        idx = "";
+       loadBean(); // @getrecd
+    obdoc_id_old = obdoc_id;
+    obdoc_sq_old = obdoc_sq;
+       if (obdoc_nm_file != null && obdoc_nm_file.length() > 0  ) {
+           setCanUpload(false);
+           setCanDownload(true);
+       } else {
+           setCanUpload(true);
+           setCanDownload(false);
+       }
+       String result = super.doObter(); // @getrecd
+       result = "obdoccad"; // @getrecd
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return result; // @getrecd
+       } 
+    } 
+    
+    public Object doObterBean() throws SQLException, LoginException {
+        loadBean();
+        return this;
+    }
+    
+    // Loads bean from dao, based on PK value of Object - @param (valor) from Object PK
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterRefresh() throws SQLException, LoginException { // @getrecd
+       tipo = (String)getSession().getAttribute("tipo");
+       loadBean(); // @getrecd
+    obdoc_id_old = obdoc_id;
+    obdoc_sq_old = obdoc_sq;
+       if (obdoc_nm_file != null && obdoc_nm_file.length() > 0  ) {
+           setCanUpload(false);
+           setCanDownload(true);
+       } else {
+           setCanUpload(true);
+           setCanDownload(false);
+       }
+       String result = super.doObter(); // @getrecd
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return result; // @getrecd
+       } 
+    } 
+    
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterNext() throws SQLException, LoginException { // @getrecd
+       tipo = (String)getSession().getAttribute("tipo");
+       loadBeanNext(); // @getrecd
+       obdoc_id_old = obdoc_id;
+       obdoc_sq_old = obdoc_sq;
+       if (obdoc_nm_file != null && obdoc_nm_file.length() > 0  ) {
+           setCanUpload(false);
+           setCanDownload(true);
+       } else {
+           setCanUpload(true);
+           setCanDownload(false);
+       }
+       String result = super.doObterNext(); // @getrecd
+       result = "obdoccad";
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return result; // @getrecd
+       } 
+    } 
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterPrev() throws SQLException, LoginException { // @getrecd
+       tipo = (String)getSession().getAttribute("tipo");
+       loadBeanPrev(); // @getrecd
+       obdoc_id_old = obdoc_id;
+       obdoc_sq_old = obdoc_sq;
+       if (obdoc_nm_file != null && obdoc_nm_file.length() > 0  ) {
+           setCanUpload(false);
+           setCanDownload(true);
+       } else {
+           setCanUpload(true);
+           setCanDownload(false);
+       }
+       String result = super.doObterPrev(); // @getrecd
+       result = "obdoccad";
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return result; // @getrecd
+       } 
+    } 
+    //  for childMainRecord
+    
+    // Opens a Rec Page with Obj Data from Sel made on Search Screen- @return record page
+    public String doObterParent() throws SQLException, LoginException { // @getparent 
+       reset(); validate(); // @getparent
+       tipo = (String)getSession().getAttribute("tipo");
+            String campo1 = null;
+            if ((Boolean) getSession().getAttribute("cmpSession") != null) {
+                if (getSession().getAttribute("cmpSession").equals(true)) {
+                    campo1 = (String) getSession().getAttribute("campo1");
+                }
+            } else {
+                campo1 = getParameter("campo1");
+            }
+            if (campo1 != null) {
+               if (!campo1.equals("")) {
+                  obdoc_id = campo1;
+               }
+            }
+        int ll =  obdoc_id.lastIndexOf("-") ;
+        ll = ll - 3;
+        obdoc_id = obdoc_id.substring(0,ll);
+        fil_obdoc_id = obdoc_id;
+       String result = super.doObter(); // @getparent 
+       setCanInserir(true);
+       if (obdoc_nm_file != null && obdoc_nm_file.length() > 0  ) {
+           setCanUpload(false);
+           setCanDownload(true);
+       } else {
+           setCanUpload(true);
+           setCanDownload(false);
+       }
+       return "obdoccad";
+    } 
+    public DataObject setTableAliasBean(DataObject dao) {
+        dao.setTableAlias("OBDOC_OBDOC");
+        return dao;
+    }
+    // loadBean Get Selection Values from Session  ------------------
+    public void loadBean() throws SQLException, LoginException {
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        // Used only if not loadFromGIS - Start 
+        String valor = (String) getSession().getAttribute("obdoccadvalor");
+        int kkk = 0;
+        while ( ( valor == null || ( valor != null && valor.length() == 0 ) ) && kkk < 90000000  ) {
+            valor = (String) getSession().getAttribute(tipox+"valor"); 
+            kkk = kkk + 1;
+        } 
+        getSession().setAttribute(tipox+"valor", null); 
+        // Used only if not loadFromGIS - End 
+        getSession().setAttribute("tipo", tipox);
+        loadBean(valor);
+    } // end of loadBean
+    // if (ii.fileUploadFlag == 1 || ii.fileAnnexFlag == 1 )------
+    public String doUpdate() throws SQLException, LoginException {
+        String result = super.doUpdate();
+        return result;
+    }
+    public String doExcluir() throws SQLException, LoginException {
+        String result = super.doExcluir();
+        loadBean();
+        return result;
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBean(String valor) throws SQLException, LoginException {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        if ( valor == null && obdoc_id != null && obdoc_id.length() > 0  ) {
+            valor = obdoc_id;
+        } else
+        if (valor == null) { return; }
+        Connection con = DatabaseUtils.getConnection();
+        // Build List of Keys --------------------------------------------------------
+        String[] keys_vl = new String[3];
+        int start_ix = 0; int end_ix = 0;
+        int kkv = 1;
+        while(kkv <= 2) {
+            if (kkv == 1) {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                if (valor.length() > 1) {
+                   keys_vl[1] = valor.substring(start_ix,end_ix);
+                } else { keys_vl[1] = valor; }
+                start_ix = end_ix+1;
+            } else {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                keys_vl[kkv] = valor.substring(start_ix,end_ix);
+                start_ix = end_ix+1;
+            }
+            kkv = kkv + 1;
+        }
+        // Logic 2x - if ( ( ii.pcmd.indexOf('recdFromTabl') >= 0 || ii.daoBeanUtils.length() > 0   )  )   
+        String id1 = keys_vl[1];
+        int id2 = 0;
+        if (keys_vl[2] == null) { id2 = 0;} else {
+        id2 = toInteger(keys_vl[2]);}
+        //  next prev navigation - loadBean(valor)
+        if (idx != null && idx.length() > 0) {
+            id2 = toInteger(idx);
+        }
+        int found = 0;  hasNext = true; int kkx = 0; idxmtot = 0; idxflag = true;
+        while (list_itrx.hasNext()) {
+        	   list_itrx.next();
+            idxmtot++;
+        }
+        if ( idxmtot == 1) {idxflag = false;}
+        found = 0;
+        while (found == 0) {
+            if (!list_itrx.hasPrevious()) {
+            	   found = 1; continue;
+            }
+            list_itrx.previous();
+        }
+        found = 0;
+        while (found == 0) {
+            Obdoc ObdocList = ((Obdoc)list_itrx.next());
+            obdoc_sq = ObdocList.getObdoc_sq();
+            if (id2 == obdoc_sq ) {
+                found = 1;
+                if (kkx == 0) {
+                    mesg_var = getMessageByKey("firstRecord");
+                    xmesg_rc = 1;
+                }
+                if (! list_itrx.hasNext()) {
+                   mesg_var = getMessageByKey("lastRecord");
+                   xmesg_rc = 1;
+                }
+                if (!idxflag) {
+                   mesg_var = "";
+                   xmesg_rc = 0;
+                }
+            }
+            kkx = kkx + 1;
+        }
+        hasNext = list_itrx.hasNext();
+        hasPrev = list_itrx.hasPrevious();
+        if (kkx == 1 ) { hasPrev = false;}
+        idxm = Integer.toString(kkx)+"/"+Integer.toString(idxmtot);
+        // Logic 5a - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Obdoc Obdocx = new Obdoc(id1 ,id2); // 333
+        Obdocx.loadUfmv(this);
+        Obdocx.setTableAlias("OBDOC_OBDOC");
+        Obdocx.load(con);
+        
+        Obdocx.saveToBean(this);
+         if (obdoc_dt == null) {} else {;
+             obdoc_dt_str = new SimpleDateFormat("dd/MM/yyyy").format(obdoc_dt);
+         }
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        idx = "";
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBeanNext() throws SQLException, LoginException {
+        
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        getSession().setAttribute("tipo", tipox);
+        
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        
+        // Next Prev Mavigation - loadBeanNav - loads message in boundary record 
+        if ( xmesg_rc == 1 && idx.length() == 0) {
+        }
+        boolean ttt = list_itrx.hasNext();
+        if (!ttt) {
+            mesg_var = getMessageByKey("lastRecord");
+            xmesg_rc = 1;
+            return;
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        Obdoc ObdocList = ((Obdoc)list_itrx.next() );
+        hasNext = list_itrx.hasNext();
+        hasPrev = true;
+        String id1 = ObdocList.getObdoc_id();
+        int id2 = ObdocList.getObdoc_sq();
+        if (id2 == obdoc_sq) {
+            ObdocList = ((Obdoc)list_itrx.next() );
+            hasNext = list_itrx.hasNext();
+            hasPrev = true;
+            id1 = ObdocList.getObdoc_id();
+            id2 = ObdocList.getObdoc_sq();
+        }
+            idx = Integer.toString(id2);
+        idxm = Integer.toString(list_itrx.nextIndex())+"/"+Integer.toString(idxmtot);
+        
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Obdoc Obdocx = new Obdoc(id1 ,id2); // 444
+        Obdocx.loadUfmv(this);
+        Obdocx.setTableAlias("OBDOC_OBDOC");
+        Obdocx.load(con);
+        
+        Obdocx.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        // Next Prev Mavigation - loadBeanNav  - loads message after next record
+        if ( xmesg_rc == 0 && idx.length() == 0) {
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        ttt = list_itrx.hasNext();
+        if (!ttt) {
+            mesg_var = getMessageByKey("lastRecord");
+            xmesg_rc = 1;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBeanPrev() throws SQLException, LoginException {
+        
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        getSession().setAttribute("tipo", tipox);
+        
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        
+        // Next Prev Mavigation - loadBeanNav - loads message in boundary record 
+        if ( xmesg_rc == 1 && idx.length() == 0) {
+        	   list_itrx.previous(); idx = "x";
+        }
+        boolean ttt = list_itrx.hasPrevious();
+        if (!ttt) {
+            mesg_var = getMessageByKey("firstRecord");
+            xmesg_rc = 1;
+            return;
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        Obdoc ObdocList = ((Obdoc)list_itrx.previous() );
+        hasPrev = list_itrx.hasPrevious();
+        hasNext = true;
+        String id1 = ObdocList.getObdoc_id();
+        int id2 = ObdocList.getObdoc_sq();
+        if (id2 == obdoc_sq) {
+            ObdocList = ((Obdoc)list_itrx.previous() );
+            hasPrev = list_itrx.hasPrevious();
+            hasNext = true;
+            id1 = ObdocList.getObdoc_id();
+            id2 = ObdocList.getObdoc_sq();
+        }
+            idx = Integer.toString(id2);
+        idxm = Integer.toString(list_itrx.previousIndex()+ 2)+"/"+Integer.toString(idxmtot);
+        
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Obdoc Obdocx = new Obdoc(id1 ,id2); // 444
+        Obdocx.loadUfmv(this);
+        Obdocx.setTableAlias("OBDOC_OBDOC");
+        Obdocx.load(con);
+        
+        Obdocx.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        // Next Prev Mavigation - loadBeanNav  - loads message after next record
+        if ( xmesg_rc == 0 && idx.length() == 0) {
+        	   list_itrx.previous();
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        ttt = list_itrx.hasPrevious();
+        if (!ttt) {
+            mesg_var = getMessageByKey("firstRecord");
+            xmesg_rc = 1;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    public void loadFieldBean() {
+        obdoc_tp_vc = valObdoc_tp(obdoc_tp); 
+        obdoc_cd_file_vc = valObdoc_cd_file(obdoc_cd_file); 
+        obdoc_tp_cfasttp_vc = valObdoc_tp_cfasttp(obdoc_tp_cfasttp); 
+        obdoc_nm_vc = valObdoc_nm(obdoc_nm); 
+        obdoc_dt_vc = valObdoc_dt(obdoc_dt); 
+        obdoc_ds_vc = valObdoc_ds(obdoc_ds); 
+        obdoc_ct_vc = valObdoc_ct(obdoc_ct); 
+        obdoc_nm_file_vc = valObdoc_nm_file(obdoc_nm_file); 
+    } // end of loadFieldBean
+     
+    public String selMaxVc(String divn) {
+        String vc = "0"; String vc5 = "0"; 
+        Integer divni = Integer.parseInt(divn);
+            vc = obdoc_tp_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdoc_cd_file_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdoc_tp_cfasttp_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdoc_nm_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdoc_dt_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdoc_ds_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdoc_ct_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdoc_nm_file_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        if (vc5.equals("5")) {vc = "5";}
+        return vc;
+    } 
+    
+    protected void mountFilter() {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (fil_obdoc_id == null) { fil_obdoc_id = "";}
+        if (fil_obdoc_tp == null) { fil_obdoc_tp = "";}
+        if (fil_obdoc_cd_file == null) { fil_obdoc_cd_file = "";}
+        if (fil_obdoc_tp_cfasttp == null) { fil_obdoc_tp_cfasttp = "";}
+        if (fil_obdoc_ds == null) { fil_obdoc_ds = "";}
+        if (fil_obdoc_nm_file == null) { fil_obdoc_nm_file = "";}
+            String campo1 = null;
+            if ((Boolean) getSession().getAttribute("cmpSession") != null) {
+                if (getSession().getAttribute("cmpSession").equals(true)) {
+                    campo1 = (String) getSession().getAttribute("campo1");
+                }
+            } else {
+                campo1 = getParameter("campo1");
+            }
+            if (campo1 != null) {
+               if (!campo1.equals("")) {
+                  fil_obdoc_id = campo1;
+                  obdoc_id = campo1;
+               }
+            }
+        int ll =  obdoc_id.lastIndexOf("-") ;
+        ll = ll - 3;
+        obdoc_id = obdoc_id.substring(0,ll);
+        fil_obdoc_id = obdoc_id;
+        addFieldToFilterPk(Obdoc.OBDOC_ID, fil_obdoc_id);
+        addFieldToFilter(Obdoc.OBDOC_TP, fil_obdoc_tp);
+        addFieldToFilter(Obdoc.OBDOC_CD_FILE, fil_obdoc_cd_file);
+        addFieldToFilterPk(Obdoc.OBDOC_TP_CFASTTP, fil_obdoc_tp_cfasttp);
+        addFieldToFilter(Obdoc.OBDOC_DS, fil_obdoc_ds);
+        addFieldToFilter(Obdoc.OBDOC_NM_FILE, fil_obdoc_nm_file);
+    } // end of mountFilter
+    
+    public String doRetornaPesquisa() {
+        getSession().setAttribute("novainclusao", false);
+        return super.tipo;
+    }
+    public boolean isCanMenu() throws SQLException, LoginException {
+        tipo1 = "*obdoc";
+        return super.isCanPesquisar();
+    }
+    protected void createFilesDirectory() {
+        /* File Path */
+        File file = new File("C://sispat_mrs_asset_files");
+        boolean exists = file.exists();
+        if (!exists) {
+            boolean success = file.mkdir();
+        }
+    }
+    public String downloadFile() throws LoginException, IOException {
+         HttpServletResponse response = (HttpServletResponse ) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+         valuex = (String)getSession().getAttribute("tipo");
+         if (valuex.indexOf("obdocpsq")>= 0 ) {return "success";}
+         String filename = "/sispat_mrs_files/" + obdoc_nm_file;
+         File file = new File(filename);
+         download(file, response);
+         return "success";
+    }
+    public static void download( File file, HttpServletResponse response )
+            throws IOException {
+            download( file.getName(), read( file ), response );
+    }
+    public static byte[] read( File file ) throws IOException {
+        byte[] content = null;
+        int fileLength = (int) file.length();
+        FileInputStream fileInput = null;
+        try {
+            fileInput = new FileInputStream(file);
+            BufferedInputStream bufferedInput = new BufferedInputStream(
+            fileInput); 
+            content = new byte[fileLength];
+            bufferedInput.read(content, 0, fileLength);
+            bufferedInput.close();
+       } finally {
+             if (fileInput != null) {
+                fileInput.close();
+             }
+       }
+       return content;
+    }
+    public static void download( String filename, byte[] content, HttpServletResponse response ) throws IOException {
+        response.addHeader( "Content-Disposition",
+                            "attachment; filename=" + filename );
+        response.setContentType( "application/octet-stream" );
+        ServletOutputStream outStream = response.getOutputStream();
+        // envia o conteúdo do arquivo para o stream de resposta
+        try {
+            outStream.write( content );
+            outStream.flush();
+        } finally {
+            outStream.close();
+        }
+    }
+    
+    // getAssistnovo------------------------------------------------
+    // Verifies whether record selection button is to be rendered right after record insertion
+    public Boolean getAssistnovo() {
+        assistnovo = false;
+        Boolean bb = (Boolean) (getSession().getAttribute(super.tipo));
+        Boolean an = (Boolean) (getSession().getAttribute("novainclusao"));
+        if (bb == null) {bb = false;}
+        if (an == null) {an = false;}
+        if (bb == true && an == true) {assistnovo = true;}
+        return assistnovo;
+    }
+    
+    public String doReturn() throws SQLException, LoginException {
+            tbakcad = tbakloc;
+            return super.doReturn();
+    }
+     
+    public String doSelecionar() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        getSession().setAttribute("tipo", "obdocpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "obdocpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarOnly() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        getSession().setAttribute("tipo", "obdocpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (fil_obdoc_id != null && fil_obdoc_id.length()> 0) {filterx = 1;}
+        if (fil_obdoc_tp != null && fil_obdoc_tp.length()> 0) {filterx = 1;}
+        if (fil_obdoc_cd_file != null && fil_obdoc_cd_file.length()> 0) {filterx = 1;}
+        if (fil_obdoc_tp_cfasttp != null && fil_obdoc_tp_cfasttp.length()> 0) {filterx = 1;}
+        if (fil_obdoc_ds != null && fil_obdoc_ds.length()> 0) {filterx = 1;}
+        if (fil_obdoc_nm_file != null && fil_obdoc_nm_file.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarOnly();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "obdocpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarBackx() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+    String tranAnt = (String) getSession().getAttribute("tipoantsuper");
+    if (tranAnt != null ) {
+        getSession().setAttribute("tipoantsuper",null);
+    	   if (tranAnt.length() > 0 ) {
+    	       return tranAnt;
+        }
+    }
+        getSession().setAttribute("tipo", "obdocpsq");
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "obdocpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarNull() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        getSession().setAttribute("tipo", "obdocpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        tipo = "obdocpsqxxx";
+        String ret = "";
+        int filterx = 0;
+        if (fil_obdoc_id != null && fil_obdoc_id.length()> 0) {filterx = 1;}
+        if (fil_obdoc_tp != null && fil_obdoc_tp.length()> 0) {filterx = 1;}
+        if (fil_obdoc_cd_file != null && fil_obdoc_cd_file.length()> 0) {filterx = 1;}
+        if (fil_obdoc_tp_cfasttp != null && fil_obdoc_tp_cfasttp.length()> 0) {filterx = 1;}
+        if (fil_obdoc_ds != null && fil_obdoc_ds.length()> 0) {filterx = 1;}
+        if (fil_obdoc_nm_file != null && fil_obdoc_nm_file.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNull();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "obdocpsq"; // updbutton != 1c - end
+    }
+    
+    protected void reloadPesqData(Connection con) throws SQLException, LoginException {
+        loadDesc(); boolean res = true;
+        String valor = (String) getSession().getAttribute(tipo+"valor");
+        if (valor == null ) {
+            res = validateParms();
+        }
+        if (res) {
+            super.reloadPesqData(con);
+        // next / prev navigation
+        list_itrx = pesqData.listIterator();
+            if (pesqData.size() == maxResults) {
+                mesg_var = getMessageByKey("maxResultsExceeded");
+            }
+        } else {
+            pesqData = null;
+        }
+    } // tttt
+
+} // End of Code

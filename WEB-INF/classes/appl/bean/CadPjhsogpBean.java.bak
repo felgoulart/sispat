@@ -1,0 +1,2851 @@
+package appl.bean;
+    
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+import java.util.LinkedHashMap;
+import javax.faces.model.SelectItem;
+import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import wins.report.jasperRunner;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import java.net.URL;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
+import javax.mail.Multipart;
+import javax.mail.Part;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
+import br.com.iinsights.valueobject.InsightMail;
+import java.util.Properties;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.List;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.fileupload.FileItem;
+import appl.data.Pjhso;
+// ---------------------------------------
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import wins.libs.LoginException;
+import appl.libs.IIBeanUtils;
+public class CadPjhsogpBean extends CadastroBean {
+        protected static Log log = LogFactory.getLog(CadPjhsogpBean.class);
+    public boolean goBackx = false;
+    public boolean goUpdtx = false;
+    public boolean goLoadedx = false;
+    public boolean goLoadedy = false;
+    public int xtab = 0;
+    // Tabs Validation Status
+    public String tranx = "pjhsogp";
+    private String idx;
+    private String idxm;
+    private int idxmtot;
+    private boolean idxflag;
+    private String tbakloc;
+    private String tranAntx;
+    private String expo = "PJASC";
+    private String alterando;
+    private Boolean assistnovo;
+    private String filter;
+    private String vc;
+    public String role = "";
+    public int imgskk = 0;
+    public int fileskk = 0;
+    public String fileUploaded= "";
+    private int maxResultsTrn = 0;
+    public String valorz = "";
+    public int error = 0;
+    public int selectFromMenu = 0;
+    
+    // Building Fields Validation Map ---------------
+    private static Map<String, Integer> i_fields = new HashMap<String, Integer>(); static {
+        i_fields.put("pjhso_sq_dthm", 1);
+        i_fields.put("pjhso_dt_eventx", 2);
+        i_fields.put("pjhso_tp_cfpjtp", 3);
+        i_fields.put("pjhso_cd_de", 4);
+        i_fields.put("pjhso_tp_entidade", 5);
+        i_fields.put("pjhso_cd_de_email", 6);
+        i_fields.put("pjhso_cd_de_cont", 7);
+        i_fields.put("pjhso_cd_para", 8);
+        i_fields.put("pjhso_cd_prcc", 9);
+        i_fields.put("pjhso_dt_evento", 10);
+        i_fields.put("pjhso_cd_executor", 11);
+        i_fields.put("pjhso_cd_para_email", 12);
+        i_fields.put("pjhso_cd_prcc_email", 13);
+        i_fields.put("pjhso_cd_para_cont", 14);
+        i_fields.put("pjhso_cd_prcc_cont", 15);
+        i_fields.put("pjhso_tp_acao", 16);
+        i_fields.put("pjhso_st", 17);
+        i_fields.put("pjhso_ds_assunto", 18);
+        i_fields.put("pjhso_ds", 19);
+        i_fields.put("pjhso_in_ultimo", 20);
+        i_fields.put("pjhso_ds_depara", 21);
+        i_fields.put("pjhso_ds_deparax", 22);
+        i_fields.put("pjhso_st_sum", 23);
+    } // 222
+    
+    // Declaring Validation Map -------------------
+    private HashMap<String, StringBuffer> i_divns = new HashMap<String, StringBuffer>();
+    // ii.properties---------------------------------------
+    private String xbutn_id;
+    private String xuserx_id_login;
+    private String tabs_vc;
+    private String tabs_vf;
+    private String tabs_vf_old;
+    private String pjhso_vf;
+    private String user_cd;
+    private Date recd_ts;
+    private String recd_ts_str;
+    private String recd_ts_dt;
+    private String pjhso_id_pjaus;
+    private String pjhso_id_pjaus_old ;
+    private String pjhso_id_pjaus_desc;
+    private String pjhso_sq;
+    private String pjhso_sq_old ;
+    private String pjhso_sq_vc;
+    private String pjhso_sq_dthm;
+    private String pjhso_sq_dthm_vc;
+    private String pjhso_dt_eventx;
+    private String pjhso_dt_eventx_vc;
+    private String pjhso_tp_cfpjtp;
+    private String pjhso_tp_cfpjtp_desc;
+    private String pjhso_tp_cfpjtp_vc;
+    private String pjhso_cd_de;
+    private Boolean pjhso_cd_de_rnd;
+    private Boolean pjhso_cd_de_sav;
+    private String pjhso_cd_de_vc;
+    private String pjhso_tp_entidade;
+    private String pjhso_tp_entidade_vc;
+    private String pjhso_cd_de_email;
+    private String pjhso_cd_de_email_vc;
+    private String pjhso_cd_de_cont;
+    private String pjhso_cd_de_cont_vc;
+    private String pjhso_cd_para;
+    private Boolean pjhso_cd_para_rnd;
+    private Boolean pjhso_cd_para_sav;
+    private String pjhso_cd_para_vc;
+    private String pjhso_cd_prcc;
+    private Boolean pjhso_cd_prcc_rnd;
+    private Boolean pjhso_cd_prcc_sav;
+    private String pjhso_cd_prcc_vc;
+    private Date pjhso_dt_evento;
+    private String pjhso_dt_evento_str;
+    private String pjhso_dt_evento_dt;
+    private String pjhso_dt_evento_sav;
+    private String pjhso_dt_evento_vc;
+    private String pjhso_cd_executor;
+    private String pjhso_cd_executor_vc;
+    private String pjhso_cd_para_email;
+    private String pjhso_cd_para_email_vc;
+    private String pjhso_cd_prcc_email;
+    private String pjhso_cd_prcc_email_vc;
+    private String pjhso_cd_para_cont;
+    private String pjhso_cd_para_cont_vc;
+    private String pjhso_cd_prcc_cont;
+    private String pjhso_cd_prcc_cont_vc;
+    private String pjhso_tp_acao;
+    private String pjhso_tp_acao_desc;
+    private String pjhso_tp_acao_vc;
+    private String pjhso_st;
+    private String pjhso_st_desc;
+    private String pjhso_st_vc;
+    private String pjhso_ds_assunto;
+    private String pjhso_ds_assunto_vc;
+    private String pjhso_ds;
+    private String pjhso_ds_vc;
+    private String pjhso_in_ultimo;
+    private String pjhso_in_ultimo_vc;
+    private String pjhso_ds_depara;
+    private String pjhso_ds_depara_vc;
+    private String pjhso_ds_deparax;
+    private String pjhso_ds_deparax_vc;
+    private String pjhso_st_sum;
+    private String pjhso_st_sum_vc;
+    private String flds_vf_ref;
+    // Filters------------------------------------------
+    private String fil_tabs_vc;
+    private String sav_fil_tabs_vc;
+    private String fil_pjhso_id_pjaus;
+    private String sav_fil_pjhso_id_pjaus;
+    private String fil_pjhso_cd_de;
+    private String sav_fil_pjhso_cd_de;
+    private String fil_pjhso_tp_entidade;
+    private String sav_fil_pjhso_tp_entidade;
+    private String fil_pjhso_cd_para;
+    private String sav_fil_pjhso_cd_para;
+    private String fil_pjhso_cd_prcc;
+    private String sav_fil_pjhso_cd_prcc;
+    private String fil_pjhso_tp_acao;
+    private String sav_fil_pjhso_tp_acao;
+    private String fil_pjhso_st;
+    private String sav_fil_pjhso_st;
+    private String fil_pjhso_ds_assunto;
+    private String sav_fil_pjhso_ds_assunto;
+    private String fil_pjhso_ds_depara;
+    private String sav_fil_pjhso_ds_depara;
+    private String fil_pjhso_ds_deparax;
+    private String sav_fil_pjhso_ds_deparax;
+    private String fil_pjhso_st_sum;
+    private String sav_fil_pjhso_st_sum;
+    // Orders------------------------------------
+    private Boolean ord_pjhso_sq;
+    // Constructor--------------------------------------
+    public CadPjhsogpBean() { 
+    } // 333
+    
+    // Returns a Reference to the Associared DataObject-
+    protected Class getDataClass() { return Pjhso.class;}
+    // Working Variables Methods-------------------------
+    public void setAlterando(String alterando) { this.alterando = alterando; }
+    public String getAlterando() { return alterando;} 
+    
+    // Setters -----------------------------------------
+    public void setXbutn_id (String xbutn_id) {
+        this.xbutn_id = xbutn_id;
+    }
+    public void setXuserx_id_login (String xuserx_id_login) {
+        this.xuserx_id_login = xuserx_id_login;
+    }
+    public void setTabs_vc (String tabs_vc) {this.tabs_vc = tabs_vc;}
+    public void setTabs_vf (String tabs_vf) {this.tabs_vf = tabs_vf;}
+    public void setPjhso_vf (String pjhso_vf) {this.pjhso_vf = pjhso_vf;}
+    
+    public void setFlds_vfsb (StringBuffer flds_vfsb) {this.flds_vfsb = flds_vfsb;}
+    
+    public void setUser_cd (String user_cd) {this.user_cd = user_cd;}
+    
+    public void setRecd_ts (Date recd_ts) {this.recd_ts = recd_ts;}
+    public void setPjhso_id_pjaus (String pjhso_id_pjaus) {this.pjhso_id_pjaus = pjhso_id_pjaus;}
+    public void setPjhso_id_pjaus_desc (String pjhso_id_pjaus_desc) {this.pjhso_id_pjaus_desc = pjhso_id_pjaus_desc;}
+    public void setPjhso_sq (String pjhso_sq) {this.pjhso_sq = pjhso_sq;}
+    public void setPjhso_sq_dthm (String pjhso_sq_dthm) {this.pjhso_sq_dthm = pjhso_sq_dthm;}
+    public void setPjhso_sq_dthm_vc (String pjhso_sq_dthm_vc) {this.pjhso_sq_dthm_vc = pjhso_sq_dthm_vc;}
+    public void setPjhso_dt_eventx (String pjhso_dt_eventx) {this.pjhso_dt_eventx = pjhso_dt_eventx;}
+    public void setPjhso_dt_eventx_vc (String pjhso_dt_eventx_vc) {this.pjhso_dt_eventx_vc = pjhso_dt_eventx_vc;}
+    public void setPjhso_tp_cfpjtp (String pjhso_tp_cfpjtp) {this.pjhso_tp_cfpjtp = pjhso_tp_cfpjtp;}
+    public void setPjhso_tp_cfpjtp_desc (String pjhso_tp_cfpjtp_desc) {this.pjhso_tp_cfpjtp_desc = pjhso_tp_cfpjtp_desc;}
+    public void setPjhso_tp_cfpjtp_vc (String pjhso_tp_cfpjtp_vc) {this.pjhso_tp_cfpjtp_vc = pjhso_tp_cfpjtp_vc;}
+    public void setPjhso_cd_de (String pjhso_cd_de) {this.pjhso_cd_de = pjhso_cd_de;}
+    public void setPjhso_cd_de_vc (String pjhso_cd_de_vc) {this.pjhso_cd_de_vc = pjhso_cd_de_vc;}
+    public void setPjhso_tp_entidade (String pjhso_tp_entidade) {this.pjhso_tp_entidade = pjhso_tp_entidade;}
+    public void setPjhso_tp_entidade_vc (String pjhso_tp_entidade_vc) {this.pjhso_tp_entidade_vc = pjhso_tp_entidade_vc;}
+    public void setPjhso_cd_de_email (String pjhso_cd_de_email) {this.pjhso_cd_de_email = pjhso_cd_de_email;}
+    public void setPjhso_cd_de_email_vc (String pjhso_cd_de_email_vc) {this.pjhso_cd_de_email_vc = pjhso_cd_de_email_vc;}
+    public void setPjhso_cd_de_cont (String pjhso_cd_de_cont) {this.pjhso_cd_de_cont = pjhso_cd_de_cont;}
+    public void setPjhso_cd_de_cont_vc (String pjhso_cd_de_cont_vc) {this.pjhso_cd_de_cont_vc = pjhso_cd_de_cont_vc;}
+    public void setPjhso_cd_para (String pjhso_cd_para) {this.pjhso_cd_para = pjhso_cd_para;}
+    public void setPjhso_cd_para_vc (String pjhso_cd_para_vc) {this.pjhso_cd_para_vc = pjhso_cd_para_vc;}
+    public void setPjhso_cd_prcc (String pjhso_cd_prcc) {this.pjhso_cd_prcc = pjhso_cd_prcc;}
+    public void setPjhso_cd_prcc_vc (String pjhso_cd_prcc_vc) {this.pjhso_cd_prcc_vc = pjhso_cd_prcc_vc;}
+    
+    public void setPjhso_dt_evento (Date pjhso_dt_evento) {this.pjhso_dt_evento = pjhso_dt_evento;}
+    public void setPjhso_dt_evento_str (String pjhso_dt_evento_str) {
+       this.pjhso_dt_evento_str = pjhso_dt_evento_str; }
+    public void setPjhso_dt_evento_vc (String pjhso_dt_evento_vc) {this.pjhso_dt_evento_vc = pjhso_dt_evento_vc;}
+    
+    public void setPjhso_cd_executor (String pjhso_cd_executor) {this.pjhso_cd_executor = pjhso_cd_executor;}
+    public void setPjhso_cd_executor_vc (String pjhso_cd_executor_vc) {this.pjhso_cd_executor_vc = pjhso_cd_executor_vc;}
+    public void setPjhso_cd_para_email (String pjhso_cd_para_email) {this.pjhso_cd_para_email = pjhso_cd_para_email;}
+    public void setPjhso_cd_para_email_vc (String pjhso_cd_para_email_vc) {this.pjhso_cd_para_email_vc = pjhso_cd_para_email_vc;}
+    public void setPjhso_cd_prcc_email (String pjhso_cd_prcc_email) {this.pjhso_cd_prcc_email = pjhso_cd_prcc_email;}
+    public void setPjhso_cd_prcc_email_vc (String pjhso_cd_prcc_email_vc) {this.pjhso_cd_prcc_email_vc = pjhso_cd_prcc_email_vc;}
+    public void setPjhso_cd_para_cont (String pjhso_cd_para_cont) {this.pjhso_cd_para_cont = pjhso_cd_para_cont;}
+    public void setPjhso_cd_para_cont_vc (String pjhso_cd_para_cont_vc) {this.pjhso_cd_para_cont_vc = pjhso_cd_para_cont_vc;}
+    public void setPjhso_cd_prcc_cont (String pjhso_cd_prcc_cont) {this.pjhso_cd_prcc_cont = pjhso_cd_prcc_cont;}
+    public void setPjhso_cd_prcc_cont_vc (String pjhso_cd_prcc_cont_vc) {this.pjhso_cd_prcc_cont_vc = pjhso_cd_prcc_cont_vc;}
+    public void setPjhso_tp_acao (String pjhso_tp_acao) {this.pjhso_tp_acao = pjhso_tp_acao;}
+    public void setPjhso_tp_acao_desc (String pjhso_tp_acao_desc) {this.pjhso_tp_acao_desc = pjhso_tp_acao_desc;}
+    public void setPjhso_tp_acao_vc (String pjhso_tp_acao_vc) {this.pjhso_tp_acao_vc = pjhso_tp_acao_vc;}
+    public void setPjhso_st (String pjhso_st) {this.pjhso_st = pjhso_st;}
+    public void setPjhso_st_desc (String pjhso_st_desc) {this.pjhso_st_desc = pjhso_st_desc;}
+    public void setPjhso_st_vc (String pjhso_st_vc) {this.pjhso_st_vc = pjhso_st_vc;}
+    public void setPjhso_ds_assunto (String pjhso_ds_assunto) {this.pjhso_ds_assunto = pjhso_ds_assunto;}
+    public void setPjhso_ds_assunto_vc (String pjhso_ds_assunto_vc) {this.pjhso_ds_assunto_vc = pjhso_ds_assunto_vc;}
+    public void setPjhso_ds (String pjhso_ds) {this.pjhso_ds = pjhso_ds;}
+    public void setPjhso_ds_vc (String pjhso_ds_vc) {this.pjhso_ds_vc = pjhso_ds_vc;}
+    public void setPjhso_in_ultimo (String pjhso_in_ultimo) {this.pjhso_in_ultimo = pjhso_in_ultimo;}
+    public void setPjhso_in_ultimo_vc (String pjhso_in_ultimo_vc) {this.pjhso_in_ultimo_vc = pjhso_in_ultimo_vc;}
+    public void setPjhso_ds_depara (String pjhso_ds_depara) {this.pjhso_ds_depara = pjhso_ds_depara;}
+    public void setPjhso_ds_depara_vc (String pjhso_ds_depara_vc) {this.pjhso_ds_depara_vc = pjhso_ds_depara_vc;}
+    public void setPjhso_ds_deparax (String pjhso_ds_deparax) {this.pjhso_ds_deparax = pjhso_ds_deparax;}
+    public void setPjhso_ds_deparax_vc (String pjhso_ds_deparax_vc) {this.pjhso_ds_deparax_vc = pjhso_ds_deparax_vc;}
+    public void setPjhso_st_sum (String pjhso_st_sum) {this.pjhso_st_sum = pjhso_st_sum;}
+    public void setPjhso_st_sum_vc (String pjhso_st_sum_vc) {this.pjhso_st_sum_vc = pjhso_st_sum_vc;}
+    // Filter Setters-----------------------------------
+    public void setFil_tabs_vc (String fil_tabs_vc) {this.fil_tabs_vc = fil_tabs_vc;}
+    public void setFil_pjhso_id_pjaus (String fil_pjhso_id_pjaus) {this.fil_pjhso_id_pjaus = fil_pjhso_id_pjaus;}
+    public void setFil_pjhso_cd_de (String fil_pjhso_cd_de) {this.fil_pjhso_cd_de = fil_pjhso_cd_de;}
+    public void setFil_pjhso_tp_entidade (String fil_pjhso_tp_entidade) {this.fil_pjhso_tp_entidade = fil_pjhso_tp_entidade;}
+    public void setFil_pjhso_cd_para (String fil_pjhso_cd_para) {this.fil_pjhso_cd_para = fil_pjhso_cd_para;}
+    public void setFil_pjhso_cd_prcc (String fil_pjhso_cd_prcc) {this.fil_pjhso_cd_prcc = fil_pjhso_cd_prcc;}
+    public void setFil_pjhso_tp_acao (String fil_pjhso_tp_acao) {this.fil_pjhso_tp_acao = fil_pjhso_tp_acao;}
+    public void setFil_pjhso_st (String fil_pjhso_st) {this.fil_pjhso_st = fil_pjhso_st;}
+    public void setFil_pjhso_ds_assunto (String fil_pjhso_ds_assunto) {this.fil_pjhso_ds_assunto = fil_pjhso_ds_assunto;}
+    public void setFil_pjhso_ds_depara (String fil_pjhso_ds_depara) {this.fil_pjhso_ds_depara = fil_pjhso_ds_depara;}
+    public void setFil_pjhso_ds_deparax (String fil_pjhso_ds_deparax) {this.fil_pjhso_ds_deparax = fil_pjhso_ds_deparax;}
+    public void setFil_pjhso_st_sum (String fil_pjhso_st_sum) {this.fil_pjhso_st_sum = fil_pjhso_st_sum;}
+    // Order Setters---------------------------
+    public void setOrd_pjhso_sq (boolean ord_pjhso_sq) {this.ord_pjhso_sq = ord_pjhso_sq ; }
+    
+    // Getters -----------------------------------------
+    public String getIdxm() {
+        return idxm; 
+    }
+    public boolean isIdxflag() {
+        return idxflag; 
+    }
+    public boolean isGoBackx() {
+        return goBackx; 
+    }
+    public boolean isGoUpdtx() {
+        return goUpdtx; 
+    }
+    public boolean isGoLoadedx() {
+        return goLoadedx; 
+    }
+    public boolean isGoLoadedy() {
+        return goLoadedy; 
+    }
+    public String getXbutn_id() {
+        return xbutn_id; 
+    }
+    public String getXuserx_id_login() {
+        return xuserx_id_login; 
+    }
+    public String getTabs_vc() {return tabs_vc; }
+    public String getTabs_vf() {return tabs_vf; }
+    public String getPjhso_vf() {return pjhso_vf; }
+    
+    public StringBuffer getFlds_vfsb() {return flds_vfsb; }
+    
+    public String getUser_cd() {return user_cd; }
+    
+    public Date getRecd_ts() {return recd_ts; }
+    public String getPjhso_id_pjaus() {return pjhso_id_pjaus; }
+    public String getPjhso_id_pjaus_old() {return pjhso_id_pjaus_old; }
+    public String getPjhso_id_pjaus_desc() {return pjhso_id_pjaus_desc; }
+    public String getPjhso_sq() {return pjhso_sq; }
+    public String getPjhso_sq_old() {return pjhso_sq_old; }
+    public String getPjhso_sq_dthm() {return pjhso_sq_dthm; }
+    public String getPjhso_sq_dthm_vc() {return pjhso_sq_dthm_vc; }
+    public String getPjhso_dt_eventx() {return pjhso_dt_eventx; }
+    public String getPjhso_dt_eventx_vc() {return pjhso_dt_eventx_vc; }
+    public String getPjhso_tp_cfpjtp() {return pjhso_tp_cfpjtp; }
+    public String getPjhso_tp_cfpjtp_desc() {return pjhso_tp_cfpjtp_desc; }
+    public String getPjhso_tp_cfpjtp_vc() {return pjhso_tp_cfpjtp_vc; }
+    public Boolean getPjhso_cd_de_rnd() {return pjhso_cd_de_rnd; }
+    public Boolean getPjhso_cd_de_sav() {return pjhso_cd_de_sav; }
+    public String getPjhso_cd_de() {return pjhso_cd_de; }
+    public String getPjhso_cd_de_vc() {return pjhso_cd_de_vc; }
+    public String getPjhso_tp_entidade() {return pjhso_tp_entidade; }
+    public String getPjhso_tp_entidade_vc() {return pjhso_tp_entidade_vc; }
+    public String getPjhso_cd_de_email() {return pjhso_cd_de_email; }
+    public String getPjhso_cd_de_email_vc() {return pjhso_cd_de_email_vc; }
+    public String getPjhso_cd_de_cont() {return pjhso_cd_de_cont; }
+    public String getPjhso_cd_de_cont_vc() {return pjhso_cd_de_cont_vc; }
+    public Boolean getPjhso_cd_para_rnd() {return pjhso_cd_para_rnd; }
+    public Boolean getPjhso_cd_para_sav() {return pjhso_cd_para_sav; }
+    public String getPjhso_cd_para() {return pjhso_cd_para; }
+    public String getPjhso_cd_para_vc() {return pjhso_cd_para_vc; }
+    public Boolean getPjhso_cd_prcc_rnd() {return pjhso_cd_prcc_rnd; }
+    public Boolean getPjhso_cd_prcc_sav() {return pjhso_cd_prcc_sav; }
+    public String getPjhso_cd_prcc() {return pjhso_cd_prcc; }
+    public String getPjhso_cd_prcc_vc() {return pjhso_cd_prcc_vc; }
+    
+    public Date getPjhso_dt_evento() {return pjhso_dt_evento; }
+    public String getPjhso_dt_evento_str() {
+        return pjhso_dt_evento_str;}
+    public String getPjhso_dt_evento_vc() {return pjhso_dt_evento_vc; }
+    
+    public String getPjhso_cd_executor() {return pjhso_cd_executor; }
+    public String getPjhso_cd_executor_vc() {return pjhso_cd_executor_vc; }
+    public String getPjhso_cd_para_email() {return pjhso_cd_para_email; }
+    public String getPjhso_cd_para_email_vc() {return pjhso_cd_para_email_vc; }
+    public String getPjhso_cd_prcc_email() {return pjhso_cd_prcc_email; }
+    public String getPjhso_cd_prcc_email_vc() {return pjhso_cd_prcc_email_vc; }
+    public String getPjhso_cd_para_cont() {return pjhso_cd_para_cont; }
+    public String getPjhso_cd_para_cont_vc() {return pjhso_cd_para_cont_vc; }
+    public String getPjhso_cd_prcc_cont() {return pjhso_cd_prcc_cont; }
+    public String getPjhso_cd_prcc_cont_vc() {return pjhso_cd_prcc_cont_vc; }
+    public String getPjhso_tp_acao() {return pjhso_tp_acao; }
+    public String getPjhso_tp_acao_desc() {return pjhso_tp_acao_desc; }
+    public String getPjhso_tp_acao_vc() {return pjhso_tp_acao_vc; }
+    public String getPjhso_st() {return pjhso_st; }
+    public String getPjhso_st_desc() {return pjhso_st_desc; }
+    public String getPjhso_st_vc() {return pjhso_st_vc; }
+    public String getPjhso_ds_assunto() {return pjhso_ds_assunto; }
+    public String getPjhso_ds_assunto_vc() {return pjhso_ds_assunto_vc; }
+    public String getPjhso_ds() {return pjhso_ds; }
+    public String getPjhso_ds_vc() {return pjhso_ds_vc; }
+    public String getPjhso_in_ultimo() {return pjhso_in_ultimo; }
+    public String getPjhso_in_ultimo_vc() {return pjhso_in_ultimo_vc; }
+    public String getPjhso_ds_depara() {return pjhso_ds_depara; }
+    public String getPjhso_ds_depara_vc() {return pjhso_ds_depara_vc; }
+    public String getPjhso_ds_deparax() {return pjhso_ds_deparax; }
+    public String getPjhso_ds_deparax_vc() {return pjhso_ds_deparax_vc; }
+    public String getPjhso_st_sum() {return pjhso_st_sum; }
+    public String getPjhso_st_sum_vc() {return pjhso_st_sum_vc; }
+    // Filter Getters-----------------------------------
+    public String getFil_tabs_vc() {return fil_tabs_vc; }
+    public String getFil_pjhso_id_pjaus() {return fil_pjhso_id_pjaus; }
+    public String getFil_pjhso_cd_de() {return fil_pjhso_cd_de; }
+    public String getFil_pjhso_tp_entidade() {return fil_pjhso_tp_entidade; }
+    public String getFil_pjhso_cd_para() {return fil_pjhso_cd_para; }
+    public String getFil_pjhso_cd_prcc() {return fil_pjhso_cd_prcc; }
+    public String getFil_pjhso_tp_acao() {return fil_pjhso_tp_acao; }
+    public String getFil_pjhso_st() {return fil_pjhso_st; }
+    public String getFil_pjhso_ds_assunto() {return fil_pjhso_ds_assunto; }
+    public String getFil_pjhso_ds_depara() {return fil_pjhso_ds_depara; }
+    public String getFil_pjhso_ds_deparax() {return fil_pjhso_ds_deparax; }
+    public String getFil_pjhso_st_sum() {return fil_pjhso_st_sum; }
+    // Order Getters-----------------------------
+    public boolean isOrd_pjhso_sq() {return ord_pjhso_sq; }
+    public boolean isOrd_pjhso_sq_desc() {return !ord_pjhso_sq; }
+    
+    protected boolean validateParms() { 
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadPjhsogpBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+    //  for childMainRecord
+        return result; 
+    }   //  End of Validate 
+    
+    protected boolean validate() { // @save @getrecd  
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadPjhsogpBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        pjhso_sq_dthm_vc = valPjhso_sq_dthm(pjhso_sq_dthm); 
+        pjhso_dt_eventx_vc = valPjhso_dt_eventx(pjhso_dt_eventx); 
+        pjhso_tp_cfpjtp_vc = valPjhso_tp_cfpjtp(pjhso_tp_cfpjtp); 
+        pjhso_cd_de_vc = valPjhso_cd_de(pjhso_cd_de); 
+        pjhso_tp_entidade_vc = valPjhso_tp_entidade(pjhso_tp_entidade); 
+        pjhso_cd_de_email_vc = valPjhso_cd_de_email(pjhso_cd_de_email); 
+        pjhso_cd_de_cont_vc = valPjhso_cd_de_cont(pjhso_cd_de_cont); 
+        pjhso_cd_para_vc = valPjhso_cd_para(pjhso_cd_para); 
+        pjhso_cd_prcc_vc = valPjhso_cd_prcc(pjhso_cd_prcc); 
+        try {
+            pjhso_dt_evento = simpleDateFormat.parse(pjhso_dt_evento_str.replace("/", "-"));
+            setPjhso_dt_evento(pjhso_dt_evento);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        pjhso_dt_evento_vc = valPjhso_dt_evento(pjhso_dt_evento); 
+        pjhso_cd_executor_vc = valPjhso_cd_executor(pjhso_cd_executor); 
+        pjhso_cd_para_email_vc = valPjhso_cd_para_email(pjhso_cd_para_email); 
+        pjhso_cd_prcc_email_vc = valPjhso_cd_prcc_email(pjhso_cd_prcc_email); 
+        pjhso_cd_para_cont_vc = valPjhso_cd_para_cont(pjhso_cd_para_cont); 
+        pjhso_cd_prcc_cont_vc = valPjhso_cd_prcc_cont(pjhso_cd_prcc_cont); 
+        pjhso_tp_acao_vc = valPjhso_tp_acao(pjhso_tp_acao); 
+        pjhso_st_vc = valPjhso_st(pjhso_st); 
+        pjhso_ds_assunto_vc = valPjhso_ds_assunto(pjhso_ds_assunto); 
+        pjhso_ds_vc = valPjhso_ds(pjhso_ds); 
+        pjhso_in_ultimo_vc = valPjhso_in_ultimo(pjhso_in_ultimo); 
+        pjhso_ds_depara_vc = valPjhso_ds_depara(pjhso_ds_depara); 
+        pjhso_ds_deparax_vc = valPjhso_ds_deparax(pjhso_ds_deparax); 
+        pjhso_st_sum_vc = valPjhso_st_sum(pjhso_st_sum); 
+    
+        validateMax(vfbuffer); addErrorMessageFromErrorList(); 
+        addAttribute("validateOn"+tab, "1");
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+    //  for childMainRecord
+        return result; 
+    }   //  End of Validate 
+    public void updateRecdTs() {
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            if (result) {
+                this.recd_ts = new Date();
+            }
+        } catch (Exception ex) { ex.getMessage(); }
+    }
+    
+    protected void validateInserir() {
+        StringBuffer vfbuffer = new StringBuffer();
+        if (tabs_vf != null) {
+            vfbuffer.append(tabs_vf);
+            vfbuffer.setCharAt(49,'0');
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf;
+        }
+    } 
+    protected void updateMrobOnChldInsert() throws SQLException {
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+          // ----------  updateMrobOnChldInsert Start Internal Source 
+          	String sqlUpdatePjaus = "update  Wbrl_pjaus set pjaus_dt_ultm_mov = ? where pjaus_id like ?";
+          	PreparedStatement ps_filex = con1.prepareStatement(sqlUpdatePjaus);
+              String pjhso_sq_dt = pjhso_sq.substring(0,6);
+          	ps_filex.setString(1, pjhso_sq_dt);
+          	ps_filex.setString(2, "%"+pjhso_id_pjaus+"%");
+          	ps_filex.executeUpdate();
+          	ps_filex.close();
+          // ----------  updateMrobOnChldInsert External Source End 
+            mesg_var = getMessageByKey("success_inserir");
+            } catch (Exception ex) {
+                  ex.getMessage();
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    protected void updateMrobOnChldUpdate() throws SQLException {
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+          // ----------  updateMrobOnChldInsert Start Internal Source 
+          int flag = 0;
+          if ( pjhso_st.contains("PVT")) { flag = 1;}
+          if ( pjhso_st.contains("PVG")) { flag = 1;}
+          if (flag == 0) {
+              String sqlUpdatePjaus = "update  Wbrl_pjaus set pjaus_st = ? where pjaus_id like ?";
+              PreparedStatement ps_filex = con1.prepareStatement(sqlUpdatePjaus);
+              ps_filex.setString(1, pjhso_st);
+              ps_filex.setString(2, "%"+pjhso_id_pjaus+"%");
+              ps_filex.executeUpdate();
+              ps_filex.close();
+          } 
+          if (flag == 1) {
+              String sqlUpdatePjaus = "update  Wbrl_pjaus set pjaus_st_vpx = ?, pjaus_st_vpx = ? where pjaus_id like ?";
+              PreparedStatement ps_filex = con1.prepareStatement(sqlUpdatePjaus);
+              ps_filex.setString(1, pjhso_st);
+              ps_filex.setString(2, "%"+pjhso_id_pjaus+"%");
+              ps_filex.executeUpdate();
+              ps_filex.close();
+          } 
+          // ----------  updateMrobOnChldInsert External Source End 
+            mesg_var = getMessageByKey("success_inserir");
+            } catch (Exception ex) {
+                  ex.getMessage();
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    protected void updateMrobOnChldDelete() throws SQLException {
+        if (codfqt > 1) {return;}
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            String sqlMrob = "update Pjaus set pjhsogp_vx = '0' where pjaus_id like ?";
+            PreparedStatement stmtMrob = con1.prepareStatement(sqlMrob);
+            stmtMrob.setString(1, "%"+pjhso_id_pjaus+"%");
+            stmtMrob.executeUpdate();
+            stmtMrob.close();
+            } catch (Exception ex) {
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    
+    public String validateFieldOnChange(String value, String field) {
+        String result = null;
+        vf = 0; int i_field = 0; int valueInteger=0; Date valueDate = null; BigDecimal valueBigDecimal = null;
+    if (i_fields.containsKey(field)) {
+        i_field = i_fields.get(field);
+    }
+        switch (i_field) {
+        // Fields Validation Methods Switch 
+           case 1: result = valPjhso_sq_dthm(value); break;
+           case 2: result = valPjhso_dt_eventx(value); break;
+           case 3: result = valPjhso_tp_cfpjtp(value); break;
+           case 4: result = valPjhso_cd_de(value); break;
+           case 5: result = valPjhso_tp_entidade(value); break;
+           case 6: result = valPjhso_cd_de_email(value); break;
+           case 7: result = valPjhso_cd_de_cont(value); break;
+           case 8: result = valPjhso_cd_para(value); break;
+           case 9: result = valPjhso_cd_prcc(value); break;
+           case 10: valueDate = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, value ); result = valPjhso_dt_evento(valueDate); break;
+           case 11: result = valPjhso_cd_executor(value); break;
+           case 12: result = valPjhso_cd_para_email(value); break;
+           case 13: result = valPjhso_cd_prcc_email(value); break;
+           case 14: result = valPjhso_cd_para_cont(value); break;
+           case 15: result = valPjhso_cd_prcc_cont(value); break;
+           case 16: result = valPjhso_tp_acao(value); break;
+           case 17: result = valPjhso_st(value); break;
+           case 18: result = valPjhso_ds_assunto(value); break;
+           case 19: result = valPjhso_ds(value); break;
+           case 20: result = valPjhso_in_ultimo(value); break;
+           case 21: result = valPjhso_ds_depara(value); break;
+           case 22: result = valPjhso_ds_deparax(value); break;
+           case 23: result = valPjhso_st_sum(value); break;
+        } // 111
+        return result;
+    }
+    public String checkMaxFieldOnChange(String divn) {
+        vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(Integer.parseInt(divn),selMaxVc(divn).charAt(0));
+        vfbuffer.setCharAt(psvc,selMaxVc(divn).charAt(0));
+        tabsvf = vfbuffer.toString();
+        return vfbuffer.toString();
+    }
+    public String checkVFMaxFieldOnChange(String divn) {
+        return retSelBuffer(divn);
+    }
+    public String retSelBuffer(String divn) {
+        String selBuffer = null;
+        selBuffer = flds_vfsb.toString();
+        return selBuffer;
+    }
+    
+    // Main Record (Univalued) Field Validation Methods...
+    
+    public Boolean valRecd_ts(Connection con) throws SQLException {
+        msgkey = "";
+        Pjhso Pjhsox = new Pjhso(pjhso_id_pjaus, pjhso_sq);
+        Pjhsox.loadUfmv(this);
+        Pjhsox.setLoadChilds(true);
+        Pjhsox.load(con);
+        Date recd_ts_db = Pjhsox.getRecd_ts();
+        if (this.recd_ts == null) {
+        	   this.recd_ts = recd_ts_db;
+        }
+        if (recd_ts_db == null ) {
+            recd_ts_db = new Date();
+        	   this.recd_ts = recd_ts_db;
+        }
+        String tsdb = recd_ts_db.toString();
+        String ts = this.recd_ts.toString();
+        if (ts.contains("BR")) { ts = fixDate(ts); }
+        if (tsdb.contains("BR")) { tsdb = fixDate(tsdb); }
+        if (!tsdb.contains(ts) ) {
+            msgkey = "key:valrecd_ts/";
+            errorList.add(msgkey);
+            addErrorMessageFromErrorList();
+            log.error("Pjhsogp lock event: key:"+pjhso_id_pjaus+", ts:"+ts+", tsdb:"+tsdb);
+            return false;
+        }
+        return true;
+    }
+    public String valPjhso_sq_dthm(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_sq_dthm = "";
+        } else {
+            this.pjhso_sq_dthm = value;
+        }
+        //  Get Validation Source Code  ggg
+        // External Source Code - pjaus_sq_dthm ----------------
+        if (pjhso_sq_dthm.contains("0000")) {} else {
+  	      pjhso_sq_dthm = pjhso_sq.substring(0,pjhso_sq.length()-2);
+        }	  
+        pjhso_sq_dthm_vc = valEntryString("9", value,"Pjhsogp_pjhso_sq_dthm");
+        return pjhso_sq_dthm_vc;
+    }
+    public String valPjhso_dt_eventx(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_dt_eventx = "";
+        } else {
+            this.pjhso_dt_eventx = value;
+        }
+        //  Get Validation Source Code  ggg
+        // External Source Code -----------------
+        //pjhso_dt_eventx = pjhso_dt_evento;
+  	  //String pjhso_sq_dthm_str = pjhso_sq.substring(0,pjhso_sq.indexOf("-"));
+        //pjhso_dt_eventx = simpleDateFormat.parse(pjhso_sq_dthm_str.replace("/", "-"));
+  	  //pjhso_dt_eventx = pjhso_sq.substring(0,pjhso_sq.indexOf("-"));
+  
+  	  String aa = pjhso_sq.substring(0,4);
+  	  String mm = pjhso_sq.substring(4,6);
+  	  String dd = pjhso_sq.substring(6,8);
+  	  pjhso_dt_eventx = dd + "/" + mm + "/"  + aa ;
+  
+  	  
+        pjhso_dt_eventx_vc = valEntryString("0", value,"Pjhsogp_pjhso_dt_eventx");
+        return pjhso_dt_eventx_vc;
+    }
+    public String valPjhso_tp_cfpjtp(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_tp_cfpjtp = "";
+            this.pjhso_tp_cfpjtp_desc = "";
+        } else {
+            this.pjhso_tp_cfpjtp = value;
+        }
+        Connection con;
+            try {
+                    con = DatabaseUtils.getConnection();
+      if (pjhso_id_pjaus != null) {
+        PreparedStatement ps28 = con.prepareStatement("select pjaus_tp  from Wbrl_pjaus where pjaus_id like '%"+pjhso_id_pjaus.toString()+"%'");
+        ResultSet rs28 = ps28.executeQuery();
+        String pjaus_tp28_rs = "";
+        if (rs28.next()) {
+            pjaus_tp28_rs = rs28.getString("pjaus_tp");
+        }
+        ps28.close(); rs28.close();
+        this.pjhso_tp_cfpjtp = pjaus_tp28_rs;
+        this.pjhso_tp_cfpjtp_vc = "0";
+      }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        pjhso_tp_cfpjtp_vc = valEntryString("0", value,"Pjhsogp_pjhso_tp_cfpjtp");
+    //  for childMainRecord
+        if (value != null) { // 77zz 
+    //  for childMainRecord
+        } // end val 1
+        return pjhso_tp_cfpjtp_vc;
+    }
+    public String valPjhso_cd_de(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_de");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_de = "";
+        } else {
+            this.pjhso_cd_de = value;
+        }
+        pjhso_cd_de_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_de");
+        return pjhso_cd_de_vc;
+    }
+    public String valPjhso_tp_entidade(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_tp_entidade = "";
+        } else {
+            this.pjhso_tp_entidade = value;
+        }
+        //  Get Validation Source Code  ggg
+        // External Source Code - pjhso_ds_entidade
+   	  try {
+            Connection conEnt = DatabaseUtils.getConnection();
+            String solct = ""; String tpx = ""; pjhso_tp_entidade = "";
+  
+            // Tenta Inferir Entidade por um "de" com Solicitante (2) Analista (3) ou ANTT (4)
+            solct = pjhso_cd_de;   
+            tpx = IIBeanUtils.getObcntpj_tp(conEnt, pjhso_id_pjaus, solct);
+            if (tpx != null && tpx.contains("1") ) {} else {
+                pjhso_tp_entidade = IIBeanUtils.getCodfDesc(conEnt, "TPAPJ", tpx);
+            }
+            if ( pjhso_tp_entidade == null ) { pjhso_tp_entidade = ""; }          
+            // Tentar inferir Entidade a partir do primeiro "para"
+            if ( pjhso_tp_entidade != null &&  pjhso_tp_entidade.length() == 0) {
+                if (pjhso_cd_para  != null && pjhso_cd_para.indexOf(",") > 0) { 
+                    solct = pjhso_cd_para.substring(0,pjhso_cd_para.indexOf(","));
+                } else {
+                    solct = pjhso_cd_para;
+                }	  
+                tpx = IIBeanUtils.getObcntpj_tp(conEnt, pjhso_id_pjaus, solct);
+                if ( tpx != null && tpx.contains("1") ) {} else {
+                    pjhso_tp_entidade = IIBeanUtils.getCodfDesc(conEnt, "TPAPJ", tpx);
+                }
+  	      }
+            if (pjhso_tp_entidade != null) { 
+                pjhso_tp_entidade = pjhso_tp_entidade.replace("-","");
+                pjhso_tp_entidade = pjhso_tp_entidade.trim();
+            }
+            DatabaseUtils.releaseConnection(conEnt);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        pjhso_tp_entidade_vc = valEntryString("0", value,"Pjhsogp_pjhso_tp_entidade");
+        return pjhso_tp_entidade_vc;
+    }
+    public String valPjhso_cd_de_email(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_de_email");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_de_email = "";
+        } else {
+            this.pjhso_cd_de_email = value;
+        }
+        pjhso_cd_de_email_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_de_email");
+        return pjhso_cd_de_email_vc;
+    }
+    public String valPjhso_cd_de_cont(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_de_cont");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_de_cont = "";
+        } else {
+            this.pjhso_cd_de_cont = value;
+        }
+        pjhso_cd_de_cont_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_de_cont");
+        return pjhso_cd_de_cont_vc;
+    }
+    public String valPjhso_cd_para(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_para");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_para = "";
+        } else {
+            this.pjhso_cd_para = value;
+        }
+        pjhso_cd_para_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_para");
+        return pjhso_cd_para_vc;
+    }
+    public String valPjhso_cd_prcc(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_prcc");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_prcc = "";
+        } else {
+            this.pjhso_cd_prcc = value;
+        }
+        pjhso_cd_prcc_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_prcc");
+        return pjhso_cd_prcc_vc;
+    }
+    public String valPjhso_dt_evento(Date value) {
+        if (value == null) { return "0";} 
+        this.pjhso_dt_evento = value;
+        pjhso_dt_evento_vc = valEntryDate("0", value,"Pjhsogp_pjhso_dt_evento");
+        //  Get Validation Source Code  ggg
+        // External Source Code -----------------
+        //pjhso_dt_eventx = pjhso_dt_evento;
+        pjhso_dt_evento_str = new SimpleDateFormat("dd/MM/yyyy").format(pjhso_dt_evento);
+        if(  pjhso_dt_evento_str != null && ( !pjhso_dt_evento_str.equals(pjhso_dt_evento_sav)) ){
+  	      String dd = pjhso_dt_evento_str.substring(0,2);
+  	      String mm = pjhso_dt_evento_str.substring(3,5);
+  	      String aa = pjhso_dt_evento_str.substring(6,10);
+  	      pjhso_sq_dthm = aa+mm+dd + "-0000";
+        }
+        return pjhso_dt_evento_vc;
+    }
+    public String valPjhso_cd_executor(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_executor = "";
+        } else {
+            this.pjhso_cd_executor = value;
+        }
+        pjhso_cd_executor_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_executor");
+        return pjhso_cd_executor_vc;
+    }
+    public String valPjhso_cd_para_email(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_para_email");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_para_email = "";
+        } else {
+            this.pjhso_cd_para_email = value;
+        }
+        pjhso_cd_para_email_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_para_email");
+        return pjhso_cd_para_email_vc;
+    }
+    public String valPjhso_cd_prcc_email(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_prcc_email");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_prcc_email = "";
+        } else {
+            this.pjhso_cd_prcc_email = value;
+        }
+        pjhso_cd_prcc_email_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_prcc_email");
+        return pjhso_cd_prcc_email_vc;
+    }
+    public String valPjhso_cd_para_cont(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_para_cont");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_para_cont = "";
+        } else {
+            this.pjhso_cd_para_cont = value;
+        }
+        pjhso_cd_para_cont_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_para_cont");
+        return pjhso_cd_para_cont_vc;
+    }
+    public String valPjhso_cd_prcc_cont(String value) {
+        String valuex = (String) getSession().getAttribute("xpjhso_cd_prcc_cont");
+        if(valuex != null && valuex.length() >= 0 ) {
+            value = valuex;
+        }
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_cd_prcc_cont = "";
+        } else {
+            this.pjhso_cd_prcc_cont = value;
+        }
+        pjhso_cd_prcc_cont_vc = valEntryString("0", value,"Pjhsogp_pjhso_cd_prcc_cont");
+        return pjhso_cd_prcc_cont_vc;
+    }
+    public String valPjhso_tp_acao(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_tp_acao = "";
+            this.pjhso_tp_acao_desc = "";
+        } else {
+            this.pjhso_tp_acao = value;
+        }
+        pjhso_tp_acao_vc = valEntryString("0", value,"Pjhsogp_pjhso_tp_acao");
+        return pjhso_tp_acao_vc;
+    }
+    public String valPjhso_st(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_st = "";
+            this.pjhso_st_desc = "";
+        } else {
+            this.pjhso_st = value;
+        }
+        pjhso_st_vc = valEntryString("0", value,"Pjhsogp_pjhso_st");
+        return pjhso_st_vc;
+    }
+    public String valPjhso_ds_assunto(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_ds_assunto = "";
+        } else {
+            this.pjhso_ds_assunto = value;
+        }
+        pjhso_ds_assunto_vc = valEntryString("0", value,"Pjhsogp_pjhso_ds_assunto");
+        return pjhso_ds_assunto_vc;
+    }
+    public String valPjhso_ds(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_ds = "";
+        } else {
+            this.pjhso_ds = value;
+        }
+        pjhso_ds_vc = valEntryString("0", value,"Pjhsogp_pjhso_ds");
+        return pjhso_ds_vc;
+    }
+    public String valPjhso_in_ultimo(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_in_ultimo = "";
+        } else {
+            this.pjhso_in_ultimo = value;
+        }
+        pjhso_in_ultimo_vc = valEntryString("5", value,"Pjhsogp_pjhso_in_ultimo");
+        return pjhso_in_ultimo_vc;
+    }
+    public String valPjhso_ds_depara(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_ds_depara = "";
+        } else {
+            this.pjhso_ds_depara = value;
+        }
+        //  Get Validation Source Code  ggg
+        // External Source Code -----------------
+  	  pjhso_ds_depara = pjhso_cd_de + ">" + pjhso_cd_para + ">" + pjhso_cd_prcc;
+  	  
+        pjhso_ds_depara_vc = valEntryString("5", value,"Pjhsogp_pjhso_ds_depara");
+        return pjhso_ds_depara_vc;
+    }
+    public String valPjhso_ds_deparax(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_ds_deparax = "";
+        } else {
+            this.pjhso_ds_deparax = value;
+        }
+        //  Get Validation Source Code  ggg
+        // External Source Code -----------------
+  	  pjhso_ds_depara = pjhso_cd_de + ">" + pjhso_cd_para + ">" + pjhso_cd_prcc;
+  	  
+        pjhso_ds_deparax_vc = valEntryString("5", value,"Pjhsogp_pjhso_ds_deparax");
+        return pjhso_ds_deparax_vc;
+    }
+    public String valPjhso_st_sum(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.pjhso_st_sum = "";
+        } else {
+            this.pjhso_st_sum = value;
+        }
+        //  Get Validation Source Code  ggg
+        // External Source Code - pjaus_st_sum ----------------
+        try {
+            Connection conPjhso = DatabaseUtils.getConnection();
+            String pjaus_st_vpx = IIBeanUtils.getPjaus_vpx(conPjhso, pjhso_id_pjaus);
+  	      if (pjaus_st_vpx.contains("PVT")) {
+                pjhso_st_sum = "PVT";
+  	      }
+  	      if (pjaus_st_vpx.contains("PVG")) {
+                pjhso_st_sum = "PVG";
+  	      }
+  	      if (pjaus_st_vpx.contains("PVG") && pjhso_st.contains("PVT" )) { 
+                Statement stmtPjhso = conPjhso.createStatement();
+                String sqlPjhso = "Update Pjhso set pjhso_st_sum = 'PVT'  where pjhso_id_pjaus = '"+pjhso_id_pjaus+"'";
+                stmtPjhso.execute(sqlPjhso);
+                stmtPjhso.close();
+  	      }
+  
+  	      if (pjaus_st_vpx.contains("PVT") && pjhso_st.contains("PVG" )) { 
+                Statement stmtPjhso = conPjhso.createStatement();
+                String sqlPjhso = "Update Pjhso set pjhso_st_sum = 'PVG'  where pjhso_id_pjaus = '"+pjhso_id_pjaus+"'";
+                stmtPjhso.execute(sqlPjhso);
+                stmtPjhso.close();
+  	      }
+            DatabaseUtils.releaseConnection(conPjhso);
+        } catch (Exception ex) { 
+  	      ex.getMessage(); 
+  	  }
+        pjhso_st_sum_vc = valEntryString("5", value,"Pjhsogp_pjhso_st_sum");
+        return pjhso_st_sum_vc;
+    }
+    
+    protected void reset() {  
+     try {
+        super.reset(); 
+        // Set initial ABA Number
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("cadbeanx", "cadPjhsogpBean");
+        if (tab_remember == true) {
+            getSession().getAttribute("cadPjhsogpBeanx");
+        } else {
+            getSession().setAttribute("cadPjhsogpBeanx", "1");
+        } 
+        ufmv = "00000000000000000000000000000000000000000000000000";
+        getSession().setAttribute("ufmv", ufmv);
+        // Tabs Validation Status
+        this.tabs_vf = null;
+        this.tabs_vc = null;
+        vf = 0;
+        xmesg_st = "null";
+        // Reset of Main Record ii.properties-----------------
+        this.flds_vf = "0";
+    //  for childMainRecord
+        this.pjhso_vf = "0";
+        this.tabs_vc = "0";
+        // Set initial tabsvf
+        tabsvf =    "90000000000000000000000000000000000000000000000909";
+        tabsvf_in = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tr = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tp = "90000000000000000000000000000000000000000000000000";
+        // Load flds_vf & chld_vfs into prop vcs;
+        Connection con = DatabaseUtils.getConnection();
+        // Reset Initial Stub Number--------------------------
+        this.xbutn_id = "1";
+        this.pjhso_id_pjaus_old = null;
+    //  Reset Fks.2. --
+        this.pjhso_id_pjaus = null; // Reset PK that is FK Unconditionally
+        this.pjhso_id_pjaus_desc = null;
+        this.pjhso_sq_old = null;
+        this.pjhso_sq = null; // Reset PK not defined as FK Unconditionally
+        this.pjhso_sq_dthm = null; // Reset of any other variable --
+        this.pjhso_dt_eventx = null; // Reset of any other variable --
+        this.pjhso_tp_cfpjtp = null; // Reset Codf --
+        this.pjhso_tp_cfpjtp_desc = null;
+        this.pjhso_cd_de = null; // Reset of any other variable --
+        this.pjhso_tp_entidade = null; // Reset of any other variable --
+        this.pjhso_cd_de_email = null; // Reset of any other variable --
+        this.pjhso_cd_de_cont = null; // Reset of any other variable --
+        this.pjhso_cd_para = null; // Reset of any other variable --
+        this.pjhso_cd_prcc = null; // Reset of any other variable --
+        this.pjhso_dt_evento = new Date(); // Initialized
+         pjhso_dt_evento_sav = pjhso_dt_evento_str ;
+        pjhso_cd_executor_iniv();
+        this.pjhso_cd_para_email = null; // Reset of any other variable --
+        this.pjhso_cd_prcc_email = null; // Reset of any other variable --
+        this.pjhso_cd_para_cont = null; // Reset of any other variable --
+        this.pjhso_cd_prcc_cont = null; // Reset of any other variable --
+        this.pjhso_tp_acao = null; // Reset Codf --
+        this.pjhso_tp_acao_desc = null;
+        this.pjhso_st = null; // Reset Codf --
+        this.pjhso_st_desc = null;
+        this.pjhso_ds_assunto = null; // Reset of any other variable --
+        this.pjhso_ds = null; // Reset of any other variable --
+        pjhso_in_ultimo_iniv();
+        this.pjhso_ds_depara = null; // Reset of any other variable --
+        this.pjhso_ds_deparax = null; // Reset of any other variable --
+        this.pjhso_st_sum = null; // Reset of any other variable --
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        // Orders-Reset------------------------------------
+        this.ord_pjhso_sq = false;
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo.indexOf("psq") >= 0){
+            mesg_var = getMessageByKey("selectViaFiltersMagGlass");
+            xmesg_rc = 777;
+        } else {
+            mesg_var = "";
+            xmesg_rc = 0;
+        }
+    } catch (Exception ex) { ex.getMessage(); }
+    } // Closing Reset Method
+    // Filters-Reset------------------------------------
+    protected void resetFilters() {  
+        this.fil_tabs_vc = null;
+        this.fil_pjhso_id_pjaus = null;
+        this.fil_pjhso_cd_de = null;
+        this.fil_pjhso_tp_entidade = null;
+        this.fil_pjhso_cd_para = null;
+        this.fil_pjhso_cd_prcc = null;
+        this.fil_pjhso_tp_acao = null;
+        this.fil_pjhso_st = null;
+        this.fil_pjhso_ds_assunto = null;
+        this.fil_pjhso_ds_depara = null;
+        this.fil_pjhso_ds_deparax = null;
+        this.fil_pjhso_st_sum = null;
+    }
+    
+    
+    public String doUpdate1Chld() throws SQLException, LoginException { // updateChld
+        String result = "";
+        // ----------  doBeforeUpdateChld
+  	  Connection conPjhsox = DatabaseUtils.getConnection();
+        try {
+            String pjhso_cd_parax =  (String) getSession().getAttribute("pjhso_cd_parax"); 
+            String pjhso_id_pjausx = (String) getSession().getAttribute("pjhso_id_pjaus"); 
+            String pjhso_sq_sav =    (String) getSession().getAttribute("pjhso_spq_sav"); 
+            String sqlPjhsoUpdatex = "UPDATE Pjhso set pjhso_cd_para = ? where pjhso_id_pjaus = ? and pjhso_sq = ?";
+            PreparedStatement ps_Pjhsox = conPjhsox.prepareStatement(sqlPjhsoUpdatex);
+            ps_Pjhsox.setString(1, pjhso_cd_parax);
+            ps_Pjhsox.setString(2, pjhso_id_pjausx);
+            ps_Pjhsox.setString(3, pjhso_sq_sav);
+            ps_Pjhsox.executeUpdate();
+            ps_Pjhsox.close();
+  
+            if (pjhso_tp_acao.contains("MA") && !pjhso_ds.contains("Atenciosa") ) {
+                String pjaus_tp_obra = IIBeanUtils.getPjaus_tp_obrax(conPjhsox, pjhso_id_pjaus);
+                String pjaus_tp_obra_txt = IIBeanUtils.getCodfSupid(conPjhsox, "TPOBR", pjaus_tp_obra);
+                String txt_type = pjaus_tp_obra_txt.substring(pjaus_tp_obra_txt.indexOf("txt:")+4,pjaus_tp_obra_txt.length());
+                pjhso_ds = IIBeanUtils.getStdtx_desc(conPjhsox, txt_type);
+                pjhso_ds_assunto = IIBeanUtils.getPjaus_ds_suscintax(conPjhsox, pjhso_id_pjaus);
+            }
+            if (pjhso_tp_acao.contains("CS") &&  !pjhso_ds.contains("Atenciosa") ) {
+                pjhso_ds = IIBeanUtils.getStdtx_desc(conPjhsox, "OBRA-SOL-CHECKLIST");
+                pjhso_ds_assunto = IIBeanUtils.getPjaus_ds_suscintax(conPjhsox, pjhso_id_pjaus);
+            }
+  
+            DatabaseUtils.releaseConnection(conPjhsox);
+        } catch (Exception ex) { 
+            ex.getMessage();
+        } 	
+        if (pjhso_in_ultimo != null &&  pjhso_in_ultimo.contains("E") ) {
+            xmesg_rc = 777;
+            mesg_var = getMessageByKey("recordNotModifiable");
+            return "success";
+        }
+        goUpdtx = true;
+            getSession().setAttribute("xpjhso_cd_de", pjhso_cd_de);
+            getSession().setAttribute("xpjhso_cd_para", pjhso_cd_para);
+            getSession().setAttribute("xpjhso_cd_prcc", pjhso_cd_prcc);
+               result = super.doUpdate1Chld();
+            xmesg_rc = 777;
+            if ( goLoadedx == true &&  mesg_var.contains("nclusão")) {
+                mesg_var = "Ação Incluída !!!";
+            } else
+            if (mesg_var.contains("nclusão")) {
+                mesg_var = "Ação Incluída !!! >>>> Selecione o Encaminhamento e atualize os demais detalhes.";
+            }
+            pjhso_in_ultimo = "";
+            if (isCanInserir()) {
+                goLoadedx = true;
+                setCanInserir(false);
+                getSession().setAttribute("pjhsogpcad"+"valor", pjhso_id_pjaus+","+pjhso_sq);
+            } else {
+            }
+        goLoadedx = true; goLoadedy = goLoadedx;
+        if (pjhso_cd_para != null && pjhso_cd_para.length() == 0
+        ) {
+           goLoadedx = false; goLoadedy = true;
+        }
+        if (pjhso_cd_para != null && pjhso_cd_para.length() == 0
+            ||	pjhso_tp_acao != null && pjhso_tp_acao.length() == 0
+            ||	pjhso_st != null && pjhso_st.length() == 0
+            ||	pjhso_ds_assunto != null && pjhso_ds_assunto.length() == 0
+            ||	pjhso_ds != null && pjhso_ds.length() == 0
+            ) {
+    	       goUpdtx = false;
+        }
+        return "pjhsogpcad";
+    }
+    
+    public void loadDesc() throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+    
+        // Load FK Desc ------------------------
+        pjhso_id_pjaus_desc = IIBeanUtils.getPjaus_desc(con, pjhso_id_pjaus);
+         pjhso_tp_cfpjtp_desc = IIBeanUtils.getCodfDesc(con, "TPPRJ", pjhso_tp_cfpjtp, getLocale());
+         pjhso_tp_acao_desc = IIBeanUtils.getCodfDesc(con, "TPAPS", pjhso_tp_acao, getLocale());
+         pjhso_st_desc = IIBeanUtils.getCodfDesc(con, "STPRC", pjhso_st, getLocale());
+    
+        } finally { DatabaseUtils.releaseConnection(con); }
+    }  //  End of loadDesc 
+    public String doObterRefreshParent() throws SQLException, LoginException { // @getrecd
+        valorz = "refresh";
+        return doObter(); // @getrecd
+    }
+    public String doObterBack() throws SQLException, LoginException { // @getrecd
+        String tbakx = (String) (getSession().getAttribute("tbak"));
+        if (tbakx.contains("cad")) { 
+        } 
+       return tbakx; // @getrecd
+    } 
+    public String doNovo()  throws SQLException, LoginException {  // logic section - Insert a New Record
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        String resultx = super.doNovo();
+        return resultx;
+    } 
+    // a Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObter() throws SQLException, LoginException { // @getrecd
+        xmesg_rc = 000; mesg_var = "";
+        tranAntx = getParameter("tipoant");
+        goBackx = true;
+        goUpdtx = true;;
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        idx = "";
+        // Set Transactio Type 
+        tipo ="pjhsogpcad";
+        String tipoOabv ="pjhsogp";
+        String  pjhso_ds_sav = "";
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            this.user_cd = this.user_cd.toUpperCase();
+        } catch (Exception ex) { ex.getMessage(); }
+        String selection_list_var = (String) getSession().getAttribute("selection_list");
+        if (selection_list_var == null) { selection_list_var = ""; }
+        if (selection_list_var.length() > 0 ) {
+            List<String> list = new ArrayList<String>(Arrays.asList(selection_list_var.split(";")));
+            ListIterator listIterator = list.listIterator();
+            String filez = "";
+            pjhso_ds = pjhso_ds + "<br />"+"Lista de Documentos em Destaque >>:";
+            while (listIterator.hasNext()) {
+               filez = ((String) (listIterator.next()));
+               pjhso_ds = pjhso_ds + "<br />"+filez;
+               filez = filez.substring(2,filez.length());
+            }
+            pjhso_ds = pjhso_ds + "!!!";
+            pjhso_ds_sav = pjhso_ds;
+        }
+        getSession().setAttribute("selection_list", null);
+        if (getSession().getAttribute("xpjhsocont") == null)  {
+            getSession().setAttribute("xpjhso_cd_de", null);
+            getSession().setAttribute("xpjhso_cd_de_email", null);
+            getSession().setAttribute("xpjhso_cd_de_cont", null);
+            getSession().setAttribute("xpjhso_cd_para", null);
+            getSession().setAttribute("xpjhso_cd_para_email", null);
+            getSession().setAttribute("xpjhso_cd_para_cont", null);
+            getSession().setAttribute("xpjhso_cd_prcc", null);
+            getSession().setAttribute("xpjhso_cd_prcc_email", null);
+            getSession().setAttribute("xpjhso_cd_prcc_cont", null);
+            getSession().setAttribute("xpjhsocont", null);
+        }
+        String usedx = (String) getSession().getAttribute("xpjhsocont");
+        if (usedx != null && usedx.contains("used"))  {
+            getSession().setAttribute("xpjhsocont", null);
+        }
+        if (usedx != null && usedx.contains("confirmed"))  {
+            getSession().setAttribute("xpjhsocont", null);
+        }
+        String frwdx = (String) getSession().getAttribute("xpjhsofrwd");
+        if (frwdx != null && frwdx.contains("used"))  {
+            getSession().setAttribute("xpjhsofrwd", null);
+            pjhso_cd_de = (String) getSession().getAttribute("xpjhso_cd_de");
+            pjhso_cd_para = (String) getSession().getAttribute("xpjhso_cd_para");
+            pjhso_cd_prcc = (String) getSession().getAttribute("xpjhso_cd_prcc");
+            return "pjhsogpcad";
+        }
+        loadBean(); // Load Record @getrecd - 1
+        if (pjhso_ds_sav.length() > 0 ) { 
+            pjhso_ds = pjhso_ds_sav;
+        }
+        getSession().setAttribute("seletion_list_ds", null);
+        String dsx = "";
+        if (pjhso_ds != null && pjhso_ds.contains("em Destaque")) {
+            int start = pjhso_ds.indexOf("em Destaque");
+            int end = pjhso_ds.lastIndexOf("!!!");
+            if ( start > 0 && end > 0 && end > start ) {
+                dsx =  pjhso_ds.substring(start,end);
+                getSession().setAttribute("seletion_list_ds", dsx);
+            }
+        }
+        //<!-- Load Bean   -->
+        String userx = "";
+  	  try {
+            // Obtem Codigo do Usuário LOgado 
+  	      this.user_cd = getLoginInfo().getUserx_id_login();
+            userx = this.user_cd.toUpperCase(); 
+            //    if (pjhso_cd_de.contains(userx)) { // Se usuário não for Gestor e for "Para"
+            //        xmesg_rc = 777;
+            //        mesg_var = getMessageByKey("msg_loggedUserIsTheOriginAlready");
+            //        return;
+            //    }
+            // Obtem Codigo do Contato associado ao Usuário Logado 
+            Connection conSolctx = DatabaseUtils.getConnection();
+            Statement stmtSolctx = conSolctx.createStatement(); 
+            String sqlSolct = "Select solct_cd, solct_cd_solic, solct_nm, solct_cd_email from Wbrl_solct where solct_ab = '"+userx+"'";
+            ResultSet rsSolct = stmtSolctx.executeQuery(sqlSolct);
+            rsSolct.next();
+            userx = rsSolct.getString("solct_cd");
+            stmtSolctx.close();
+            // Obtem Tipo do Usuário
+            userType = IIBeanUtils.getObcntpj_tp(conSolctx, pjhso_id_pjaus, userx);
+            getSession().setAttribute("userType", userType); 
+            DatabaseUtils.releaseConnection(conSolctx);
+        } catch (Exception ex) { ex.getMessage(); }
+  
+        //if (userType == null) {
+        //    xmesg_rc = 777;
+        //    mesg_var = " >> Ação não permitida para Usuário não cadastrado como parcipante do Projeto!";
+        //    valorz = null;
+        //}
+  
+        getSession().setAttribute("xpjhso_cd_de", pjhso_cd_de); 
+        getSession().setAttribute("xpjhso_cd_de_email", pjhso_cd_de_email);
+        getSession().setAttribute("xpjhso_cd_de_cont", pjhso_cd_de_cont);
+  
+        getSession().setAttribute("xpjhso_cd_para", pjhso_cd_para); 
+        getSession().setAttribute("xpjhso_cd_para_email", pjhso_cd_para_email);
+        getSession().setAttribute("xpjhso_cd_para_cont", pjhso_cd_para_cont);
+        getSession().setAttribute("xpjhso_cd_prcc", pjhso_cd_prcc);
+        getSession().setAttribute("xpjhso_cd_prcc_email", pjhso_cd_prcc_email);
+        getSession().setAttribute("xpjhso_cd_prcc_cont", pjhso_cd_prcc_cont);
+        // Return to Caller if valor is null 
+        if (valorz == null) { valorz = "";} 
+        if (valorz.length() == 0 ) {
+            if ( tranAntx != null && tranAntx.length() > 0 ) {
+                return tranAntx;
+            }
+            return tipoOabv+"psq";
+        }
+    pjhso_id_pjaus_old = pjhso_id_pjaus;
+    pjhso_sq_old = pjhso_sq;
+        String result = super.doObter(); // @getrecd
+       if (usedx != null && usedx.contains("confirmed"))  {
+           doUpdate1Chld();
+           tipo = "pjhsogpcad";
+           usedx = null; 
+       } else
+       if (usedx != null && usedx.contains("used"))  {
+           xmesg_rc = 777;
+           mesg_var = " >> NENHUM NOVO ENCAMINHAMENTO FOI FEITO OU CONFIRMADO !";
+           usedx = null; 
+       }
+        goLoadedx = true; goLoadedy = goLoadedx;
+        if (pjhso_cd_para != null && pjhso_cd_para.length() == 0
+        ) {
+           goLoadedx = false; goLoadedy = true;
+        }
+        if (pjhso_cd_para != null && pjhso_cd_para.length() == 0
+            ||	pjhso_tp_acao != null && pjhso_tp_acao.length() == 0
+            ||	pjhso_st != null && pjhso_st.length() == 0
+            ||	pjhso_ds_assunto != null && pjhso_ds_assunto.length() == 0
+            ||	pjhso_ds != null && pjhso_ds.length() == 0
+            ) {
+    	       goUpdtx = false;
+        }
+        return tipo; // @getrecd 22
+    } 
+    
+    public Object doObterBean() throws SQLException, LoginException {
+        loadBean();
+        return this;
+    }
+    
+    // Loads bean from dao, based on PK value of Object - @param (valor) from Object PK
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+    
+    // doObterRefreshGen - c Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterRefresh() throws SQLException, LoginException { // @getrecd
+       tipo ="pjhsogpcad";
+       String tipoOabv ="pjhsogp";
+       loadBean(); // @getrecd - 3
+        pjhso_id_pjaus_old = pjhso_id_pjaus;
+        pjhso_sq_old = pjhso_sq;
+       String result = super.doObter(); // @getrecd
+        return tipo; // @getrecd 66
+    } 
+    
+    
+    // d Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterNext() throws SQLException, LoginException { // @getrecd
+       tipo ="pjhsogpcad";
+       String tipoOabv ="pjhsogp";
+       loadBeanNext(); // @getrecd
+       pjhso_id_pjaus_old = pjhso_id_pjaus;
+       pjhso_sq_old = pjhso_sq;
+       String result = super.doObterNext(); // @getrecd
+        return tipo; // @getrecd 88
+    } 
+    
+    // d Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterPrev() throws SQLException, LoginException { // @getrecd
+       tipo ="pjhsogpcad";
+       String tipoOabv ="pjhsogp";
+       loadBeanPrev(); // @getrecd
+       pjhso_id_pjaus_old = pjhso_id_pjaus;
+       pjhso_sq_old = pjhso_sq;
+       String result = super.doObterPrev(); // @getrecd
+        return tipo; // @getrecd 88
+    } 
+    //  for childMainRecord
+    
+    // Getting Parent for aCamcel Child Record Clean for New Insert  
+    public String doObterParentForCancel() throws SQLException, LoginException { // @getparent 
+        String savex = pjhso_id_pjaus;
+        getSession().setAttribute("xpjhso_cd_de", null);
+        getSession().setAttribute("xpjhso_cd_de_email", null);
+        getSession().setAttribute("xpjhso_cd_de_cont", null);
+        getSession().setAttribute("xpjhso_cd_para", null);
+        getSession().setAttribute("xpjhso_cd_para_email", null);
+        getSession().setAttribute("xpjhso_cd_para_cont", null);
+        getSession().setAttribute("xpjhso_cd_prcc", null);
+        getSession().setAttribute("xpjhso_cd_prcc_email", null);
+        getSession().setAttribute("xpjhso_cd_prcc_cont", null);
+        xmesg_rc = 777;
+        mesg_var = getMessageByKey("msg_insertActionToSlectInterfaces");
+        reset(); validate(); // @getparent
+        pjhso_id_pjaus = savex;
+        fil_pjhso_id_pjaus = savex;
+        idxm = "";
+        goUpdtx = true;;
+        tipo ="pjhsogpcad";
+        String tipoOabv ="pjhsogpcad";
+        String result = super.doObter(); // @getparent 
+        xmesg_rc = 777;
+        mesg_var = getMessageByKey("msg_insertActionToSlectInterfaces");
+        goLoadedx = false;
+        goLoadedy = false;
+        if (pjhso_cd_para != null && pjhso_cd_para.length() == 0
+            ||	pjhso_tp_acao != null && pjhso_tp_acao.length() == 0
+            ||	pjhso_st != null && pjhso_st.length() == 0
+            ||	pjhso_ds_assunto != null && pjhso_ds_assunto.length() == 0
+            ||	pjhso_ds != null && pjhso_ds.length() == 0
+            ) {
+    	       goUpdtx = false;
+        }
+        setCanInserir(true);
+        return tipo; // @getrecd 00
+    } 
+    
+    // Getting Parent for aCamcel Child Record Clean for New Insert  
+    public String doObterParentForReturn() throws SQLException, LoginException { // @getparent 
+        String savex = pjhso_id_pjaus;
+        pjhso_id_pjaus = savex;
+        fil_pjhso_id_pjaus = savex;
+        idxm = "";
+        tipo ="pjhsogpcad";
+        String tipoOabv ="pjhsogpcad";
+        String result = super.doObter(); // @getparent 
+    String dexx = (String) getSession().getAttribute("xpjhso_cd_de");
+    if (dexx != null && dexx.length() > 0 ) {
+        pjhso_cd_de = (String) getSession().getAttribute("xpjhso_cd_de");
+        pjhso_cd_de_email = (String) getSession().getAttribute("xpjhso_cd_de_email");
+    }
+    pjhso_cd_para = (String) getSession().getAttribute("xpjhso_cd_para");
+    pjhso_cd_prcc = (String) getSession().getAttribute("xpjhso_cd_prcc");
+    pjhso_cd_para_email = (String) getSession().getAttribute("xpjhso_cd_para_email");
+    pjhso_cd_prcc_email = (String) getSession().getAttribute("xpjhso_cd_prcc_email");
+    pjhso_sq = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+    pjhso_sq = pjhso_sq.substring(2,pjhso_sq.length()-2); pjhso_sq = pjhso_sq.replace(".", "");
+        return tipo; // @getrecd 00
+    } 
+    public DataObject setTableAliasBean(DataObject dao) {
+        dao.setTableAlias("PJHSOGP_PJHSO");
+        return dao;
+    }
+    // loadBean Get Selection Values from Session  ------------------
+    public void loadBean() throws SQLException, LoginException {
+        String valor = "";
+        tipo = "pjhsogpcad";
+        valorz = valor;
+    //  load Record - Start;
+        valor = (String) getSession().getAttribute(tipo+"valor");
+        if (valor != null &&  valor.length() == 0) {valor = null;}
+        valorz = valor;
+        // Return to caller if key value not received  
+        if (valor == null ) {
+            return;
+        }
+    //  load Record - End;
+        getSession().setAttribute("tipo", tipo);
+        loadBean(valor);
+    } // end of loadBean
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBean(String valor) throws SQLException, LoginException {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        // Build List of Keys --------------------------------------------------------
+        String[] keys_vl = new String[3];
+        int start_ix = 0; int end_ix = 0;
+        int kkv = 1;
+        while(kkv <= 2) {
+            if (kkv == 1) {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                if (valor.length() > 1) {
+                   keys_vl[1] = valor.substring(start_ix,end_ix);
+                } else { keys_vl[1] = valor; }
+                start_ix = end_ix+1;
+            } else {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                keys_vl[kkv] = valor.substring(start_ix,end_ix);
+                start_ix = end_ix+1;
+            }
+            kkv = kkv + 1;
+        }
+        // Logic 2x - if ( ( ii.pcmd.indexOf('recdFromTabl') >= 0 || ii.daoBeanUtils.length() > 0   )  )   
+        String id1 = keys_vl[1];
+        String id2 = keys_vl[2];
+        //  next prev navigation - loadBean(valor)
+        if (idx != null && idx.length() > 0) {
+            id2 = idx;
+        }
+        int found = 0;  hasNext = true; int kkx = 0; idxmtot = 0; idxflag = true;
+        found = 0;
+        while (found == 0) {
+            if (!list_itrx.hasPrevious()) {
+            	   found = 1; continue;
+            }
+            list_itrx.previous();
+        }
+        while (list_itrx.hasNext()) {
+        	   list_itrx.next();
+            idxmtot++;
+        }
+        if ( idxmtot == 1) {idxflag = false;}
+        found = 0;
+        while (found == 0) {
+            if (!list_itrx.hasPrevious()) {
+            	   found = 1; continue;
+            }
+            list_itrx.previous();
+        }
+        found = 0;
+        while (found == 0 && list_itrx.hasNext()) {
+            Pjhso PjhsoList = ((Pjhso)list_itrx.next());
+            pjhso_sq = PjhsoList.getPjhso_sq();
+            if (id2.equals(pjhso_sq) ) {
+                found = 1;
+                if (kkx == 0) {
+                    mesg_var = getMessageByKey("firstRecord");
+                    xmesg_rc = 1;
+                }
+                if (! list_itrx.hasNext()) {
+                   mesg_var = getMessageByKey("lastRecord");
+                   xmesg_rc = 1;
+                }
+                if (!idxflag) {
+                   mesg_var = "";
+                   xmesg_rc = 0;
+                }
+            }
+            kkx = kkx + 1;
+        }
+        hasNext = list_itrx.hasNext();
+        hasPrev = list_itrx.hasPrevious();
+        if (kkx == 1 ) { hasPrev = false;}
+        idxm = Integer.toString(kkx)+"/"+Integer.toString(idxmtot);
+        // Logic 5a - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Pjhso Pjhsox = new Pjhso(id1 ,id2); // 333
+        Pjhsox.loadUfmv(this);
+        Pjhsox.setTableAlias("PJHSOGP_PJHSO");
+        Pjhsox.load(con);
+        
+        Pjhsox.saveToBean(this);
+         if (pjhso_dt_evento == null) {} else {;
+             pjhso_dt_evento_str = new SimpleDateFormat("dd/MM/yyyy").format(pjhso_dt_evento);
+         }
+         pjhso_dt_evento_sav = pjhso_dt_evento_str;
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        idx = "";
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBeanNext() throws SQLException, LoginException {
+        
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        getSession().setAttribute("tipo", tipox);
+        
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        
+        // Next Prev Mavigation - loadBeanNav - loads message in boundary record 
+        if ( xmesg_rc == 1 && idx.length() == 0) {
+        }
+        boolean ttt = list_itrx.hasNext();
+        if (!ttt) {
+            mesg_var = getMessageByKey("lastRecord");
+            xmesg_rc = 1;
+            return;
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        Pjhso PjhsoList = ((Pjhso)list_itrx.next() );
+        hasNext = list_itrx.hasNext();
+        hasPrev = true;
+        String id1 = PjhsoList.getPjhso_id_pjaus();
+        String id2 = PjhsoList.getPjhso_sq();
+        if (id2.equals(pjhso_sq) ) {
+            PjhsoList = ((Pjhso)list_itrx.next() );
+            hasNext = list_itrx.hasNext();
+            hasPrev = true;
+            id1 = PjhsoList.getPjhso_id_pjaus();
+            id2 = PjhsoList.getPjhso_sq();
+        }
+            idx = id2;
+        idxm = Integer.toString(list_itrx.nextIndex())+"/"+Integer.toString(idxmtot);
+        
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Pjhso Pjhsox = new Pjhso(id1 ,id2); // 444
+        Pjhsox.loadUfmv(this);
+        Pjhsox.setTableAlias("PJHSOGP_PJHSO");
+        Pjhsox.load(con);
+        
+         pjhso_dt_evento_sav = pjhso_dt_evento_str;
+        Pjhsox.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        // Next Prev Mavigation - loadBeanNav  - loads message after next record
+        if ( xmesg_rc == 0 && idx.length() == 0) {
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        ttt = list_itrx.hasNext();
+        if (!ttt) {
+            mesg_var = getMessageByKey("lastRecord");
+            xmesg_rc = 1;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBeanPrev() throws SQLException, LoginException {
+        
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        getSession().setAttribute("tipo", tipox);
+        
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        
+        // Next Prev Mavigation - loadBeanNav - loads message in boundary record 
+        if ( xmesg_rc == 1 && idx.length() == 0) {
+        	   list_itrx.previous(); idx = "x";
+        }
+        boolean ttt = list_itrx.hasPrevious();
+        if (!ttt) {
+            mesg_var = getMessageByKey("firstRecord");
+            xmesg_rc = 1;
+            return;
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        Pjhso PjhsoList = ((Pjhso)list_itrx.previous() );
+        hasPrev = list_itrx.hasPrevious();
+        hasNext = true;
+        String id1 = PjhsoList.getPjhso_id_pjaus();
+        String id2 = PjhsoList.getPjhso_sq();
+        if (id2.equals(pjhso_sq) ) {
+            PjhsoList = ((Pjhso)list_itrx.previous() );
+            hasPrev = list_itrx.hasPrevious();
+            hasNext = true;
+            id1 = PjhsoList.getPjhso_id_pjaus();
+            id2 = PjhsoList.getPjhso_sq();
+        }
+            idx = id2;
+        idxm = Integer.toString(list_itrx.previousIndex()+ 2)+"/"+Integer.toString(idxmtot);
+        
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Pjhso Pjhsox = new Pjhso(id1 ,id2); // 444
+        Pjhsox.loadUfmv(this);
+        Pjhsox.setTableAlias("PJHSOGP_PJHSO");
+        Pjhsox.load(con);
+        
+         pjhso_dt_evento_sav = pjhso_dt_evento_str;
+        Pjhsox.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        // Next Prev Mavigation - loadBeanNav  - loads message after next record
+        if ( xmesg_rc == 0 && idx.length() == 0) {
+        	   list_itrx.previous();
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        ttt = list_itrx.hasPrevious();
+        if (!ttt) {
+            mesg_var = getMessageByKey("firstRecord");
+            xmesg_rc = 1;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    public void loadFieldBean() {
+        pjhso_sq_dthm_vc = valPjhso_sq_dthm(pjhso_sq_dthm); 
+        pjhso_dt_eventx_vc = valPjhso_dt_eventx(pjhso_dt_eventx); 
+        pjhso_tp_cfpjtp_vc = valPjhso_tp_cfpjtp(pjhso_tp_cfpjtp); 
+        pjhso_cd_de_vc = valPjhso_cd_de(pjhso_cd_de); 
+        pjhso_tp_entidade_vc = valPjhso_tp_entidade(pjhso_tp_entidade); 
+        pjhso_cd_de_email_vc = valPjhso_cd_de_email(pjhso_cd_de_email); 
+        pjhso_cd_de_cont_vc = valPjhso_cd_de_cont(pjhso_cd_de_cont); 
+        pjhso_cd_para_vc = valPjhso_cd_para(pjhso_cd_para); 
+        pjhso_cd_prcc_vc = valPjhso_cd_prcc(pjhso_cd_prcc); 
+        pjhso_dt_evento_vc = valPjhso_dt_evento(pjhso_dt_evento); 
+        pjhso_cd_executor_vc = valPjhso_cd_executor(pjhso_cd_executor); 
+        pjhso_cd_para_email_vc = valPjhso_cd_para_email(pjhso_cd_para_email); 
+        pjhso_cd_prcc_email_vc = valPjhso_cd_prcc_email(pjhso_cd_prcc_email); 
+        pjhso_cd_para_cont_vc = valPjhso_cd_para_cont(pjhso_cd_para_cont); 
+        pjhso_cd_prcc_cont_vc = valPjhso_cd_prcc_cont(pjhso_cd_prcc_cont); 
+        pjhso_tp_acao_vc = valPjhso_tp_acao(pjhso_tp_acao); 
+        pjhso_st_vc = valPjhso_st(pjhso_st); 
+        pjhso_ds_assunto_vc = valPjhso_ds_assunto(pjhso_ds_assunto); 
+        pjhso_ds_vc = valPjhso_ds(pjhso_ds); 
+        pjhso_in_ultimo_vc = valPjhso_in_ultimo(pjhso_in_ultimo); 
+        pjhso_ds_depara_vc = valPjhso_ds_depara(pjhso_ds_depara); 
+        pjhso_ds_deparax_vc = valPjhso_ds_deparax(pjhso_ds_deparax); 
+        pjhso_st_sum_vc = valPjhso_st_sum(pjhso_st_sum); 
+    } // end of loadFieldBean
+     
+    public String selMaxVc(String divn) {
+        String vc = "0"; String vc5 = "0"; 
+        Integer divni = Integer.parseInt(divn);
+            vc = pjhso_sq_dthm_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_dt_eventx_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_tp_cfpjtp_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_de_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_tp_entidade_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_de_email_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_de_cont_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_para_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_prcc_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_dt_evento_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_executor_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_para_email_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_prcc_email_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_para_cont_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_cd_prcc_cont_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_tp_acao_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_st_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_ds_assunto_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_ds_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_in_ultimo_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_ds_depara_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_ds_deparax_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = pjhso_st_sum_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        if (vc5.equals("5")) {vc = "5";}
+        return vc;
+    } 
+    
+    protected void mountFilter() {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (fil_pjhso_id_pjaus == null) { fil_pjhso_id_pjaus = "";}
+        if (fil_pjhso_id_pjaus != null) {
+            fil_pjhso_id_pjaus = removeAccents(fil_pjhso_id_pjaus);
+        }
+        if (fil_pjhso_cd_de == null) { fil_pjhso_cd_de = "";}
+        if (fil_pjhso_cd_de != null) {
+            fil_pjhso_cd_de = removeAccents(fil_pjhso_cd_de);
+        }
+        if (fil_pjhso_tp_entidade == null) { fil_pjhso_tp_entidade = "";}
+        if (fil_pjhso_cd_para == null) { fil_pjhso_cd_para = "";}
+        if (fil_pjhso_cd_para != null) {
+            fil_pjhso_cd_para = removeAccents(fil_pjhso_cd_para);
+        }
+        if (fil_pjhso_cd_prcc == null) { fil_pjhso_cd_prcc = "";}
+        if (fil_pjhso_cd_prcc != null) {
+            fil_pjhso_cd_prcc = removeAccents(fil_pjhso_cd_prcc);
+        }
+        if (fil_pjhso_tp_acao == null) { fil_pjhso_tp_acao = "";}
+        if (fil_pjhso_tp_acao != null) {
+            fil_pjhso_tp_acao = removeAccents(fil_pjhso_tp_acao);
+        }
+        if (fil_pjhso_st == null) { fil_pjhso_st = "";}
+        if (fil_pjhso_st != null) {
+            fil_pjhso_st = removeAccents(fil_pjhso_st);
+        }
+        if (fil_pjhso_ds_assunto == null) { fil_pjhso_ds_assunto = "";}
+        if (fil_pjhso_ds_assunto != null) {
+            fil_pjhso_ds_assunto = removeAccents(fil_pjhso_ds_assunto);
+        }
+        if (fil_pjhso_ds_depara == null) { fil_pjhso_ds_depara = "";}
+        if (fil_pjhso_ds_depara != null) {
+            fil_pjhso_ds_depara = removeAccents(fil_pjhso_ds_depara);
+        }
+        if (fil_pjhso_ds_deparax == null) { fil_pjhso_ds_deparax = "";}
+        if (fil_pjhso_ds_deparax != null) {
+            fil_pjhso_ds_deparax = removeAccents(fil_pjhso_ds_deparax);
+        }
+        if (fil_pjhso_st_sum == null) { fil_pjhso_st_sum = "";}
+        if (fil_pjhso_st_sum != null) {
+            fil_pjhso_st_sum = removeAccents(fil_pjhso_st_sum);
+        }
+        String campo1 = null;
+        campo1 = (String) getSession().getAttribute("campo1");
+        valorz =  campo1; 
+        if (valorz == null) { return; }
+        if (campo1 != null) {
+            if (!campo1.equals("")) {
+                fil_pjhso_id_pjaus = campo1;
+                pjhso_id_pjaus = campo1;
+           }
+        }
+        //<!-- Mount Filter   -->
+        try {
+            //this.user_cd = "karina"; //"stella";
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            String userx = this.user_cd.toUpperCase();  String tpx = "";
+  
+            // ----------  Captura Dados das Áreas de Contato do Projeto
+            Connection conObcntpjx = DatabaseUtils.getConnection();
+            Statement stmtx = conObcntpjx.createStatement(); 
+            String sqlSolct = "Select solct_cd, solct_cd_solic, solct_nm, solct_cd_email from Wbrl_solct where solct_ab = '"+userx+"'";
+            ResultSet rsSolct = stmtx.executeQuery(sqlSolct);
+  
+            String areax = "";
+            String solct_cd = "";
+            if (!rsSolct.next()) {
+                xmesg_rc = 777;
+                mesg_var = " >> Usuário não cadastrado no Sistema!";
+                fil_pjhso_ds_depara = "1634423311";
+                fil_pjhso_st_sum = "ZZZ";
+                //return;
+            } else {
+                areax = rsSolct.getString("solct_cd_solic");
+                areax = areax.trim();
+                solct_cd = rsSolct.getString("solct_cd_solic");
+                user_cd = rsSolct.getString("solct_cd");
+                userType = IIBeanUtils.getObcntpj_tp(conObcntpjx, pjhso_id_pjaus, user_cd);
+                getSession().setAttribute("userType", userType); 
+                if (areax == null) { 
+                    fil_pjhso_ds_depara = "1634423311"; 
+                } else {
+                    fil_pjhso_ds_depara = areax;
+                }
+            }
+  
+  	  } catch (Exception ex) {
+            ex.getMessage();
+  	  }
+        addFieldToFilterPk(Pjhso.PJHSO_ID_PJAUS, fil_pjhso_id_pjaus);
+        addFieldToFilter(Pjhso.PJHSO_CD_DE, fil_pjhso_cd_de);
+        addFieldToFilter(Pjhso.PJHSO_TP_ENTIDADE, fil_pjhso_tp_entidade);
+        addFieldToFilter(Pjhso.PJHSO_CD_PARA, fil_pjhso_cd_para);
+        addFieldToFilter(Pjhso.PJHSO_CD_PRCC, fil_pjhso_cd_prcc);
+        addFieldToFilterPk(Pjhso.PJHSO_TP_ACAO, fil_pjhso_tp_acao);
+        addFieldToFilterPk(Pjhso.PJHSO_ST, fil_pjhso_st);
+        addFieldToFilter(Pjhso.PJHSO_DS_ASSUNTO, fil_pjhso_ds_assunto);
+        addFieldToFilter(Pjhso.PJHSO_DS_DEPARA, fil_pjhso_ds_depara);
+        addFieldToFilter(Pjhso.PJHSO_DS_DEPARAX, fil_pjhso_ds_deparax);
+        addFieldToFilter(Pjhso.PJHSO_ST_SUM, fil_pjhso_st_sum);
+    } // end of mountFilter
+    
+    // doOrd_pjhso_sq--------------------------------------------------------
+    public String doOrd_pjhso_sq() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + Pjhso.TABS_VC + ")", !ord_pjhso_sq);
+        ord_pjhso_sq = !ord_pjhso_sq;
+        return super.doSelecionar();
+    }
+    
+    public String doRetornaPesquisa() {
+        getSession().setAttribute("novainclusao", false);
+        return super.tipo;
+    }
+    public boolean isCanMenu() throws SQLException, LoginException {
+        tipo1 = "*pjhsogp";
+        return super.isCanPesquisar();
+    }
+    
+    // getAssistnovo------------------------------------------------
+    // Verifies whether record selection button is to be rendered right after record insertion
+    public Boolean getAssistnovo() {
+        assistnovo = false;
+        Boolean bb = (Boolean) (getSession().getAttribute(super.tipo));
+        Boolean an = (Boolean) (getSession().getAttribute("novainclusao"));
+        if (bb == null) {bb = false;}
+        if (an == null) {an = false;}
+        if (bb == true && an == true) {assistnovo = true;}
+        return assistnovo;
+    }
+    
+    public String doReturn() throws SQLException, LoginException {
+            tbakcad = tbakloc;
+            return super.doReturn();
+    }
+     
+    public String doSelecionar() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "pjhsogppsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        getSession().setAttribute("tbaklocx", tbakloc);
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (fil_pjhso_id_pjaus != null && fil_pjhso_id_pjaus.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_de != null && fil_pjhso_cd_de.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_entidade != null && fil_pjhso_tp_entidade.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_para != null && fil_pjhso_cd_para.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_prcc != null && fil_pjhso_cd_prcc.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_acao != null && fil_pjhso_tp_acao.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st != null && fil_pjhso_st.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_assunto != null && fil_pjhso_ds_assunto.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_depara != null && fil_pjhso_ds_depara.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_deparax != null && fil_pjhso_ds_deparax.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st_sum != null && fil_pjhso_st_sum.length()> 0) {filterx = 1;}
+        ret = super.doSelecionar();
+        if (fil_pjhso_id_pjaus == null ) {fil_pjhso_id_pjaus = "";}
+        if (fil_pjhso_id_pjaus.length() == 0 ) {return tbakloc;}
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "pjhsogppsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarOnly() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "pjhsogppsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        getSession().setAttribute("tbaklocx", tbakloc);
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (fil_pjhso_id_pjaus != null && fil_pjhso_id_pjaus.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_de != null && fil_pjhso_cd_de.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_entidade != null && fil_pjhso_tp_entidade.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_para != null && fil_pjhso_cd_para.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_prcc != null && fil_pjhso_cd_prcc.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_acao != null && fil_pjhso_tp_acao.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st != null && fil_pjhso_st.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_assunto != null && fil_pjhso_ds_assunto.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_depara != null && fil_pjhso_ds_depara.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_deparax != null && fil_pjhso_ds_deparax.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st_sum != null && fil_pjhso_st_sum.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarOnly();
+        }
+        if (fil_pjhso_id_pjaus == null ) {fil_pjhso_id_pjaus = "";}
+        if (fil_pjhso_id_pjaus.length() == 0 ) {return tbakloc;}
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "pjhsogppsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarBackx() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "pjhsogppsq");
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (fil_pjhso_id_pjaus != null && fil_pjhso_id_pjaus.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_de != null && fil_pjhso_cd_de.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_entidade != null && fil_pjhso_tp_entidade.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_para != null && fil_pjhso_cd_para.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_prcc != null && fil_pjhso_cd_prcc.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_acao != null && fil_pjhso_tp_acao.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st != null && fil_pjhso_st.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_assunto != null && fil_pjhso_ds_assunto.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_depara != null && fil_pjhso_ds_depara.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_deparax != null && fil_pjhso_ds_deparax.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st_sum != null && fil_pjhso_st_sum.length()> 0) {filterx = 1;}
+        ret = super.doSelecionar();
+        if (fil_pjhso_id_pjaus == null ) {fil_pjhso_id_pjaus = "";}
+        if (fil_pjhso_id_pjaus.length() == 0 ) {return tbakloc;}
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "pjhsogppsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarNull() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "pjhsogppsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        getSession().setAttribute("tbaklocx", tbakloc);
+        pageLength = 999;
+        tipo = "pjhsogppsqxxx";
+        String ret = "";
+        int filterx = 0;
+        if (fil_pjhso_id_pjaus != null && fil_pjhso_id_pjaus.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_de != null && fil_pjhso_cd_de.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_entidade != null && fil_pjhso_tp_entidade.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_para != null && fil_pjhso_cd_para.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_prcc != null && fil_pjhso_cd_prcc.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_acao != null && fil_pjhso_tp_acao.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st != null && fil_pjhso_st.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_assunto != null && fil_pjhso_ds_assunto.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_depara != null && fil_pjhso_ds_depara.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_deparax != null && fil_pjhso_ds_deparax.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st_sum != null && fil_pjhso_st_sum.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNull();
+        }
+        if (fil_pjhso_id_pjaus == null ) {fil_pjhso_id_pjaus = "";}
+        if (fil_pjhso_id_pjaus.length() == 0 ) {return tbakloc;}
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "pjhsogppsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarXlsExport_xls_stb() throws LoginException, SQLException { // @search bbb
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "pjhsogppsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        getSession().setAttribute("tbaklocx", tbakloc);
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (fil_pjhso_id_pjaus != null && fil_pjhso_id_pjaus.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_de != null && fil_pjhso_cd_de.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_entidade != null && fil_pjhso_tp_entidade.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_para != null && fil_pjhso_cd_para.length()> 0) {filterx = 1;}
+        if (fil_pjhso_cd_prcc != null && fil_pjhso_cd_prcc.length()> 0) {filterx = 1;}
+        if (fil_pjhso_tp_acao != null && fil_pjhso_tp_acao.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st != null && fil_pjhso_st.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_assunto != null && fil_pjhso_ds_assunto.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_depara != null && fil_pjhso_ds_depara.length()> 0) {filterx = 1;}
+        if (fil_pjhso_ds_deparax != null && fil_pjhso_ds_deparax.length()> 0) {filterx = 1;}
+        if (fil_pjhso_st_sum != null && fil_pjhso_st_sum.length()> 0) {filterx = 1;}
+        // 140810 String ret = super.doSelecionar("");
+        ret = super.doSelecionarExp("");
+        if (fil_pjhso_id_pjaus == null ) {fil_pjhso_id_pjaus = "";}
+        if (fil_pjhso_id_pjaus.length() == 0 ) {return tbakloc;}
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "pjhsogppsq"; // updbutton != 1c - end
+    }
+    
+    // Execute Caller a ---------------------------------------------
+    public String pjhso_reply() throws SQLException, LoginException {
+        Connection con = DatabaseUtils.getConnection();
+        xbutn_id = "1";
+        pjhso_reply_exe(con, true);
+        DatabaseUtils.releaseConnection(con);
+        return "success";
+    }
+    public void pjhso_reply_exe(Connection con, Boolean flag) throws SQLException {
+        try{
+        // ----------  Repply
+        String userx = ""; String tpx = ""; String pjhso_sq_sav = "";
+        Connection conSolctx = DatabaseUtils.getConnection();
+        try {
+            cancel_partial = true;
+            //reset(); validate();
+            setCanInserir(true);
+            pjhso_sq_sav = pjhso_sq;
+  
+            pjhso_sq = getDateTimeSq();
+            pjhso_sq_dthm = pjhso_sq.substring(0,pjhso_sq.length()-2);;
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            userx = this.user_cd.toUpperCase(); 
+            Statement stmtSolctx = conSolctx.createStatement(); 
+            String sqlSolct = "Select solct_cd, solct_cd_solic, solct_nm, solct_cd_email from Wbrl_solct where solct_ab = '"+userx+"'";
+            ResultSet rsSolct = stmtSolctx.executeQuery(sqlSolct);
+            rsSolct.next();
+            userx = rsSolct.getString("solct_cd");
+            stmtSolctx.close();
+            tpx = IIBeanUtils.getObcntpj_tp(conSolctx, pjhso_id_pjaus, userx);
+  
+            String userxx = userx;
+            userxx = userxx.replace("-",">");
+            String pjhso_cd_parax = pjhso_cd_para.replace(userx,userxx);
+     
+            String paraxx = "";  paraxx = pjhso_cd_para; 
+            String prccxx = "";  prccxx = pjhso_cd_prcc;
+   
+            if (tpx.contains("1")) {
+                if (pjhso_cd_de.contains(userx)) { // Se usuário não for Gestor e for "Para"
+                    xmesg_rc = 777;
+                    mesg_var = " >> Você já é o Remetente. Encaminhe ou crie uma nova Ação! ";
+                    return;
+                }
+                if ( paraxx.indexOf(userx) >= 0   || pjhso_cd_prcc.indexOf(userx) >= 0 ) {} else {   
+                    xmesg_rc = 777;
+                    mesg_var = " >> Você não é um dos Destinatários. Encaminhe ou crie uma nova Ação! ";
+                    return;  
+                } 
+            } else {
+                if (pjhso_cd_de.contains(userx)) { // Se usuário não for Gestor e for "Para"
+                    xmesg_rc = 777;
+                    mesg_var = getMessageByKey("msg_loggedUserIsTheOriginAlready");
+                    return;
+                }
+                //String userxxxx = userx.replace("-",">");
+                //if ( paraxx.indexOf(userxxxx) >= 0  ) {   
+                //    xmesg_rc = 777;
+                //    mesg_var = " >> Você já respondeu à esta Ação ! ";
+                //    return;  
+                //} 
+                if ( paraxx.indexOf(userx) >= 0   || pjhso_cd_prcc.indexOf(userx) >= 0 ) {} else {   
+                    xmesg_rc = 777;
+                    mesg_var = " >> Você necessita ser um dos Destinatários para responder a esta Ação ! ";
+                    return;  
+                } 
+                 
+  		  }
+            int flagx = 0;
+            if ( paraxx.indexOf(userx) < 0 && paraxx.indexOf(",") > 0 && paraxx.indexOf(">") < 0) {   // Se o "Para" Tiver vários e nenhuma seleção
+                flagx = 1;
+            } 
+            if ( prccxx.indexOf(userx) < 0 && prccxx.indexOf(",") > 0 && prccxx.indexOf(">") < 0) {   // Se o "Para" Tiver vários e nenhuma seleção
+                flagx = flagx + 1;
+            } 
+            if ( flagx == 2 ) {  
+                xmesg_rc = 777;
+                mesg_var = " >> Selecione um Novo Remetente clicando sobre o campo 'Para' ou ' Com Cópia', verificando a marca '>' ";
+                return;  
+            } 
+  
+            pjhso_cd_para = pjhso_cd_de; // Move o "De" para o "Para"
+            pjhso_cd_executor = userx;
+  
+            if (paraxx.indexOf(userx) >= 0) {   // Se o Contiver o Usuario Logado
+                pjhso_cd_de = userx;          // Força o "De" com Usuário Corrente 
+                paraxx = paraxx.replace(userx+", ",""); // Remove Usuário Corrente do "Para" com vários  
+                paraxx = paraxx.replace(", "+userx,""); // Remove Usuário se Ultimo  
+                paraxx = paraxx.replace(userx,"");  // Remove Usuário Corrente do Para" com apenas 1
+                pjhso_cd_prcc = pjhso_cd_prcc + paraxx; 
+            } else        
+            if (paraxx.indexOf(">") >= 0) {   // Se o "Para" Tiver vários
+                int posini = paraxx.indexOf(">");
+                int posfim = paraxx.indexOf(",",posini+1);
+                if (posfim < 0) {posfim = paraxx.length(); }  
+                String paraxx1 = paraxx.substring(posini,posfim);  
+                paraxx1 = paraxx1.replace(">","");
+                pjhso_cd_de = paraxx1;                  // Usa o primeiro como "De";
+                paraxx = paraxx.replace(", "+">"+paraxx1," "); // Remove Usuário do Meio ou Yltimo 
+                paraxx = paraxx.replace(">"+paraxx1+", "," "); // Remove Usuário Primeiro  
+                pjhso_cd_prcc = pjhso_cd_prcc.trim(); if (pjhso_cd_prcc.length() > 0) { pjhso_cd_prcc = pjhso_cd_prcc+",";}
+                pjhso_cd_prcc = pjhso_cd_prcc + paraxx; // Move os outros para o "Cc"
+            } else
+            if (prccxx.indexOf(userx) >= 0) {   // Se o Contiver o Usuario Logado
+                pjhso_cd_de = userx;          // Força o "De" com Usuário Corrente 
+                prccxx = prccxx.replace(userx+", ",""); // Remove Usuário Corrente do "Para" com vários  
+                prccxx = prccxx.replace(", "+userx,""); // Remove Usuário se Ultimo  
+                prccxx = prccxx.replace(userx,"");  // Remove Usuário Corrente do Para" com apenas 1
+                prccxx = prccxx.trim();
+                if (pjhso_cd_prcc.length() > 0) {
+                    pjhso_cd_prcc = pjhso_cd_prcc + ", " + paraxx;
+                } else {
+                    pjhso_cd_prcc = paraxx;
+                }			
+                //pjhso_cd_prcc = prccxx; 
+            } else        
+            if (prccxx.indexOf(">") >= 0) {   // Se o "Para" Tiver vários
+                int posini = prccxx.indexOf(">");
+                int posfim = prccxx.indexOf(",",posini+1);
+                if (posfim < 0) {posfim = prccxx.length(); }  
+                String prccxx1 = prccxx.substring(posini,posfim);  
+                prccxx1 = prccxx1.replace(">","");
+                pjhso_cd_de = prccxx1;                  // Usa o primeiro como "De";
+                prccxx = prccxx.replace(", "+">"+prccxx1," "); // Remove Usuário do Meio ou Yltimo 
+                prccxx = prccxx.replace(">"+prccxx1+", "," "); // Remove Usuário Primeiro  
+                prccxx = prccxx.trim();
+                pjhso_cd_prcc = prccxx; 
+                if (pjhso_cd_prcc.length() > 0) {
+                    pjhso_cd_prcc = pjhso_cd_prcc + ", " + paraxx;
+                } else {
+                    pjhso_cd_prcc = paraxx;
+                }			
+            } else {
+                pjhso_cd_de = paraxx;
+            }
+  
+            getSession().setAttribute("xpjhso_cd_de", pjhso_cd_de); 
+            getSession().setAttribute("xpjhso_cd_para", pjhso_cd_para); 
+            getSession().setAttribute("xpjhso_cd_prcc", pjhso_cd_prcc);
+            pjhso_in_ultimo = "";
+            pjhso_dt_evento = new Date();
+            pjhso_dt_evento_str = new SimpleDateFormat("dd/MM/yyyy").format(pjhso_dt_evento);
+            pjhso_dt_evento_sav = pjhso_dt_evento_str; 
+            goUpdtx = false;
+            
+            getSession().setAttribute("pjhso_cd_parax", pjhso_cd_parax); 
+            getSession().setAttribute("pjhso_id_pjaus", pjhso_id_pjaus); 
+            getSession().setAttribute("pjhso_sq_sav", pjhso_sq_sav); 
+  
+        } catch (Exception ex) { 
+            ex.getMessage();
+        }
+        DatabaseUtils.releaseConnection(conSolctx);
+        xmesg_rc = 777;
+        mesg_var = getMessageByKey("msg_completeDetailsAndIncludeAction");
+        } catch (Exception e) {
+             System.out.println(e.toString());
+        }
+    }
+    
+    // Execute Caller a ---------------------------------------------
+    public String pjhso_forward() throws SQLException, LoginException {
+        Connection con = DatabaseUtils.getConnection();
+        xbutn_id = "1";
+        pjhso_forward_exe(con, true);
+        DatabaseUtils.releaseConnection(con);
+        return "success";
+    }
+    public void pjhso_forward_exe(Connection con, Boolean flag) throws SQLException {
+        try{
+  	  // ----------  Forward
+        //System.out.println("Pjhsogpt_cancelPartial");
+        pjhso_sq = getDateTimeSq();
+        pjhso_sq_dthm = pjhso_sq.substring(0,pjhso_sq.length()-2);;
+  	  cancel_partial = true;
+        //reset(); validate();
+        setCanInserir(true);
+        String userx = "";  String tpx = "";
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            userx = this.user_cd.toUpperCase(); 
+            Connection conSolctx = DatabaseUtils.getConnection();
+            Statement stmtSolctx = conSolctx.createStatement(); 
+            String sqlSolct = "Select solct_cd, solct_cd_solic, solct_nm, solct_cd_email from Wbrl_solct where solct_ab = '"+userx+"'";
+            ResultSet rsSolct = stmtSolctx.executeQuery(sqlSolct);
+            rsSolct.next();
+            userx = rsSolct.getString("solct_cd");
+            stmtSolctx.close();
+            tpx = IIBeanUtils.getObcntpj_tp(conSolctx, pjhso_id_pjaus, userx);
+            DatabaseUtils.releaseConnection(conSolctx);
+        } catch (Exception ex) { ex.getMessage(); }
+  
+        //if (tpx == null) {
+        //    xmesg_rc = 777;
+        //    mesg_var = " >> Ação não permitida para Usuário não cadastrado como parcipante do Projeto!";
+        //    return;
+        //}
+  	  
+        //if (! pjhso_cd_de.contains(userx)) {
+            //String paraxx = pjhso_cd_para;
+  
+            if (pjhso_cd_para.contains(userx)) {
+                pjhso_cd_para = pjhso_cd_para.replace(userx+", ",""); // Remove Usuário do Primeiro ou do Meio  
+                pjhso_cd_para = pjhso_cd_para.replace(", "+userx,""); // Remove Usuário se Ultimo  
+                pjhso_cd_para = pjhso_cd_para.replace(userx,"");  // Remove Usuário Corrente do Para" com apenas 1
+            } 
+            if (pjhso_cd_de.contains(userx)) {} else {
+                pjhso_cd_para = pjhso_cd_para +", "+ pjhso_cd_de;
+            }
+            pjhso_cd_de = userx;
+  		  
+            //pjhso_cd_para = userx;
+            //pjhso_cd_prcc = ""; 
+            //pjhso_in_ultimo = "";
+            getSession().setAttribute("xpjhso_cd_de", pjhso_cd_de); 
+            getSession().setAttribute("xpjhso_cd_para", pjhso_cd_para); 
+            getSession().setAttribute("xpjhso_cd_prcc", pjhso_cd_prcc);
+        //} else {
+        //    xmesg_rc = 777;
+        //    mesg_var = getMessageByKey("msg_loggedUserIsTheOriginAlready");
+        //}
+        pjhso_in_ultimo = "";
+        pjhso_dt_evento = new Date();
+        pjhso_dt_evento_str = new SimpleDateFormat("dd/MM/yyyy").format(pjhso_dt_evento);
+        pjhso_dt_evento_sav = pjhso_dt_evento_str; 
+        goUpdtx = false;
+        getSession().setAttribute("xpjhsofrwd","used");
+        xmesg_rc = 777;
+        //mesg_var = getMessageByKey("msg_selectInterfacesCompleteDetailsAndIncludeAction");
+        mesg_var = " >> Utilize este encaminhamento,   Revise-o através do Botão de Interfaces ou   Crie uma Nova Ação!";
+  
+  
+  	  
+        } catch (Exception e) {
+             System.out.println(e.toString());
+        }
+    }
+    
+    // Execute Caller b ---------------------------------------------
+    public String pjhso_cd_executor_iniv() throws SQLException, LoginException {
+        Connection con = DatabaseUtils.getConnection();
+        pjhso_cd_executor_iniv_exe(con, true);
+        DatabaseUtils.releaseConnection(con);
+        return "pjhsogpcad";
+    }
+    public void pjhso_cd_executor_iniv_exe(Connection con, Boolean flag) throws SQLException {
+        try{
+        // External Source Code -----------------
+        Statement stmtx = con.createStatement(); 
+        this.user_cd = getLoginInfo().getUserx_id_login();
+        String userx = this.user_cd.toUpperCase(); 
+        String sqlCont = "Select solct_cd, solct_ab, solct_cd_email from Wbrl_solct where solct_ab = '"+userx+"' ";
+        //System.out.println("Select Wbrl_solct : "+sqlCont);
+        ResultSet rsCont = stmtx.executeQuery(sqlCont);
+        rsCont.next();
+        pjhso_cd_executor = rsCont.getString("solct_cd");
+        System.out.println("pjhso_cd_executor : "+pjhso_cd_executor);
+        
+        } catch (Exception e) {///////////////
+             System.out.println(e.toString());
+        }
+    }
+    
+    // Execute Caller b ---------------------------------------------
+    public String pjhso_in_ultimo_iniv() throws SQLException, LoginException {
+        Connection con = DatabaseUtils.getConnection();
+        pjhso_in_ultimo_iniv_exe(con, true);
+        DatabaseUtils.releaseConnection(con);
+        return "pjhsogpcad";
+    }
+    public void pjhso_in_ultimo_iniv_exe(Connection con, Boolean flag) throws SQLException {
+        try{
+        // External Source Code -----------------
+        // pjhso_cd_de = getLoginInfo().getUserx_id_login();
+        // ----------  Captura e Insere Área Gestora de Solicitações de Obra (Própria / Terceiros)
+  
+        Statement stmtx = con.createStatement(); 
+        this.user_cd = getLoginInfo().getUserx_id_login();
+        String userx = this.user_cd.toUpperCase(); 
+        String sqlCont = "Select solct_cd, solct_ab, solct_cd_email from Wbrl_solct where solct_ab = '"+userx+"' ";
+        System.out.println("Select Wbrl_solct : "+sqlCont);
+        ResultSet rsCont = stmtx.executeQuery(sqlCont);
+        rsCont.next();
+        pjhso_cd_de = rsCont.getString("solct_cd");
+        pjhso_cd_de_email = rsCont.getString("solct_cd_email");
+        pjhso_sq = getDateTimeSq();
+        pjhso_sq_dthm = pjhso_sq.substring(0,pjhso_sq.length()-2);
+  	  pjhso_in_ultimo = "";
+  	  goUpdtx = false;
+  
+        } catch (Exception e) {///////////////
+             System.out.println(e.toString());
+        }
+    }
+    
+    protected void reloadPesqData(Connection con) throws SQLException, LoginException { // 1 
+        loadDesc(); boolean res = true;
+        super.reloadPesqData(con);
+        // next / prev navigation
+        list_itrx = pesqData.listIterator();
+        int idxmtot = 0;  String processx = ""; String executor = "";;
+        String entity = ""; String status = "";
+        String notified = ""; String parax = ""; String subjectx = "";
+        String dex = ""; String prccx = "";
+        while (list_itrx.hasNext()) {
+           list_itrx.next();
+           entity = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_tp_entidade");
+           processx = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_id_pjaus");
+           executor = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_cd_executor");
+           notified = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_in_ultimo");
+           dex      = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_cd_de");
+           parax    = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_cd_para");
+           prccx    = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_cd_prcc");
+           subjectx = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_ds_assunto");
+           status   = (String) ((Pjhso) pesqData.get(idxmtot)).getValue("pjhso_st");
+           if (executor.contains("GSOP -ANA")) {
+              executor = "GSOP-ANA";
+           }
+           if (dex.contains("GSOP -ANA")) {
+              dex = dex.replace("GSOP -ANA","GSOP-ANA" );
+           }
+           if (parax.contains("GSOP -ANA")) {
+              parax = parax.replace("GSOP -ANA","GSOP-ANA" );
+           }
+           String descx = IIBeanUtils.getPjaus_desc(con, processx);
+           if ( descx == null) {
+              list_itrx.remove(); continue;
+           }
+           String executor_solic = executor.substring(0,executor.lastIndexOf("-"));
+           String user_cd_solic =  ""; 
+           if (this.user_cd.indexOf("-") < 0) {
+               this.user_cd = getLoginInfo().getUserx_id_login();
+               String userx = this.user_cd.toUpperCase();
+               user_cd_solic = IIBeanUtils.getSolct_solic(con, userx);
+           } else {
+               user_cd_solic = user_cd.substring(0,this.user_cd.lastIndexOf("-"));
+           }
+           //if (!executor.contains(user_cd) && notified.indexOf("E") < 0 ) {
+           if (!executor_solic.contains(user_cd_solic) && notified.indexOf("E") < 0 ) {
+              list_itrx.remove(); continue;
+           }
+           if ( userType != null && userType.contains("1") ) {
+           } else { list_itrx.remove(); continue;}
+           String user_cd_high = "<mark>" + user_cd + "</mark>";
+           String user_cd_repplied = user_cd.replace("-", ">");
+           String user_cd_repplied_high = "<mark>" + user_cd.replace("-", ">") + "</mark>";
+           if ( dex != null &&  dex.contains(user_cd)) {
+               String dez = dex.replace(user_cd, user_cd_high);
+              ((Pjhso) pesqData.get(idxmtot)).setValue("pjhso_cd_de", dez);
+           }
+           if ( parax != null && parax.contains(user_cd)  ) {
+               String paraz = parax.replace(user_cd, user_cd_high);
+               ((Pjhso) pesqData.get(idxmtot)).setValue("pjhso_cd_para", paraz);
+           }
+           if ( parax != null && parax.contains(user_cd_repplied)  ) {
+               String paraz = parax.replace(user_cd_repplied, user_cd_repplied_high);
+               ((Pjhso) pesqData.get(idxmtot)).setValue("pjhso_cd_para", paraz);
+           }
+           if ( prccx != null && prccx.contains(user_cd)  ) {
+               String prccz = prccx.replace(user_cd, user_cd_high);
+               ((Pjhso) pesqData.get(idxmtot)).setValue("pjhso_cd_prcc", prccz);
+           }
+           // Entity Highlight
+           if (entity != null && entity.contains("Solicitante") ) {
+               entity = "<span style='background-color: #33D685'>"+entity+"</span>";
+           }
+           if (entity != null && entity.contains("MRS") ) {
+               entity = "<span style='background-color: #F08080'>"+entity+"</span>";
+           }
+           if (entity != null && entity.contains("ANTT") ) {
+               entity = "<span style='background-color: #1E90ff'>"+entity+"</span>";
+           }
+           ((Pjhso) pesqData.get(idxmtot)).setValue("pjhso_tp_entidade", entity);
+           // Status Highlight
+           if (status != null && status.contains("ASA") ) {
+               status = "<span style='background-color: #F08080'>"+status+"</span>";
+           }
+           ((Pjhso) pesqData.get(idxmtot)).setValue("pjhso_st", status);
+           // Logged User Participation HighLight 
+           if ( parax.contains(user_cd) && subjectx.indexOf("repply") < 0 ) {
+               ((Pjhso) pesqData.get(idxmtot)).setValue("tabs_vc", "9");
+           }
+           idxmtot++;
+        }
+        if (pesqData.size() == maxResults) {
+            mesg_var = getMessageByKey("maxResultsExceeded");
+        }
+    } // tttt
+    public String sendEmail() throws Exception {
+        String from; String to; String subject; String email_ln;
+        // ----------  prepareEmail Start Internal Source 
+        String result;
+        //if (pjhso_in_ultimo != null &&  pjhso_in_ultimo.length() > 0 ) {
+        //    xmesg_rc = 777;
+        //    mesg_var = getMessageByKey("recordNotModifiable");
+        //    return "success";
+        //}
+
+        StringBuilder email_lnx = new StringBuilder();
+        Connection conxx = DatabaseUtils.getConnection();
+		//String fromxx = pjhso_cd_de_cont;  String orgx = "";
+        String fromxx = IIBeanUtils.getSolct_cols(conxx, pjhso_cd_de);
+		String fromName = fromxx.substring(fromxx.indexOf("<nm>")+4, fromxx.indexOf("</nm>"));
+		String orgx = fromxx.substring(fromxx.indexOf("<og>")+4, fromxx.indexOf("</og>"));
+		String fromOrg = IIBeanUtils.getSolic_desc(conxx, orgx);
+		String fromEml = fromxx.substring(fromxx.indexOf("<em>")+4, fromxx.indexOf("</em>"));
+		String fromTel = fromxx.substring(fromxx.indexOf("<tl>")+4, fromxx.indexOf("</tl>"));
+		String fromCel = fromxx.substring(fromxx.indexOf("<cl>")+4, fromxx.indexOf("</cl>"));
+        //from = pjhso_cd_de_email.replace(",","");
+        from = fromEml;
+
+		//pjhso_in_ultimo = "E";
+
+        xmesg_rc = 777;
+        mesg_var = getMessageByKey("msg_notificationSentByEmail");
+
+        try {
+	        Connection conPjhso = DatabaseUtils.getConnection();
+            Statement stmtPjhso = conPjhso.createStatement();
+            String sqlPjhso = "Update Pjhso set pjhso_in_ultimo = 'E', tabs_vc = '0'  where pjhso_id_pjaus = '"+pjhso_id_pjaus+"'  and pjhso_sq = '"+pjhso_sq+"' ";
+            stmtPjhso.execute(sqlPjhso);
+            stmtPjhso.close();
+            DatabaseUtils.releaseConnection(conPjhso);
+        } catch (Exception ex) { ex.getMessage(); }
+        // ----------  prepareEmail External Source End
+        goUpdtx = true;
+        if ( fromEml.indexOf("@") < 0) {
+            if(tranx.equals("pjhsogp"))  { return "pjhsogpcad";}
+            if(tranx.equals("pjhsogpx")) { return "pjhsogpxcad";}
+        }
+        ArrayList<String> PjhsoParaEmailList = new ArrayList<String>() ;   // expo options list ex: GIGFER-C-O
+        ArrayList<String> PjhsoPrccEmailList = new ArrayList<String>() ;   // expo options list ex: GIGFER-C-O
+
+        String toxx = ""; String toName = ""; String toOrg = ""; String toEml = ""; String toTel = ""; String toCel = "";
+        String toNames = ""; String toEmails = ""; String toid = ""; orgx = ""; String comma = "";
+        ArrayList<String> items = new  ArrayList<String>(Arrays.asList(pjhso_cd_para.split(",")));
+        for(int i=0;i<items.size();i++)  {
+            System.out.println(" -->"+items.get(i));
+            toid = items.get(i).trim();
+            if (i > 0) { comma = ", ";}
+            toxx = IIBeanUtils.getSolct_cols(conxx, toid);
+		    toName = toxx.substring(toxx.indexOf("<nm>")+4, toxx.indexOf("</nm>"));
+		    orgx = toxx.substring(toxx.indexOf("<og>")+4, toxx.indexOf("</og>"));
+			toOrg = IIBeanUtils.getSolic_desc(conxx, orgx);
+		    toEml = toxx.substring(toxx.indexOf("<em>")+4, toxx.indexOf("</em>"));
+		    PjhsoParaEmailList.add(toEml);
+		    PjhsoParaEmailList.add(toid+"<"+toEml+">");
+		    toTel = toxx.substring(toxx.indexOf("<tl>")+4, toxx.indexOf("</tl>"));
+		    toCel = toxx.substring(toxx.indexOf("<cl>")+4, toxx.indexOf("</cl>"));
+		    toNames = toNames  + comma + toName;
+		    toEmails = toEmails  + comma + toEml;
+        }
+        int lastx = toNames.lastIndexOf(",");
+        if (lastx > 0) {
+            String part1 = toNames.substring(0,lastx);
+            String part2 = toNames.substring(lastx+1,toNames.length());
+            toNames = part1 + " e " + part2;
+		}
+
+        String ccxx = ""; String ccName = ""; String ccOrg = ""; String ccEml = ""; String ccTel = ""; String ccCel = ""; comma = "";
+        ArrayList<String> itemscc = new  ArrayList<String>(Arrays.asList(pjhso_cd_prcc.split(",")));
+        String ccNames = ""; String ccEmails = ""; String ccid = "";  comma = "";
+        for(int i=0;i<itemscc.size();i++)  {
+            //System.out.println(" -->"+itemscc.get(i));
+            ccid = itemscc.get(i);
+            if (i > 0) { comma = ", ";}
+            ccxx = IIBeanUtils.getSolct_cols(conxx, ccid);
+		    ccName = ccxx.substring(ccxx.indexOf("<nm>")+4, ccxx.indexOf("</nm>"));
+		    ccOrg = ccxx.substring(ccxx.indexOf("<og>")+4, ccxx.indexOf("</og>"));
+		    ccEml = ccxx.substring(ccxx.indexOf("<em>")+4, ccxx.indexOf("</em>"));
+		    PjhsoPrccEmailList.add(ccid+"<"+ccEml+">");
+		    ccTel = ccxx.substring(ccxx.indexOf("<tl>")+4, ccxx.indexOf("</tl>"));
+		    ccCel = ccxx.substring(ccxx.indexOf("<cl>")+4, ccxx.indexOf("</cl>"));
+		    ccNames = ccNames  + comma + ccName;
+		    ccEmails = ccEmails  + comma + ccEml;
+        }
+		
+		subject = "De: "+pjhso_cd_de +" > "+ pjhso_ds_assunto;
+
+		String ln1 = "Caro(s) Sr(s) " + toNames + " "; 
+        email_lnx.append("<p>"+ln1+"</p>");
+
+		String ln2 = pjhso_ds; 
+        email_lnx.append("<p>"+ln2+"</p>");  pjhso_in_ultimo_vc = "0";
+
+	    //String ln5 = "<P>"+"<br>"+"Atenciosamente,"+"<br>"+fromName+"<br>"+gso_solic_nm_razaosocial+"<br>"+gso_solct_nu_tel+"</p>"; 
+	    //String ln5 = "<P>"+"<br>"+"Atenciosamente,"+"<br>"+fromName+"</p>"; 
+        //email_lnx.append("<br>"+ln5+"</br>");
+
+	    String ln5 = "<p>"+"<br>"+"Atenciosamente,"+"<br>"+fromName+"</br>"; 
+        email_lnx.append(ln5);
+        
+        email_lnx.append("<br>"+fromOrg+"</br>");
+        email_lnx.append("<br>"+fromTel+", "+fromCel+"</br>");
+
+        email_ln = email_lnx.toString();
+
+        // ----------  prepareEmail External Source End
+        goUpdtx = true;
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "false"); /* Configuração específica do Exchange Server da MRS */
+        props.put("mail.smtp.starttls.enable", "false"); /* Configuração específica do Exchange Server da MRS */
+        props.put("mail.smtp.host", "Exchange.mrs.com.br"); /* Endereço do Exchange Server */
+        props.put("mail.smtp.port", "25"); /* Porta padrão de acesso smtp do Exchange */
+        Session session = Session.getDefaultInstance(props);
+        MimeMessage message = new MimeMessage(session);
+        String msg = "<div style=\"color:red;\">BRIDGEYE</div>";
+        message.setContent(msg, "text/html; charset=utf-8");
+        message.setFrom(new InternetAddress("sispatgeo@mrs.com.br"));
+        message.setReplyTo( new Address[] {
+            new InternetAddress(pjhso_cd_de+"<"+fromEml+">")
+        });
+        ListIterator<String> iilistInIteratortox = PjhsoParaEmailList.listIterator(); String tox;
+        while (iilistInIteratortox.hasNext()) {
+            tox = ((String) (iilistInIteratortox.next()));
+            if (tox.contains("@")) {  
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(tox));
+            }
+        }
+        ListIterator<String> iilistInIteratorccx = PjhsoPrccEmailList.listIterator(); String ccx;
+        while (iilistInIteratorccx.hasNext()) {
+            ccx = ((String) (iilistInIteratorccx.next()));
+            if (ccx.contains("@")) {  
+                message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccx));
+            }
+        }
+        message.setSubject(subject);
+        message.setContent(email_ln, "text/html; charset=utf-8");
+        message.setSentDate(new Date());
+        /* Anexos */
+        //File file = new File(SendEmailWithAttachment.class.getResource("AttachmentTest.txt").getPath());//Caminho relativo
+        //Multipart mp = new MimeMultipart();
+        //MimeBodyPart mbp = new MimeBodyPart();
+        //DataSource ds = new FileDataSource(file.getAbsolutePath());
+        //mbp.setDisposition(Part.ATTACHMENT);
+        //mbp.setDataHandler(new DataHandler(ds));
+        //mbp.setFileName(ds.getName());
+        //mp.addBodyPart(mbp);
+        //message.setContent(mp);
+        //Transport.send(message);
+        xmesg_rc = 777;
+        mesg_var = getMessageByKey("msg_notificationSentByEmail");
+        return "pjhsogpcad";
+    }
+    
+    protected void reloadPesqDataExp(Connection con) throws SQLException, LoginException { // 2
+        loadDesc(); boolean res = true;
+        String subtype = "PJASC-PJHSOGP";
+        String valor = (String) getSession().getAttribute(tipo+"valor");
+            super.entregarCsvAntt("", subtype,subtype);
+            super.reloadPesqData(con);
+            // next / prev navigation
+            list_itrx = pesqData.listIterator();
+    } // tttt
+    protected Object chaveadorCF(final String coluna, final Object valor) {
+        //TODO Teste de sobreposição
+        if(coluna.equals("asset_cd_locado_terc")){
+            return "TESTE DO CF";
+        }
+        return valor;
+    }
+    public String doXlsExport_xls_stb() throws LoginException, SQLException { // @search
+        setOrder("");
+        getSession().setAttribute("tipo", "pjhsogppsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        String ret = "";
+        doSelecionarXlsExport_xls_stb();
+        loadDesc();
+        String subtype = "PJASC-" + "PJHSOGP-EX";
+        super.deliveryExcel(subtype, subtype);
+        if (pesqData.size() == maxResults) {
+            mesg_var = getMessageByKey("maxResultsExceededWithReport");
+        }
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return ret; // updbutton != 1d - end
+    }
+
+} // End of Code

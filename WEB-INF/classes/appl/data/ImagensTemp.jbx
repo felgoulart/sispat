@@ -1,0 +1,10 @@
+[PropertyInfo]
+tableName,String,false,false, , ,true,<default>
+id,Integer,false,false,id,id,true,<default>
+tipo,String,false,false,tipo,tipo,true,<default>
+imagem,byte[],false,false,imagem,imagem,true,<default>
+[IconNames]
+
+
+
+

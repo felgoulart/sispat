@@ -1,0 +1,18 @@
+[PropertyInfo]
+componentType,String,false,false, , ,true,<default>
+fields,String,false,false,fields,fields,true,<default>
+fieldTypes,String,false,false, , ,true,<default>
+headers,String,false,false,headers,headers,true,<default>
+listboxDescField,String,false,false, , ,false,<default>
+listboxKeyField,String,false,false, , ,false,<default>
+rendererType,String,false,false, , ,true,<default>
+requireds,String,false,false, , ,true,<default>
+useListboxKeyField,String,false,false, , ,true,<default>
+value,String,false,false, , ,true,<default>
+var,String,false,false, , ,true,<default>
+dependence,String,false,false,dependence,dependence,true,<default>
+[IconNames]
+
+
+
+

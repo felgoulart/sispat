@@ -1,0 +1,705 @@
+﻿                                                            >>                              >>Styleclass
+Llene el > de >>@fill de datos > label_fill
+No conseguió > > label_notfound a >>@notfound
+O >>@or > label_or de >
+Espere...                                                     >>> de espera de @ > label_wait
+¡Use la tecla tabuladora para confirmar la entrada de los datos!                   >>> de @ enterKey > label_key_enter
+Mayor cantidad detalla >>@moreDetails > rcwd de >
+¡atención! >>@attention > > msg_atn
+>>@systemMessages de mensajes de sistema > > msg_msg
+MustBeCompleted >>@mustBeCompleted > msg_fill de >
+Debe ser Filled >>@mustBeFilled > msg_fill_special de >
+Usar este botón usted elemento esencial primero sin candar él >>@mustBeUnlockedFirst > > msg_unlock
+Requiere la entrada de >>@requiresEntryOf > msg_fill_other de >
+Obligatorio en caso de >>@mandatoryInCaseOf > msg_fill_because_other de >
+Después de la fecha en >>@afterDateInBlank de espacio en blanco > msg_fill_after_blank de >
+Date > > msg_date_before antes de >>@dateBeforePrevious previo
+Llene >>@fillDate de fecha > msg_date_fill de >
+Llene la fecha previa en que >>@fillPreviousDate > > msg_date_fill_prev
+>>@fillFullName de nombre y apellido de Intro > > msg_full_name
+Valore mismo msg_same_as_prev tan debajo de >>@valueSameAsPrevious > >
+>>@valueSameAsNext de valueSameAsNext > > msg_same_as_next
+Al igual que >>@equalsTo > > msg_equals
+Menos entonces/luego >>@lessThen > > msg_less_then
+Entonces/luego >>@greaterThen > > msg_greater_then más grande
+Antes de que >>@before > > msg_before
+Después de que >>@after > > msg_after
+Debe ser >>@mustBe > msg_mustBe de >
+No puede ser >>@cannotBe > msg_cannotBe de >
+Operación inválida para el valor actual de >>@invalidOperation > msg_invalidOperation de >
+>>@invalidValue de valor de inválido > > msg_invalidValue
+Valor de >>@valueOf > msg_valueOf de >
+Termine un buscar en A de equipo antes de avanzar >>@loadTableA > msg_loadTableA de >
+Llene Cuadro A más que >>@loadTableB de detalles > > msg_loadTableB
+La validación resultado (s): >>@validationResult > result_validate de >
+Successfull >>@validationSucessfull de validación > > success_validate
+El Insertar terminó > > success_inserir con >>@insertionSucessfull de éxito
+Actualización terminada con >>@updateSucessfull de éxito > success_alterar de >
+El Eliminar terminó > > success_excluir con >>@deleteSucessfull de éxito
+Último campo entrado en es Inavalid >>@validationNok > validate_nok de >
+Ningunos datos eran Modofied >>@validationUfmv > validate_ufmv de >
+>>@code de clave > > cad_codf_id
+>>@description de descripción > > cad_codf_ds
+Papá >>@father > > cad_codf_supid
+>>@observation de observación > > obs
+>>@identification de identificación > > id
+>>@stateOfUnion de estado federal > > uf
+Grabe >>@record > reg de >
+...                                                         >>> de @ asFollows > pesq_reg
+>>@access de acceso > > login_login_title
+>>@password de contraseña > > login_senha
+>>@enter de Intro > > login_entrar
+>>@toExit de salida > > login_sair
+Usuario no conseguido >>@userNotFound > login_error_login de >
+>>@wrongPassword de contraseña > > login_error_senha equivocado
+Nuevo >>@new > > botao_novo
+La nueva tecla que solamente >>@newKeyOnly > > botao_novo_parcial
+>>@toInsert de Insertar > > botao_inserir
+Alterar >>@toChange > > botao_alterar
+Salvar >>@toUpdate > > botao_update
+Cancele >>@toCancel > botao_cancelar de >
+>>@toDelete de Eliminar > > botao_excluir
+>>@toSearch de buscar > > botao_pesquisar
+Seleccione >>@toSelect > botao_selecionar de >
+Devuelva >>@toReturn > botao_retornar de >
+Aplique >>@applyFilter de filtro > botao_filtrar de >
+Limpie >>@cleanFilter de filtro > botao_limpar de >
+Go >>@goBack de espalda > > botao_voltar
+>>@previous previo > > botao_anterior
+Después >>@next > > botao_proxima
+Recargue >>@reload > botao_refresh de >
+>>@message de mensaje > > botao_message
+>>@close de Cerrar > > botao_close
+Informe sobre >>@report > > botao_report
+>>@help de Ayuda > > botao_help
+Añada >>@addRecord de disco > ps_adicionar de >
+Actualice >>@updateRecord de disco > ps_atualizar de >
+Cancele >>@cancelRecord de disco > ps_cancelar de >
+La lista del error (s): >>@mandatoryFields > campo_obrigatorio de >
+Ningún error (s): >>@noErrors > sem_pendencia de >
+Para más detalles >>@forMoreDetails > > recwd_button
+Sel >>@selectedCheckBox > > seleccionar__Uno
+Grabe ya >>@recordAlreadyExists de Exists > dup_val_on_index de >
+El Eliminar no admitido, récord mencionar por otro registro que >>@deleteNotAllowed > > foreing_key
+Un problema tiene ocurred, probar >>@sql_error1 otra vez > > sql_error1
+Contáctese con >>@sql_error2 del apoyo técnico > sql_error2 de >
+Less que >>@valLess100 100 % > val_less100 de >
+Más grande que >>@valGreater100 100 % > val_greater100 de >
+Valor diferente de >>@valNot100 100 % > valnot100 de >
+100 >>@100 > val100pct de >
+90 >>@90 > val90pct de >
+80 >>@80 > val80pct de >
+70 >>@70 > val70pct de >
+60 >>@60 > val60pct de >
+50 >>@50 > val50pct de >
+40 >>@40 > val40pct de >
+30 >>@30 > val30pct de >
+20 >>@20 > val20pct de >
+10 >>@10 > val10pct de >
+0 >>@0 > val0pct de >
+>>@tab de cabo > > hace tab
+Cambió >>@tabChanged > > tab_changed
+Cabos (s) de >>@tabUnivalued de disco de calle principal > tab_univalorada de >
+Sume >>@total > > total
+¡Alarma!!                                                     >>> de @ alertTotal > alert_total
+>>@alreadyMarked ya seleccionado > > already_marked
+Ya >>@alreadyExists > already_exists de > existir
+¡correcto! >>@toCorrect > > ¡correcto!
+>>@toFill de relleno > > se llena
+Opcional: >>@Optional > fillOptional de >
+Usuario >>@user > > lbl_usuario
+>>@area de área > Area_area_ab de >
+Nombre >>@name > > Area_area_nm
+> > > sub área > Area_area_id_rwloc
+>>@station de estación > Area_rwloc_px de >
+> > > de operaciones > Area_area_fg_operational
+>>@branch de rama > Brnch_brnch_id de >
+>>@unitProduction de unidad > Brnch_brnch_id_unprd de >
+>>@gauge de ancho de vía > Brnch_brnch_tp_cfgauge de >
+>>@length de (centímetros) de longitud > Brnch_brnch_lg de >
+> > > de Radius mínimo > Brnch_brnch_lg_min_radius
+Inclinación de máximo del inicio para > > > de Fin > Brnch_brnch_mx_incline_start_end
+Inclinación de máximo del Fin para > > > de inicio > Brnch_brnch_mx_incline_end_start
+Determine el promedio del tiempo de inicio a Brnch_brnch_av_time_start_end de > de > > > de Fin
+Determine el promedio del tiempo del Fin a > > > de inicio > Brnch_brnch_av_time_end_start
+Grupo de >>@groupBranches de ramas > Brngd_brngd_cd de >
+> > > de unidad de la empresa > Busun_busun_cd
+Abrev. > > > de nombre > Comdt_comdt_ab
+Teclee > > > > Comdt_comdt_tp
+> > > de densidad > Comdt_comdt_vl_density
+> > > de producto > Comdt_comdt_cd_cfcomdt
+Comdt_comdt_cd_cfcmdct de > de > > > de categoría
+> > > de la ONU de producto > Comdt_comdt_cd_uno
+> > > de clase > Comdt_comdt_cd_class_uno
+> > > de familia > Comdt_comdt_cd_famly_uno
+Segmente > > > > Comdt_comdt_cd_segmt_uno
+Minuto carga > > > > Comdt_comdt_wt_load_min
+> > > de Pessoais > CrewDetails_pessoais_title
+>>@function de función > CrewDetails_emply_tp_cfempct de >
+>>@locationBase de base > CrewDetails_crwop_px_rwloc_base de >
+>>@dateBirthabv de fecha de nacimiento > CrewDetails_emply_dt_birth de >
+>>@status de estado > CrewDetails_emply_in_cfatvtp de >
+>>@dateAdmissionabv de admisión > CrewDetails_emply_dt_adm de >
+Tiempo de >>@timeJourney de viaje > CrewDetails_emply_tm_reg_journey de >
+En > > > > CrewDetails_crwop_dh_start_journey
+Tiempo de >>@timeStay de ballena > CrewDetails_crwop_tm_perm_start de >
+Desde > > > > CrewDetails_crwop_dh_crwst
+> > > de timeStay > CrewDetails_crwop_tm_perm_crwst
+>>@destination de destino > CrewDetails_crwop_id_rwloc_destin de >
+Entrene >>@train > CrewDetails_train_title de >
+>>@current actual > CrewDetails_crwop_px_train de >
+>>@dateFormation de formación > CrewDetails_train_dt_formation de >
+Evento Operacional > > > > CrewDetails_crwop_cd_cfoevtp
+Dh.. Evento Operacional > > > > CrewDetails_crwop_dh_oevtp
+>>@endOfJourney de viaje de Fin > CrewDetails_crwop_dh_end_journey de >
+>>@previousTrain de previousTrain > CrewDetails_crwop_id_train_previous de >
+>>@entry de entrada > CrewDetails_crwop_dh_entry de >
+> > > de bandera > CrewDetails_crwop_fg_revoked
+Codf. Desc.                                                 >>                              >>CrewHoList_emply_ds_cfempct
+Períod >>@period > CrewHoList_p_date_start de >
+Hasta >>@upTo > CrewHoList_p_date_end de >
+Exibe Manutenidos > > > > CrewHoList_p_flgmanut
+> > > de Matrícula > CrewHoList_crwop_dt
+>>@sequence de secuencia > CrewHoList_crwop_sq_emply_ho de >
+> > > de Cliente > CrewHoList_emply_id
+Categoria Funcional >>@functionalCategory > CrewHoList_emply_tp_cfempct de >
+Datetime >>@datetime > CrewHoList_crwop_dh_crwst de >
+> > > de Destino > CrewHoList_crwop_fg_revoked
+Actualizó >>@datetimeUpdate > CrewHoList_crwop_dh_rec de >
+>>@dateAdmission de fecha de admisión > CrewList_emply_dt_adm de >
+Fecha de >>@dateTermination de terminación > CrewList_emply_dt_termination de >
+Contáctese con >>@contact > CrewList_crwop_id_rwloc de >
+Descanso cliente habitual (Hs) >>@timeRegularRest > CrewList_emply_tm_reg_rest de >
+Tiempo en >>@timeStatus de estado > CrewList_crwop_tm_perm_crwst de >
+Datetime >>@datetimeStartJourney de viaje de inicio > CrewList_crwop_dh_start_journey de >
+Detalla >>@details > CrewList_CrewDetails de >
+CrewLocList_p_codsituation de > de > > > de situación
+Permanência à superior: > > > > CrewLocList_p_tmpperm
+>>@locationType de tipo de ubicación > CrewLocList_p_flglocation de >
+>>@active activo > CrewLocList_emply_in_cfatvtp de >
+>>@event de evento > CrewLocList_crwop_cd_cfoevtp de >
+Permanencia sobre > > > de estado > CrewLocList_crwop_tm_perm_crwst
+Inicio de >>@startOfJourney de viaje > CrewLocList_crwop_dh_start_journey de >
+Permanencia en > > > de tren > CrewLocList_crwop_tm_perm_train
+El indicador cancelar > > > de Maint > CrewLocList_crwop_fg_revoked
+> > > de transacción > CrewLocList_CrewDetails
+Consulte > > > > Crewmnt_CrewMntQueryList_a
+Tm Say >>@startTimeStay de inicio > Crewmnt_crwop_tm_perm_start de >__Uno
+Cargue > > > > Crewmnt_LoadFields_a
+Salve > > > de rectificación > Crewmnt_CrewCorrection_a
+Obstruya > > > de Estação > Crewopr_block_a
+Obstruya > > > de Trem > Crewopr_block_b
+Cambie >>@changeStatus de estado > Crewopr_CrewUpdate_a de >
+Incluya > > Crewopr_CrewInsert_a en >>@includeInTrain de tren
+Inicialize Matrícula >>@initializeEmployee > Crewopr_CrewInitialize_a de >
+Retire de tren >>@removeFromTrain > Crewopr_CrewRemove_b de >
+>>@bulletin de boletín > Crewopr_train_px_b_label de >
+Anteponga > > > > CrewTrainCirculation_p_pfxtrain
+Oper / Poes > CrewTrainCirculation_train_ds de > > >
+Fecha de > > > de programación > CrewTrainCirculation_trnpg_dh_train_prog
+CrewTrainCirculation_train_px_rwloc_origin de > de > > > de origen
+> > > de Evento > CrewTrainCirculation_trmvt_cd_cftrnev
+>>@location de ubicación > CrewTrainList_crwop_id_rwloc de >
+> > > de timeRegularRest > CrewTrainList_emply_tm_reg_rest
+Time viajó por >>@timeOnStatus > CrewTrainList_crwop_tm_perm_crwst de >
+>>@locationDestination de locationDestination > CrewTrainList_crwop_id_rwloc_destin de >
+Dh Joruney > > > > CrewTrainList_crwop_dh_start_journey
+> > > de Perm de Tm > CrewTrainList_crwop_tm_perm_start
+> > > de Det > CrewTrainList_CrewDetails
+> > > de mensaje > CrgpgDay_mesg_var
+Empiece >>@dateStart de fecha > CrgpgDay_p_startdate de >
+>>@dateEnd de fecha de Fin > CrgpgDay_p_finishdate de >
+>>@commodity de producto primario > CrgpgDay_comdt_ab_var de >
+Remitente >>@sender > CrgpgDay_custm_nb_sender_var de >
+Destinatary >>@destinatary > CrgpgDay_custm_nb_destin_var de >
+Pronostique >>@dateForecast de fecha > CrgpgDay_daypl_dt_forecast de >
+>>@tonnageNetCommercial de comercial de NWT > CrgpgDay_daypl_qt_wet_commercial de >
+NWT pidió >>@tonnageNetRequested > CrgpgDay_daypl_qt_wet_requested de >
+>>@wagonxx de furgonetas > CrgpgDay_daypl_qt_wagon de >
+Actualice >>@buttonUpdate > CrgpgDay_CrgpgDayMntUpd de >
+NWT contrajo >>@tonnageNetContracted > CrgpgMon_mondl_qt_wet_contracted de >
+Funcionario >>@tonnageNetOfficial de NWT > CrgpgMon_mondl_qt_wet_official de >
+Commmercial >>@revenueCommercial de ingreso > CrgpgMon_mondl_qt_revenue_commercial de >
+El ingreso pidió >>@revenueRequested > CrgpgMon_mondl_qt_revenue_requested de >
+El ingreso contrajo >>@revenueContracted > CrgpgMon_mondl_qt_revenue_contracted de >
+Funcionario >>@revenueOfficial de ingreso > CrgpgMon_mondl_qt_revenue_official de >
+>>@groupCustomers de grupo del cliente > Cusgd_cusgd_cd de >
+>>@customer del cliente > Cusgl_cusgl_id_custm de >
+>>@version de versión > Custm_custm_vs de >
+> > > del cliente relacionado > Custm_custm_id_parent
+> > > de teléfono > Custm_custm_ds_fone
+> > > de fax > Custm_custm_ds_fax
+El correo electrónico > Custm_custm_ds_email de > > >
+> > > de rama principal > Custm_custm_fg_mainbranch
+> > > de clave fiscal > Custm_custm_cd_fiscal
+> > > de estado federal fiscal > Custm_custm_cd_cfstate
+> > > del banco > Custm_custm_cd_cfbank
+Obstruía > > > > Custm_custm_fg_invc_blocked
+Rebaje > > > de () > Custm_custm_pc_disc_invc
+Añadió > > > > Custm_custm_pc_added_invc
+> > > de descuento de tiempo > Custm_custm_tm_invc_disc
+De >>@from > DistPanel_loc_from de >
+>>@activity de actividad > Emply_emply_in_cfatvtp de >
+Número da Matrícula > > > > Emply1_emply_cd
+> > > de base de ubicación del ferrocarril > Emply1_emply_id_rwloc_base
+Boina escocesa de viaje.                                                >>                              >>Emply1_emply_tm_reg_journey
+Código da Atividade > > > > Emply1_emply_in_cfatvtp
+Tipo de Contato > > > > Emply1_empct_tp_cfgncnt
+> > > de nombre y apellido > EmplyList_emply_nm
+>>@flow de circulación > FlowList_auto_id de >
+>>@vehicle de vehículo > FlowList_vhcle_nb de >
+>>@consignment de lote > FlowList_porte_id de >
+Remitente >>@senderNIT de NIT > FlowList_porte_nb_nit_sender de >
+Destinatary >>@destinataryNIT de NIT > FlowList_porte_nb_nit_destin de >
+>>@billingNIT de facturación de NIT > FlowList_porte_nb_nit_billing de >
+Haga público >>@issue > FlowList_porte_dt_issue de >
+>>@language de idioma > Help_help_lg de >
+>>@engine de motor > Horometer_vheng_nb_var de >
+>>@fuelling de aprovisionamiento de combustible > Horometer_vheng_vl_var de >
+Horometer >>@horometer > Horometer_vheng_hr_var de >
+>>@autonomy de (km) de autonomía > Horometer_vhopr_km_autonomy de >__Uno
+Cargó >>@load > Horometer_LoadFields de >__Uno
+Actualice >>@update > Horometer_HorometerUpdate_a de >
+Las ubicaciones agrupan >>@groupLocations > Locgd_locgd_cd de >
+> > > general > MenuCodifications_MenuCodfGeneral
+El «country» - > > > de CNTRY > MenuCodifications_cntry_cd_country
+Sí / no MenuCodifications_gnson_cd de > > > de - GNSON >
+Differnce MenuCodifications_tzdif_cd_time_zone_dif de > > > de - TZDIF > de huso horario
+> > > de la red > MenuCodifications_MenuCodfNetwork
+MenuCodifications_trktp_tp_track de > > > de Type - TRKTP > de línea
+MenuCodifications_loctp_tp_localtion de > > > de Type - LOCTP > de ubicación
+MenuCodifications_locst_st_localtion de > > > de - LOCST > de estado de ubicación
+MenuCodifications_locsl_sl de > > > de - LOCSL > de selección de ubicación
+MenuCodifications_trkst_st_track de > > > de - TRKST > de estado de línea
+> > > de Persomel > MenuCodifications_MenuCodfEmply
+Empleado MenuCodifications_empfc_tp de > > > de Type - EMPFC >
+Categoría funcional - MenuCodifications_empct_tp_functional_category de > de > > > de EMPCT
+MenuCodifications_trntp_tp_train de > > > de Type - TRNTP > de tren
+MenuCodifications_trnst_st_train de > > > de - TRNST > de Sitatus de tren
+MenuCodifications_trnct_tp de > > > de - TRNCT > de categoría de tren
+MenuCodifications_trndr_cd de > > > de - TRNDR > de Direction de tren
+Pgm MenuCodifications_trevx_cd de > > > de - TREVX > de estado de tren__Train_event
+MenuCodifications_trnpr_cd de > > > de - TRNPR > de tren
+El estado de evento de operaciones - > > > de OEVST > MenuCodifications_oevst_cd
+El tipo de evento de operaciones - > > > de OEVTP > MenuCodifications_oevtp_cd_operational_event
+Responsability de operaciones - > > > de RESPN > MenuCodifications_respn_cd_responsability
+> > > de comercial > MenuCodifications_MenuCodfComm
+Teclee > > > de producto primario > MenuCodifications_cmdtp_tp
+MenuCodifications_cmdct_tp de > de > > > de producto primario de categoría
+Vehículos > MenuCodifications_MenuCodfVhcle de > > >
+MenuCodifications_vhctp_tp_vehicle de > > > de Type - VHCTP > de vehículo
+MenuCodifications_vhcst_st_vehicle de > > > de - VHCST > de estado de vehículo
+MenuCodifications_vhcsv_cd de > > > de - VHCSV > del servicio de vehículo
+Cargue la operación > MenuCodifications_vhcws_cd de > > >
+MenuCodifications_state_cd de > > > de - estado federal > de estado federal
+Tipos de eje - ejes > MenuCodifications_axles_tp_axles de > > >
+MenuCodifications_gauge_tp_gauge_type de > > > de - ancho de vía > de tipo de ancho de vía
+Motores > MenuCodifications_MenuCodfVheng de > > >
+MenuCodifications_engmd_tp_engine_model de > > > de Model - ENGMD > de motor
+> > > de estado de motor > MenuCodifications_egnst_tp_status
+MenuCodifications_engfn_cd de > > > de - ENGFN > de función de motor
+MenuCodifications_engus_tp_engine_usage de > > > de - ENGUS > de uso de motor
+> > > de Estado > MenuCodifications_engse_cd
+MenuCodifications_wagtp_tp_wagon de > > > de Type - WAGTP > de furgoneta
+MenuCodifications_wagus_tp_use de > > > de - WAGUS > de uso de furgoneta
+MenuCodifications_wagst_st_wagon de > > > de - WAGST > de estado de furgoneta
+MenuCodifications_wagsv_sv_wagon de > > > de - WAGSV > de servicios de furgoneta
+> > > de equipo > MenuCodifications_MenuCodfVheqp
+MenuCodifications_eqptp_tp_equipment de > > > de Type - EQPTP > de equipo
+MenuCodifications_eqpus_tp_equipment_usage de > > > de - EQPUS > de uso de equipo
+Automóviles de Pasenger > MenuCodifications_MenuCodfVhpsc de > > >
+MenuCodifications_psctp_tp_passenger_car de > > > de Type - PSCTP > de automóvil
+MenuCodifications_pscus_tp_passenger_car_usage de > > > de - PSCUS > de uso de automóvil
+>>@operation de operación > Opern_opern_id de >
+Derecho de > > > de acceso > Opern_opern_tp
+>>@trafficType de tipo de tráfico > PorteList_porte_cd_cftrftp de >
+>>@freightType de tipo de mercadería > PorteList_porte_cd_cffrgtp de >
+>>@railway del ferrocarril > Railw_railw_id de >
+Dt.. Empiece la operación > Railw_railw_dt_start_oper de > > >
+>>@country provinciano > Railw_railw_id_cfcntry de >
+Railw_railw_fg_operational de > de > > > de indicador en funcionamiento
+> > > de papel > Rlopr_rlopr_id_role
+> > > de Adm general > Role_role_in_sys
+> > > de estación principal > Rwloc_rwloc_id_rwloc_parent
+La raíz de Netw de distancia > Rwloc_rwloc_dc_netw_root de > > >
+> > > de ciudad > Rwloc_rwloc_id_city
+Differnce de huso horario > Rwloc_rwloc_cd_cftzdif de > > >
+Desvie > > > de velocidad > Rwloc_rwloc_vl_speed_maneuver
+Comuníquese con ERP > Rwloc_rwloc_cd_erp de > > >
+Indicativo de la operación > Rwloc_rwloc_fg_operational de > > >
+> > > de Sigla > Rwsta_rwloc_ab
+> > > de sección > Sectn_p_sectn_tp
+Empiece >>@start > Sectn_sectn_id_rwloc_ini de >
+>>@end de Fin > Sectn_sectn_id_rwloc_end de >
+>>@line de línea > Sectn_sectn_ab_track_var de >
+>>@lengthOperational de (centímetros) de longitud en funcionamiento > Track_track_lg_operational de >
+Longitud entre teclas > Track_track_lg_between_keys de > > >
+> > > de capacidad de vehículo > Track_track_cp_vhcle
+Electrificó > > > > Track_track_fg_elect
+>>@responsability de responsability > TrainActSummary_mtsrs_tp_cfrespn_desc de >
+TrainCfgList_train_px de > de > > > de origen de estación
+> > > de Destin de estación > TrainCfgList_train_px_destin
+> > > temporal > TrainCircList_p_flgcirc
+> > > de Busun > TrainCircList_p_codbusun
+Loc en >>@locationInRoute de ruta > TrainCircList_train_sq_loca_in_route de >
+Entrene >>@trainProgram de programa > TrainCircList_train_id_trnpg de >
+Entrene Datetime >>@datetimeTrain > TrainCircList_trnpg_dh_train_prog de >
+Entrene >>@typeTrain de tipo > TrainCircList_train_tp_cftrntp de >
+>>@locationPrevious de ubicación previos > TrainCircList_trmvt_id_rwloc_previous de >
+Próximos >>@locationNext de ubicación > TrainCircList_trmvt_id_rwloc_next de >
+>>@eventOperational de evento en funcionamiento > TrainCircList_trmvt_cd_cfoevtp de >
+Wt >>@weightGross de total > TrainCircList_trcmp_wt_total de >
+Sume >>@weightNet > TrainCircList_trcmp_nw_total de > en dirección noroeste
+Km suma >>@km > TrainCircList_trmvt_km_total de >
+El tiempo paró >>@timeStopped > TrainCircList_trmvt_tm_stop de >
+Time cambiar de lugar >>@timeMoving > TrainCircList_trmvt_tm_march de >
+>>@enginesTraction de motores de tracción > TrainCircList_trcmp_qt_egtrc de >
+Tracted >>@enginesTracted de motores > TrainCircList_trcmp_qt_egreb de >
+Vacía >>@empties > TrainCircList_trcmp_qt_wgempty de >
+>>@passengerCarxx de automóviles > TrainCircList_trcmp_qt_pscar de >
+>>@others de otros > TrainCircList_trcmp_qt_others de >
+>>@operationxx de operaciones > TrainCircList_TrainOperList de >
+Pct >>@operationsPct de operaciones > TrainCircList_TrainOperPctList de >
+>>@composition de composición > TrainCircList_TrainCompList de >
+La operación de tren > TrainCircList_TrainOpr de > > >
+Unidad de > > > de producción > TrainCirculation_p_uidunprd
+> > > de tren de Tp > TrainCirculation_train_tp_cftrntp
+Px próximo > > > de ubicación > TrainCirculation_trmvt_px_rwloc_next
+Dh Evento > > > > TrainCirculation_trmvt_dh_oevtp
+>>@departure de partida > TrainCompList_p_event_dh de >
+Pida >>@order > TrainCompList_vhlst_od_vhcle de >
+Historia de vehículo de Sq > TrainCompList_vhopr_sq_vhcle_ho de > > >
+>>@locationAttachment de ubicación de anexo > TrainCompList_trcmp_id_rwloc_attach de >
+>>@datatime de datatime > TrainCompList_vhopr_dh_oevtp de >
+>>@trainPrevious de tren previos > TrainCompList_vhopr_id_train_previous de >
+>>@wagon de furgoneta > TrainCompList_vhopr_id_wagbl_current de >
+La fecha alimentar >>@dateLastFuelling > TrainCompList_vhopr_dl_fueling de > en último lugar
+Km desde entonces cargar combustible >>@kmSinceLastFuelling > TrainCompList_vhopr_km_since_lastfuel de > en último lugar
+>>@odometerValue de valor de odómetro > TrainCompList_vhopr_vl_odometer de >
+El mantenimiento canceló >>@maintenanceCancelled > TrainCompList_vhopr_fg_revoked de >
+> > > de Tipo > train_tp_cftrntp_desc
+> > > de Seção > trmvt_px_sectn
+> > > de Evento de datos / hora > trmvt_dh_oevtp
+> > > de Situação de datos / hora > trmvt_cd_cftrnst_desc
+> > > de Comprimento > trcmp_lg_total
+> > > de tuberculosis > trcmp_wt_total
+> > > de TU > trcmp_nw_total
+> > > de TKB > trcmp_tg_total
+> > > de TKU > trcmp_tn_total
+> > > de km > trmvt_km_total
+> > > de Parada de tempo > trmvt_tm_stop
+> > > de Marcha de tempo > trmvt_tm_march
+Loco Trac > > > > trcmp_qt_egtrc
+Loco Reb > > > > trcmp_qt_egreb
+Vag Vaz > > > > trcmp_qt_wgempty
+Vag Crg > > > > trcmp_qt_wgload
+> > > de Carro > trcmp_qt_pscar
+Outros Veículos > > > > trcmp_qt_others
+> > > de programa > TrainForm_p_uidprogram
+La ejecución > TrainForm_p_dthevent de > > >
+> > > de programación > TrainForm_trnpg_dh_train_prog
+Indique el > > > de km > TrainOperList_p_flgkm
+El tipo de evento de Op > TrainOperList_trmvt_cd_cfoevtp_desc de > > >
+>>@passengerCar de automóvil > TrainOperList_trcmp_qt_pscar de >
+>>@dateDeparture de dateDeparture > TrainOperPctList_dat_srch_var de >
+Prev >>@distancePreviousLocation de ubicación de distancia > TrainOperPctList_trnrt_dc_rwloc_ant de >
+La distancia viajó por >>@distanceTravelled > TrainOperPctList_trmvt_dc_travelled de >
+La llegada programó >>@datetimeArrivalScheduled > TrainOperPctList_trnpg_dh_arrived_scheduled de >
+La partida programó >>@datetimeDepartureScheduled > TrainOperPctList_trnpg_dh_departure_scheduled de >
+La llegada ejecutó >>@datetimeArrivalExecuted > TrainOperPctList_trmvt_dh_arrived_executed de >
+La partida ejecutó >>@datetimeDepartureExecuted > TrainOperPctList_trmvt_dh_departure_executed de >
+La llegada ajustó >>@datetimeArrivalAdjusted > TrainOperPctList_trmvt_dh_arrived_adjusted de >
+La partida ajustó >>@datetimeDepartureAdjusted > TrainOperPctList_trmvt_dh_departure_adjusted de >
+El promedio programó >>@speedAverageProgrammed de velocidad > TrainOperPctList_trnpg_ms de >
+El promedio ejecutó >>@speedAverageExecuted de velocidad > TrainOperPctList_trmvt_ms de >
+TrainOpr_train_ds de > de > de ubicación de >>@status @ de ubicación de estado__Uno
+Retrase >>@delay > TrainOpr_train_tm_delay de >__Uno
+Estudie > > > de movimiento > TrainOpr_Toobar_title
+Estudia >>@trainsInMovement de movimiento > TrainOpr_TrainCirculation_a de >
+Entrene >>@trainComposition de composición > TrainOpr_TrainComposition_a de >
+Entrene >>@trainOperations de operaciones > TrainOpr_TrainOperations_a de >
+Resumen de >>@trainActivitiesSummary de actividades de tren > TrainOpr_TrainActSummary_a de >
+Entrene equipo >>@trainCrew > TrainOpr_CrewTrainList_a de >
+>>@sectionByLine de segundo / línea > TrainOpr_sectn_px_track_var de >
+>>@sectionByBranch de segundo / rama > TrainOpr_sectn_px_brnch_var de >
+Retrase > > TrainOpr_trmvt_tm_arrived_delay sobre >>@delayOnArrival de partida__B
+Resumen de >>@summary > TrainOpr_TrainActSummary de >__B
+Dirija >>@direct > TrainOpr_TrainDirect_a de >
+>>@arrival de llegada > TrainOpr_TrainArrival_a de >
+pare >>@stop > > TrainOpr_TrainStop_a
+> > > de movimiento > TrainOpr_TrainMovement_a
+Repartir a cliente > > > > TrainOpr_sys_value_OC
+> > > de visión > TrainPgmList_p_codvisao
+TrainPgmList_trnpg_dh_eta de > de > > > de hora de llegada prevista
+>>@resources de recursos > TrainPgmList_trnpg_ds_resources de >
+>>@datetimeInsertionr de datetimeInsertionr > TrainPgmList_trnpg_dh_prog_record de >
+Cambie >>@datetimeModification > TrainPgmList_trnpg_dh_prog_change de >
+Dh Prog > > > > p_datprogramacao
+> > > de Destin > p_uiddestino
+> > > de unidad de autobús > p_codunidnegocio
+Indique > > > de Direction > p_flg_sentido
+> > > de Locos > p_txtloco
+> > > de inserción > TrainPgmMntIns
+> > > de supresión > TrainPgmMntDel
+> > > de estación de origen > uidorigem
+> > > de estación de destino > trnrt_px_destin
+Dist Origin > > > de estación > trnrt_dc_rwloc_acc
+> > > de Ext > TrainRouteExt
+>>@kilometers de kilómetros > TrainVhengList_vhopr_km_autonomy de >
+>>@odometer de odómetro > TrainVhengList_vhopr_vl_odometer de >
+Entrene >>@trainItinerary de itinerario > Trnctmaint_train_id_trnit_var de >
+Consulta >>@buttonQuery > Trnctmaint_TrnctQryList de >
+De Origem local > > > > trnrt_id_rwloc_origin
+De Destino local > > > > trnrt_id_rwloc_destin
+Estações Nodo hace > > > de Percurso > TrnrtDataTable
+Sustituto >>@subcategory de categoría > Trntpmaint_type_cd_cftrnsc_var de >
+>>@priority de prioridad > Trntpmaint_trntp_nb_priority de >__Uno
+> > > de registro de entrada > Userx_userx_id_login
+Id externo > > > > Userx_userx_id_external
+> > > de transacción inicial > Userx_userx_id_trans
+>>@groupVehicles de la flota de vehículos > Vhcgd_vhcgd_cd de >
+Propietario >>@owner > Vhcle_vhcle_id_railw_owner de >
+Operador >>@operator > Vhcle_vhcle_id_railw_operating de >
+>>@dateManufacture de fecha de fabricación > Vhcle_vhcle_dt_manufacture de >
+De Demolition >>@dateDemolition de fecha > Vhcle_vhcle_dt_demolition de >
+>>@lengthOvercouplers de (centímetros) de Overcouplers de longitud > Vhcle_vhcle_lg_overcouplers de >
+>>@width de (centímetros) de ancho > Vhcle_vhcle_wd de >
+>>@height de (centímetros) de altura > Vhcle_vhcle_ht de >
+Tipo de >>@typeAxles de ejes > Vhcle_vhcle_tp_cfaxles de >
+>>@typeUsage de tipo de uso > Vhcle_vheng_tp_cfengus de >
+>>@model de modelo > Vhcle_vheng_cd_cfengmd de >
+>>@totalWeight de totalWeight > Vhcle_vheng_wt_total de >
+>>@weightAdeherence de adeherence de peso > Vhcle_vheng_wt_adeherence de >
+>>@tankCapacity de capacidad (m3) de tanque > Vhcle_vheng_cp_fuel_tank de >
+>>@hpTraction de HP de tracción > Vhcle_vheng_pw_traction_hp de >
+>>@hpNominal de HP sólo de nombre > Vhcle_vheng_pw_nom_hp de >
+>>@powerKGF de poder de KGF > Vhcle_vheng_pw_kgf de >
+Número de >>@numberEngines de motores > Vhcle_vheng_nb_motors de >
+>>@rheostaticBrakes de frenos de rheostatic > Vhcle_vheng_fg_rheobrakes de >
+>>@usageType de usageType > Vhcle_vhwag_tp_cfwagus de >
+>>@typeWagon de tipo de furgoneta > Vhcle_vhwag_tp_cfwagtp de >
+>>@tare de tara (kg) > Vhcle_vhwag_wt_tare de >
+El volumen - >>@volumeCapacity de capacidad (m3) > Vhcle_vhwag_cp_nvol de >
+>>@weightNetCapacity de capacidad de peso neto > Vhcle_vhwag_cp_nwt de >
+Usefull >>@heightUsefull de (centímetros) de altura > Vhcle_vhwag_ht_usefull de >
+Rebaje >>@discount de (%) > Vhcle_vhwag_pc_owner_disc de >
+Certficate >>@inspectionCertficate de inspección > Vhcle_vhtnk_nb_insp_cert de >
+Certficate >>@inspectionCertficateDate de fecha de inspección > Vhcle_vhtnk_dt_cert_exp de >
+>>@passengerCarUsage de uso de automóvil > Vhcle_vhpsc_tp_cfpscus de >
+>>@passengerCarType de tipo de automóvil > Vhcle_vhpsc_tp_cfpsctp de >
+Número de >>@cabinsNumber de cabañas > Vhcle_vhpsc_nb_cabins de >
+Número de >>@cabinsSleepNumber de cabañas de sueño > Vhcle_vhpsc_nb_cabins_sleep de >
+Número de presidentes >>@chairsNumber > Vhcle_vhpsc_nb_chairs de >
+>>@equipmentUtilization de utilización de equipo > Vhcle_vheqp_tp_cfeqpus de >
+>>@equipmentType de tipo de equipo > Vhcle_vheqp_tp_cfeqptp de >
+>>@autoTraction de tracción de automóvil > Vhcle_vheqp_fg_autotraction de >
+Conectaba > > > de ubicación > Vhcle_Line_p_rwloc_px_conn
+>>@equipmentxx de equipos > Vhcle_Line_count_eqp de >
+Habitó >>@occupied > Vhcle_Line_sum_busy_extension de >
+>>@responsibility de responsabilidad > VhcleAreaListparm_vhopr_cd_responsibility de >
+>>@service del servicio > VhcleAreaListparm_vhopr_cd_service de >
+VhcleAreaListparm_custm_ab_dest de > de > de destino de >>@customer @ de destino del cliente
+> > > de GW > VhcleAreaListparm_vhopr_wt_load
+La permanencia > VhcleAreaListparm_permanence_tm de > > >
+>>@engines de locomotoras > VhcleAreaSummary_count_loco de >
+> > > de locomotora > VhengDetails_p_uidengine
+> > > de Localização > VhengDetails_localizacao_title
+> > > de tren de Prev > VhengDetails_vheng_px_train_previous
+Tabla de forro > VhengDetails_vheng_nm_custm_sidding de > > >
+> > > de taller > VhengDetails_vheng_nm_workshop
+Anotación en > > > de ubicación > VhengDetails_vheng_dh_arrv_statn
+Último > > > de evento > VhengDetails_vheng_dh_oper_event
+Note > > > > VhengDetails_vheng_ds_user_note
+La fecha & > > > de tiempo > VhengDetails_vheng_dh_situation
+> > > de Responsability > VhengDetails_vheng_ds_responsibility
+> > > de mantenimiento > VhengDetails_manutencao_title
+Km viajó por > > > > VhengDetails_vheng_km_vhcle_since_lastrev
+> > > de Consuption > VhengDetails_consumo_title
+Amo > > > de disco > VhengDetails_cadastro_title
+Avg Consuption > > > > VhengDetails_consumo_medio_campo_n_definido_title
+> > > de longitud > VhengDetails_vheng_lg
+> > > de km de autonomía > VhengDetails_vheng_km_autonomy
+Sume el peso > VhengDetails_vheng_wt_total de > > >
+> > > de distribución > VhengDetails_distribuicao_title
+Cliente > > > responsable > VhengList_vhcle_id_custm_owner
+>>@weight de peso > VhengList_vheng_wt_total de >
+Añada peso a > > > de Adeherence > VhengList_vheng_wt_adeherence
+> > > de hpTraction > VhengList_vheng_pw_traction_hp
+Rheostatic frena > > > > VhengList_vheng_fg_rheobrakes
+Ferrocarril > > > propio > VhengLocIdv_p_uidrailowner
+Propietario > > > del ferrocarril > VhengLocIdv_railw_ab_own
+> > > de Op del ferrocarril > VhengLocIdv_p_uidrailoperating
+> > > del ferrocarril de Op > VhengLocIdv_railw_ab_opt
+> > > de Modelo > VhengLocIdv_listmodel
+> > > de separador > VhengLocIdv_separator
+Esté al día con > > > > VhengLocIdv_vheng_id_track
+> > > de Serie > VhengLocIdv_vheng_cd_model
+> > > de Loco > VhengLocIdv_vheng_nb
+Operador > > > del ferrocarril > VhengLocIdv_vheng_ab_rail_operating
+> > > de fecha de llegada > VhengLocIdv_vheng_dh_arrv_statn
+Tiempo de la permanencia > VhengLocIdv_vheng_tm_pernanence de > > >
+Ultima Revisao de fecha > VhengLocIdv_vheng_dl_revision_vhcle de > > >
+Autonomia VhengLocIdv_vheng_km_autonomy de > > > de - km >
+> > > de Obs > VhengLocIdv_vheng_ob
+> > > de Mod01 > VhengLocQty_qty_mod01
+> > > de Mod02 > VhengLocQty_qty_mod02
+> > > de Mod03 > VhengLocQty_qty_mod03
+> > > de Mod04 > VhengLocQty_qty_mod04
+> > > de Mod05 > VhengLocQty_qty_mod05
+> > > de Mod06 > VhengLocQty_qty_mod06
+> > > de Mod07 > VhengLocQty_qty_mod07
+> > > de Mod08 > VhengLocQty_qty_mod08
+> > > de Mod09 > VhengLocQty_qty_mod09
+> > > de Mod10 > VhengLocQty_qty_mod10
+> > > de Perm > VheqpLocIdv_vheqp_tm_pernanence
+>>@dateLastRevision de salida de taller > VheqpLocIdv_vheqp_dl_revision_vhcle de >
+> > > de autonomía > VheqpLocIdv_vheqp_km_autonomy
+Marque > > > de mantenimiento > VhoprhoList_p_flgmanut
+>>@dateManufacturing de dateManufacturing > VhoprhoList_vhcle_dt_manufacture de >
+Tipo de > > > de uso > VhoprhoList_vheng_tp_cfengus
+> > > de capacidad de tanque > VhoprhoList_vheng_cp_fuel_tank
+> > > de peso de tara > VhoprhoList_vhwag_wt_tare
+> > > de capacidad de volumen > VhoprhoList_vhwag_cp_nvol
+> > > de altura de Usefull > VhoprhoList_vhwag_ht_usefull
+La fecha de certificado de inspección > VhoprhoList_vhtnk_dt_cert_exp de > > >
+Equipmenmt VhoprhoList_vheqp_tp_cfeqpus de > de > > > de utilización
+> > > de Traccion > VhoprhoList_vheqp_fg_autotraction
+VhoprhoList_vhopr_dt de > de > > > de fecha de operación
+> > > de Versão > VhoprhoList_vhopr_vs_vhcle
+> > > de Sq > VhoprhoList_vhopr_sq_vhcle_ho
+Quédese > > > > VhoprhoList_vhopr_sq_stay
+La suspensión de Tp > VhoprhoList_vhopr_tp_stay de > > >
+> > > de escenario de sq > VhoprhoList_vhopr_sq_stage
+VhoprhoList_vhopr_sq_trip de > de > > > de viaje de sq
+VhoprhoList_vhopr_tp_trip de > de > > > de viaje de tp
+> > > de cyc de sq > VhoprhoList_vhopr_sq_cycle
+> > > de int de sq > VhoprhoList_vhopr_sq_interchange
+> > > de oevtp > VhoprhoList_vhopr_cd_cfoevtp
+> > > de Csv > VhoprhoList_vhopr_cd_cfvhcsv_desc
+La fecha & > > > de función de tiempo > VhoprhoList_vhopr_dh_engfn
+La fecha & > > > de estado federal de tiempo > VhoprhoList_vhopr_dh_usrnt
+Tiempo en > > > de estado > VhoprhoList_vhopr_tm_status
+> > > de Seq > VhoprhoList_vhopr_sq_trcmp
+Datetime de > > > de llegada > VhoprhoList_vhopr_dh_arrv_statn
+Datetime de > > > de partida > VhoprhoList_vhopr_dh_exit_statn
+Intercambie > > > de estación > VhoprhoList_vhopr_id_rwloc_interchange
+Datetime de VhoprhoList_vhopr_dh_interchange de > de > > > de cruce
+> > > peso loaded > VhoprhoList_vhopr_id_wagbl_loaded
+El peso desembarcado > VhoprhoList_vhopr_id_wagbl_offloaded de > > >
+> > > de peso actual > VhoprhoList_vhopr_id_wagbl_current
+Feche la última revisión > VhoprhoList_vhopr_dl_revision_vhcle de > > >
+Km desde último > > > de Revison > VhoprhoList_vhopr_km_vhcle_since_lastrev
+> > > de autonomía de km > VhoprhoList_vhopr_km_autonomy
+Volumen proporcionó > > > > VhoprhoList_vhopr_qt_fuelling
+> > > de odómetro > VhoprhoList_vhopr_vl_odometer
+Desviar > > > > VhoprhoList_vhopr_id_manvr
+Marque cancelar de > > > de Maint > VhoprhoList_vhopr_fg_revoked
+Active > > > > VhpcrLocIdv_vhwag_tp_trip
+> > > de Remetente > VhpcrLocIdv_vhwag_ab_custm_remt
+> > > de Destinatarry > VhpcrLocIdv_vhwag_ab_custm_dest
+> > > de Lote > VhpcrLocIdv_vhwag_nb_lot
+> > > de tiempo de fecha > VhwagDetails_vhwag_dh_situation
+Note > > > de Dt > VhwagDetails_vhwag_dh_user_note
+> > > de carga > VhwagDetails_wagd_carregamento_title
+El grupo actual > VhwagDetails_wagd_lote_atual_ainda_n_definido_title de > > >
+El grupo de carga > VhwagDetails_wagd_lote_carga_ainda_n_definido_title de > > >
+> > > de capacidad de NWT > VhwagDetails_vhwag_cp_nwt
+El NO > VhwagDetails_wagd_TU_ainda_n_definido_title de > > >
+> > > de tara > VhwagDetails_vhwag_wt_tare
+> > > de Sq de viaje > VhwagDetails_vhwag_sq_trip
+Usuario > > > de nota > VhwagDetails_vhwag_cd_user_note
+> > > de patio de furgoneta > VhwagDstList_vhwag_qt_yard
+> > > de caravana > VhwagDstList_vhwag_qt_train
+> > > de patio noroeste > VhwagDstList_vhwag_wt_load_yard
+> > > de tren noroeste > VhwagDstList_vhwag_wt_load_train
+>>@date de fecha > VhwagList_vhtnk_jd_cert_exp de >
+>>@dateArrival de dateArrival > VhwagLocIdv_vhwag_dh_arrv_statn de >
+Procese por lotes >>@batch > VhwagLocIdv_vhwag_nb_lot de >
+> > > de Ser01 > VhwagLocQty_qty_mod01
+> > > de Ser02 > VhwagLocQty_qty_mod02
+> > > de Ser03 > VhwagLocQty_qty_mod03
+> > > de Ser04 > VhwagLocQty_qty_mod04
+> > > de Ser05 > VhwagLocQty_qty_mod05
+> > > de Ser06 > VhwagLocQty_qty_mod06
+> > > de Ser07 > VhwagLocQty_qty_mod07
+> > > de Ser08 > VhwagLocQty_qty_mod08
+> > > de Ser09 > VhwagLocQty_qty_mod09
+> > > de Ser10 > VhwagLocQty_qty_mod10
+> > > de Ser11 > VhwagLocQty_qty_mod11
+> > > de Ser12 > VhwagLocQty_qty_mod12
+> > > de Ser13 > VhwagLocQty_qty_mod13
+> > > de Ser14 > VhwagLocQty_qty_mod14
+> > > de Ser15 > VhwagLocQty_qty_mod15
+> > > de lote actual > WagLoadMnt_tt_loading
+> > > de Consigment > WagLoadMnt_porte_nb_a_var
+TU (kg) > WagLoadMnt_comdt_kg_a_var de > > >
+El volumen (m ³) > WagLoadMnt_comdt_vl_a_var de > > >
+Nuevo > > > de lote > WagLoadMnt_tt_loading_b
+El cambio noroeste > WagLoadMnt_WagChgTu_a de > > >
+Cancele > > > de lote > WagLoadMnt_WagCancCsgmt_a
+Reemplace > > > de Consginment > WagLoadMnt_WagReplCsgmt_b
+Estime >>@reason > WagLoadOpr_oper_tp_details_var de >
+>>@tonnageNet de NWT > WagLoadOpr_comdt_kg_var de >
+Interrogue >>@queryConsignments de lotes > WagLoadOpr_WagLoadQueryList_a de >
+Cargue >>@loadTotal completo > WagLoadOpr_WagLoadIni_a de >
+Termine Offload >>@offloadComplete > WagLoadOpr_WagOffloadComplete_a de >
+Cargue Suplemental >>@loadSuplemental > WagLoadOpr_WagLoadSup_a de >
+Offload >>@offloadPartial parciales > WagLoadOpr_WagOffloadFractioned_a de >
+Cargue sin >>@loadWithNoConsignment de lote > WagLoadOpr_WagLoadWNoCngt_a de >
+Classe Funcional > > > > YardCrewList_emply_tp_cfempct
+> > > de estación de base > YardCrewList_emply_px_rwloc_base
+Bloquee un - jardín > > > > Yardopr_block_A1
+>>@fuelling1 de combustible (lts) > Yardopr_vol_abast_a_var de >
+Yardopr_block_B1 de > > > de - jardín / tren / tienda > de B de bloque
+Equipo > > > > Yardopr_plan_nb_maneuver_b_var
+Interrogue >>@queryBlock de bloque > Yardopr_VhcleQueryListparm_a de >
+Vuelva a pedir >>@reorder > Yardopr_VhblkSequencing_a de >
+Inicialice >>@initializeVehicle de vehículo > Yardopr_VhcleYardInitialize_a de >
+Reciba > > Yardopr_VhcleItchgReceive_a de >>@receiveFromInterchange de cruce
+Cambie de vía para bloquear >>@shuntToBlockB de B > Yardopr_VhblkBranchLinesManeuver_a de >
+Reparta > > Yardopr_VhblkSidingCustomerDelivery_a a >>@deliveryToCustomer del cliente
+Reparta > > Yardopr_VhblkSidingMaintenanceDeliver_a a >>@deliverToShop de la tienda
+Fije a >>@attachToTrain de tren > > Yardopr_VhblkTrainAttach_a
+Reciba > > Yardopr_VhcleFgnrwReceive_a de >>@receiveFromForeignRailway del ferrocarril extranjeros
+Desembarque > > > > Yardopr_WgblkOffloading_b
+Traspaso para >>@disposalToCustomer del cliente > Yardopr_VhblkSidingCustomerDisposal_b de >
+Cambie de vía para obstruir un > de >>@shuntToBlockA > Yardopr_VhblkBranchLinesManeuver_b
+Separe >>@detachFromTrain > Yardopr_VhblkTrainDetach_b de > de tren
+Retire de tienda >>@removeFromWorkshop > Yardopr_VhblkSidingMaintenanceReceive_b de >
+Retire de >>@removeFromCustomer del cliente > Yardopr_VhblkSidingCustomerReceive_b de >
+Devuelva >>@returnFromDisposalToCustomer > Yardopr_VhblkSidingCustomerReturn_b de > de triturador a cliente
+Seleccione un bloque de vehículos debajo de >>@selectBlock > Yardopr_select_a de >
+Inicio / Fin de >>@selectBlockStartEnd de bloque seleccionados > Yardopr_pos_ini_a_var de >
+>>@blockEnd de blockEnd > Yardopr_pos_fin_a_var de >
+Seleccione el movimiento en >>@inverted de orden invertido > Yardopr_ord_cfson_a_var de >
+Seleccione que a una postura inserte un bloque seleccionado de >>@blockInsert de vehículos > Yardopr_insert_a de >
+Seleccione un puesto de Insertar al principio de >>@blockInsertStart de bloque > Yardopr_pos_ins_ini_ckb_a_var de >
+Seleccione el puesto de Insertar en el Fin de >>@blockInsertEnd de bloque > Yardopr_pos_ins_end_ckb_a_var de >
+O seleccione un puesto de Insertar intermedio en los >>@blockInsertMiddle de bloque > Yardopr_pos_ins_pos_ckb_a_var de >
+Inserte >>@insertPosition de puesto > Yardopr_pos_ins_a_var de >
+El tabulador bloquea una pregunta > Yardopr_VhcleDataTable_BlockA de > > >
+Repartir a > > > de taller > Yardopr_sys_value_WD
+Vehículos de tipos diferentes > Yardopr_sys_dif_chkbox de > > >
+> > > de Id > Yrdmp_yrdmp_id
+Dh Inicio > > > > Yrdmp_yrdmp_dh_start_plan
+Dh Fim > > > > Yrdmp_yrdmp_dh_end_plan
+> > > principal > Yrdmp_yrdmp_id_emply_yard_chief
+> > > de nombre principal > Yrdmp_yrdmp_nm_yard_chief
+Fim de Yrdmp_yrdmt_dh_end_jouney de > de > > > de viaje
+Conductor > > > > Yrdmp_yrdmt_id_emply_engine_driver
+Conductor > > > de Ab > Yrdmp_yrdmp_ab_engine_driver
+Conductor > > > de Nm > Yrdmp_yrdmp_nm_engine_driver
+Amo > > > de jardín > YrdmpList_emply_cd_var
+Emd de > > > de Journney > YrdmpList_yrdmp_dh_end_plan
+Id hace a de Manobra de Plano > YrdmpList_yrdmp_id de > > >
+Fin de YrdmtList_yrdmt_dh_end_journey de > de > > > de viaje
+> > > de Switcher 1 > YrdmtList_yrdmt_cd_switcher1_var
+> > > de Auxiliar 1 > YrdmtList_yrdmt_id_emply_switcher1
+> > > de Switcher 2 > YrdmtList_yrdmt_cd_switcher2_var
+> > > de Auxiliar 2 > YrdmtList_yrdmt_id_emply_switcher2
+Empiece > > > de combustible > YrdmtList_yrdmt_nb_start_fuel
+> > > de combustible de Fin > YrdmtList_yrdmt_nb_end_fuel
+> > > de inicio de Horometer > YrdmtList_yrdmt_nb_start_timer
+> > > de Fin de Horometro > YrdmtList_yrdmt_nb_end_timer
+> > > de conocimiento de embarque actual > tt_loading
+ 

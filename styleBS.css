@@ -1,0 +1,136 @@
+.ttsmod {
+    font-size: 14px;
+    color: #423c3c;
+    font-family: INHERIT;
+    font-weight: bold;
+    padding-top: 3px;
+    padding-bottom: 2px;
+    vertical-align: middle;
+    position: relative;
+    border-bottom: none;
+}
+    
+.h3branca {
+color: white;
+}
+.containermod2 {
+    background-color: #ffffff;
+    border-right: 0px #fff solid;
+    border-left: 0px #fff solid;
+    border-top: 0px #fff solid;
+}
+.valignmiddle {
+	margin:auto;
+}
+.tre9mod { 
+    font-size: 11px;
+    color: #000000ba;
+    font-family: sans-serif;
+    border-bottom: #dfdfdf;
+    border-style: solid;
+    border-right: none;
+    border-left: none;
+    border-top: none;
+    border-width: thin;
+    background-color:#fff;
+}
+.tro9mod { 
+    font-size: 11px;
+    color: #000000ba;
+    font-family: sans-serif;
+    border-bottom: #dfdfdf;
+    border-style: solid;
+    border-right: none;
+    border-left: none;
+    border-top: none;
+    border-width: thin;
+    background-color:#fff;
+}
+
+.tre9mod:HOVER, .tro9mod:HOVER, .trs9mod:HOVER { 
+	background-color: rgb(206, 206, 206); 
+	font-size: 11px; 
+	color: #000000; 
+	font-family: sans-serif;  
+}
+.textoAbas {
+	font-size: 15px;
+	font-weight: 300;
+	font-family: sans-serif;
+}
+.alerta {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+.center-block {
+    float: none !important
+}
+
+#addQuestion{
+    background-color: #C5C9B8;
+    width: 100%;
+    color: #333333;
+    height: 150px;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 10px 0;
+    align-items: center;
+    justify-content: space-around;
+    display: flex;
+    float: none;
+}
+
+.buttonVLI{
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+
+.imageMenu {
+  opacity: 1;
+  transition: .5s ease;
+}
+
+.imageMenu:HOVER {
+  opacity: 0.3;
+}
+
+.containerShadow {
+    box-shadow: 0 0 3px rgba(0,0,0,.2);
+}
+ 
+.internoFiltro {
+    padding: 0 10 0 10;
+}
+
+.opcaoCrud {
+    background-color: #fff;
+    padding: 15;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 3px rgba(0,0,0,.2);
+}
+
+.opcaoTitulo {
+    background-color: #fff;
+    box-shadow: 0 0 3px rgba(0,0,0,.2);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 8 15 8 10;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #5170b3;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+.titutoPagina {
+    background-color: white;
+}

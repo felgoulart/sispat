@@ -1,0 +1,10 @@
+[PropertyInfo]
+componentType,String,false,false, , ,true,<default>
+enabled,String,false,false,enabled,enabled,true,<default>
+styleDisabled,String,false,false,styleDisabled,styleDisabled,true,<default>
+styleClassDisabled,String,false,false,styleClassDisabled,styleClassDisabled,true,<default>
+[IconNames]
+
+
+
+

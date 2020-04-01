@@ -1,0 +1,246 @@
+<table>  <%-- Stub Tab if no Frames --%>
+<tr>  <%-- <tr open> aaa --%>
+<%-- CRUD Stubbed Form Std Message --%>
+<td   colspan="2"  align="center" >
+<%-- // Property Title Unfolding contentGen --%>
+<h:inputText id="mesg_varastat" rendered="#{cadAssetTunnlBean.canUpdate}" value="#{cadAssetTunnlBean.mesg_var}"  styleClass="txrr pr5 tb450r" tabindex="-1" readonly="true"/>
+<h:commandButton id="aMessageastat" image="../imagens/btMessage_off.gif" styleClass="btp" title="#{iimsg.botao_message}" rendered="#{cadAssetTunnlBean.canUpdate}" action="#{cadAssetTunnlBean.doValidate}" onmousedown="msgw('aMessageastat');"/>
+</td> <%-- <close td> aaa --%>
+</tr> <%-- <tr close aaa> --%>
+<%-- prop parentKey - contentGen UV --%>
+<tr>  <td  width="200" class="tip" >
+<h:outputLabel for="asset_id3" >
+<h:outputText styleClass="tip" value="#{iimsg.AssetTunnl_asset_id_tt}"/>
+</h:outputLabel> </td>
+<td>
+<h:outputText id="asset_id3" value="#{cadAssetTunnlBean.asset_id}"  styleClass="tip" />
+&nbsp&nbsp
+<h:outputText styleClass="tip" value="#{iimsg.AssetTunnl_asset_nu_tt}"/>
+<h:outputText id="asset_id_dsc3" value="#{cadAssetTunnlBean.asset_nu}" styleClass="tip"/>
+</td> </tr>
+</table> <%-- <last frame close> if no Frames--%>
+<table      >  <%-- <explicit frame open> --%>
+<tr>   <%-- <tr open> vvv --%>
+<td    colspan ="4"   width="100%" > <%-- open w/ inputText 222a--%>
+<table width="100%" style="border:solid 1px slategray;" bgcolor="D4DDE6" >  <%-- <open a Toolbar Table>--%>
+<tr>
+<td align="left"  colspan ="4" width="0%"  class="tts"> <%-- tittle underlined --%>
+<h:outputText value="#{iimsg.AssetTunnl_attb_tt_pct_tt}"/>
+</td>
+</td>  <%-- <close a Toolbar /td--%>
+</tr>
+</table >
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+<tr>   <%-- <tr open> vvv --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_emboque_ini" for="asset_tp_emboque_ini"  value="#{iimsg.AssetTunnl_asset_tp_emboque_ini_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_emboque_ini" value="#{cadAssetTunnlBean.asset_tp_emboque_ini}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_emboque_ini','3','EBQTP',this.value);;" size="5" maxlength="3" tabindex="28" />
+<h:commandButton id="asset_tp_emboque_ini_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'EBQTP', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_emboque_ini_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_emboque_ini_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_emboque_ini_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_emboque_ini_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_emboque_fin" for="asset_tp_emboque_fin"  value="#{iimsg.AssetTunnl_asset_tp_emboque_fin_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_emboque_fin" value="#{cadAssetTunnlBean.asset_tp_emboque_fin}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_emboque_fin','3','EBQTP',this.value);;" size="5" maxlength="3" tabindex="29" />
+<h:commandButton id="asset_tp_emboque_fin_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'EBQTP', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_emboque_fin_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_emboque_fin_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_emboque_fin_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_emboque_fin_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+<tr>   <%-- <tr open> vvv --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_in_refugio" for="asset_in_refugio"  value="#{iimsg.AssetTunnl_asset_in_refugio_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<h:inputHidden id="asset_in_refugio_bol" value="#{cadAssetTunnlBean.asset_in_refugio}"/>
+<h:selectBooleanCheckbox id="asset_in_refugio" tabindex="30"  value="#{cadAssetTunnlBean.asset_in_refugio_bol}" onclick="chkBoolean(this, 'cadForm:asset_in_refugio_bol');"/>
+<ps:psGraphicImage id="asset_in_refugio_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_in_refugio_vc}" styleClass="btp"/>
+</td> <%-- <close td> ccc --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_nr_refugios" for="asset_nr_refugios"  value="#{iimsg.AssetTunnl_asset_nr_refugios_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_nr_refugios" value="#{cadAssetTunnlBean.asset_nr_refugios}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_nr_refugios','3','QTRFG',this.value);;" size="5" maxlength="3" tabindex="31" />
+<h:commandButton id="asset_nr_refugios_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'QTRFG', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_nr_refugios_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_nr_refugios_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_nr_refugios_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_nr_refugios_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+<tr>   <%-- <tr open> vvv --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_drenagem_int" for="asset_tp_drenagem_int"  value="#{iimsg.AssetTunnl_asset_tp_drenagem_int_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_drenagem_int" value="#{cadAssetTunnlBean.asset_tp_drenagem_int}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_drenagem_int','3','DRNTP',this.value);;" size="5" maxlength="3" tabindex="32" />
+<h:commandButton id="asset_tp_drenagem_int_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'DRNTP', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_drenagem_int_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_drenagem_int_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_drenagem_int_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_drenagem_int_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_nr_vias_ferreas" for="asset_nr_vias_ferreas"  value="#{iimsg.AssetTunnl_asset_nr_vias_ferreas_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_nr_vias_ferreas" value="#{cadAssetTunnlBean.asset_nr_vias_ferreas}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_nr_vias_ferreas','3','NUMVF',this.value);;" size="5" maxlength="3" tabindex="33" />
+<h:commandButton id="asset_nr_vias_ferreas_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'NUMVF', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_nr_vias_ferreas_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_nr_vias_ferreas_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_nr_vias_ferreas_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_nr_vias_ferreas_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+<tr>   <%-- <tr open> vvv --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_bitola" for="asset_tp_bitola"  value="#{iimsg.AssetTunnl_asset_tp_bitola_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_bitola" value="#{cadAssetTunnlBean.asset_tp_bitola}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_bitola','3','BITOL',this.value);;" size="5" maxlength="3" tabindex="34" />
+<h:commandButton id="asset_tp_bitola_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'BITOL', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_bitola_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_bitola_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_bitola_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_bitola_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_tracado_planta" for="asset_tp_tracado_planta"  value="#{iimsg.AssetTunnl_asset_tp_tracado_planta_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_tracado_planta" value="#{cadAssetTunnlBean.asset_tp_tracado_planta}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_tracado_planta','3','TCPLA',this.value);;" size="5" maxlength="3" tabindex="35" />
+<h:commandButton id="asset_tp_tracado_planta_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TCPLA', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_tracado_planta_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_tracado_planta_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_tracado_planta_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_tracado_planta_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+<tr>   <%-- <tr open> vvv --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_trilho" for="asset_tp_trilho"  value="#{iimsg.AssetTunnl_asset_tp_trilho_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_trilho" value="#{cadAssetTunnlBean.asset_tp_trilho}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_trilho','3','TRTPA',this.value);;" size="5" maxlength="3" tabindex="36" />
+<h:commandButton id="asset_tp_trilho_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TRTPA', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_trilho_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_trilho_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_trilho_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_trilho_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_dormente" for="asset_tp_dormente"  value="#{iimsg.AssetTunnl_asset_tp_dormente_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_dormente" value="#{cadAssetTunnlBean.asset_tp_dormente}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_dormente','3','TPDOR',this.value);;" size="5" maxlength="3" tabindex="37" />
+<h:commandButton id="asset_tp_dormente_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TPDOR', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_dormente_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_dormente_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_dormente_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_dormente_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+<tr>   <%-- <tr open> vvv --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_fixacao" for="asset_tp_fixacao"  value="#{iimsg.AssetTunnl_asset_tp_fixacao_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_fixacao" value="#{cadAssetTunnlBean.asset_tp_fixacao}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_fixacao','3','TRITF',this.value);;" size="5" maxlength="3" tabindex="38" />
+<h:commandButton id="asset_tp_fixacao_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TRITF', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_fixacao_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_fixacao_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_fixacao_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_fixacao_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_lastro" for="asset_tp_lastro"  value="#{iimsg.AssetTunnl_asset_tp_lastro_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_lastro" value="#{cadAssetTunnlBean.asset_tp_lastro}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_lastro','3','TPLST',this.value);;" size="5" maxlength="3" tabindex="39" />
+<h:commandButton id="asset_tp_lastro_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TPLST', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_lastro_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_lastro_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_lastro_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_lastro_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+<tr>   <%-- <tr open> vvv --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_tp_acessibilidade" for="asset_tp_acessibilidade"  value="#{iimsg.AssetTunnl_asset_tp_acessibilidade_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_tp_acessibilidade" value="#{cadAssetTunnlBean.asset_tp_acessibilidade}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="bdcd('','asset_tp_acessibilidade','3','SN',this.value);;" size="7" maxlength="5" tabindex="40" />
+<h:commandButton id="asset_tp_acessibilidade_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'SN', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_tp_acessibilidade_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_tp_acessibilidade_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_tp_acessibilidade_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_tp_acessibilidade_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_ex_total" for="asset_ex_total"  value="#{iimsg.AssetTunnl_asset_ex_total_tt}"/>  </td> <%-- <top> --%>
+<%-- BigDecimal Fields --%>
+<td   width="600" class="pr5"> <h:inputText id="asset_ex_total" tabindex="41"  value="#{cadAssetTunnlBean.asset_ex_total_str}"  styleClass="txr pr5 tbx" size="16" maxlength="14" onchange="bv('','asset_ex_total','3',valDec(this.value));"/>
+<ps:psGraphicImage id="asset_ex_total_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_ex_total_vc}" styleClass="btp"/>
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+<tr>   <%-- <tr open> vvv --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tip txl pl0"  id="lbl_asset_nu_imovel_asst" for="asset_nu_imovel_asst"  value="#{iimsg.AssetTunnl_asset_nu_imovel_asst_tt}"/>  </td> <%-- <top> --%>
+<%-- inputText --%>
+<%-- nowrap 5676 --%>
+<td   width="600"   >
+<h:inputText id="asset_nu_imovel_asst" tabindex="42"  value="#{cadAssetTunnlBean.asset_nu_imovel_asst}" size="12" maxlength="10"  styleClass="txl pl5 tbx" onchange="clFields(1);bv('','asset_nu_imovel_asst','3',this.value);"/>
+<ps:psGraphicImage id="asset_nu_imovel_asst_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_nu_imovel_asst_vc}" styleClass="btp"/>
+</td> <%-- <close td> ccc --%>
+<td        width="350" > <%-- open w/ inputText 222a--%>
+<%-- outputLabel aaa --%>
+<h:outputLabel  styleClass="tipb txl pl0"  id="lbl_asset_nu_imovel_asst_nap" for="asset_nu_imovel_asst_nap"  value="#{iimsg.AssetTunnl_asset_nu_imovel_asst_nap_tt}"/>  </td> <%-- <top> --%>
+<%-- Processing Codf --%>
+<td   width="600"   >
+<%-- Processing Codf 1--%>
+<%-- Processing Codf 1 HLFN --%>
+<h:inputText  id="asset_nu_imovel_asst_nap" value="#{cadAssetTunnlBean.asset_nu_imovel_asst_nap}" onkeydown="keypress=1;"  styleClass="txl pl5 tbx" onchange="clFields(2);cleSubSel_uv('asset_nu_imovel_asst');bdcd('','asset_nu_imovel_asst_nap','3','TPNPI',this.value);;" size="14" maxlength="12" tabindex="43" />
+<h:commandButton id="asset_nu_imovel_asst_nap_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TPNPI', tran, this.id, 'yes');" image="../imagens/btPesquisar.gif"/>
+<ps:psGraphicImage id="asset_nu_imovel_asst_nap_vc" flagType="val" flag="#{cadAssetTunnlBean.asset_nu_imovel_asst_nap_vc}" styleClass="btp"/>
+<%-- Processing Codf 1 AAA --%>
+<h:inputText id="asset_nu_imovel_asst_nap_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetTunnlBean.asset_nu_imovel_asst_nap_desc}" styleClass="txlr pr5 tb100r"/>
+</td> <%-- <close td> ccc --%>
+</tr> <%-- <tr close> ddd--%>
+</table> <%-- <explicit frame close> --%>

@@ -1,0 +1,752 @@
+//Project: SISP - Sistema Integrado de Segurança Pública / 2007/07/28 ctl 01-001
+//java: ApplicationResources,  Path: C:\Projetos\Fabrica\Java\SISP-1-080112\, Date / Time: Sun Jan 13 13:37:43 BRST 2008/
+package appl.libs;
+
+// Libraries
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.beanutils.BeanUtils;
+import java.util.Iterator;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.util.Date;
+import appl.data.Codf;
+import appl.data.Cep;
+import appl.data.Loglocalidade;
+import appl.data.Loglogradouro;
+import appl.data.Loglogradourotipo;
+import appl.data.Logbairro;
+import appl.data.Municipios;
+import appl.data.Imagens;
+import appl.data.Convs;
+import appl.data.Opern;
+import appl.data.Role;
+import appl.data.Accr;
+import appl.data.Trans;
+import appl.data.Userx;
+import appl.data.Railw;
+import appl.data.Sectn;
+import appl.data.Unprd;
+import appl.data.Brnch;
+import appl.data.Rwloc;
+import appl.data.Track;
+import appl.data.Area;
+
+import appl.data.Emply;
+import appl.data.Mesg;
+import appl.data.Email;
+import appl.data.Emdst;
+
+import appl.data.Solic;
+import appl.data.Pjaus;
+import appl.data.Help;
+import appl.data.IntervalDatePat;
+import appl.data.Ivprs;
+import appl.data.Invty;
+import appl.data.Asset;
+import appl.data.Imgtp;
+import appl.data.Drwng;
+import appl.data.Dwimg;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+
+public class IIBeanUtils extends BeanUtils {
+    protected static Log log = LogFactory.getLog(IIBeanUtils.class);
+
+    public static void setBeanList(List destino, List origem, Class type) throws IllegalAccessException,
+        InstantiationException, InvocationTargetException {
+        for (Object obj : origem) {
+            if (obj.getClass().equals(type)) {
+                destino.add(obj);
+            } else if (obj instanceof Map) {
+                Map map = (Map) obj;
+                Object bean = type.newInstance();
+                Iterator it = map.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = (String) it.next();
+                    BeanUtils.setProperty(bean, key, map.get(key));
+                }
+                destino.add(bean);
+            } else {
+                throw new RuntimeException("Type not supported.");
+            }
+        }
+     }
+
+    public static String setBeanList1(String prop, List origem, Class type) throws IllegalAccessException,
+        InstantiationException, InvocationTargetException {
+        Integer sum = 0; String sum_str = "";
+        for (Object obj : origem) {
+            if (obj.getClass().equals(type)) {
+               // destino.add(obj);
+            } else if (obj instanceof Map) {
+                Map map = (Map) obj;
+                Object bean = type.newInstance();
+                Iterator it = map.keySet().iterator();
+                int value=0; String value_str = "";
+                while (it.hasNext()) {
+                    String key = (String) it.next();
+                    BeanUtils.setProperty(bean, key, map.get(key));
+                    value_str  = (String) map.get(key);
+                    if (key.equals(prop)) {
+                        value = Integer.parseInt(value_str);
+                        sum = sum + value;
+                    }
+                    // BeanUtils.getProperty(bean, name)
+                }
+                //destino.add(bean);
+                sum_str = sum.toString();
+            } else {
+                throw new RuntimeException("Type not supported.");
+            }
+        }
+        return sum_str;
+    }
+
+    public static Integer verifyListSum(String prop, List origem, Class type) throws IllegalAccessException,
+        InstantiationException, InvocationTargetException {
+        Integer sum = 0; String sum_str = "";
+        for (Object obj : origem) {
+
+            if (obj.getClass().equals(type)) {
+               // destino.add(obj);
+            } else if (obj instanceof Map) {
+
+            //if (obj instanceof Map) {
+                Map map = (Map) obj;
+                Object bean = type.newInstance();
+                Iterator it = map.keySet().iterator();
+                int value=0; String value_str = "";
+                while (it.hasNext()) {
+                    String key = (String) it.next();    // Get Name
+                    value_str  = (String) map.get(key); // Get Value
+                    if (key.equals(prop)) {
+                        value = Integer.parseInt(value_str);
+                        sum = sum + value;
+                    }
+                }
+                sum_str = sum.toString();
+            } else {
+                throw new RuntimeException("Type not supported.");
+            }
+        }
+        //return sum_str;
+        return sum;
+    }
+
+    public static String getPjaus_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Pjaus m = new Pjaus(id);
+            m.load(con);
+            return m.getPjaus_nu_pasta();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getRailw_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Railw m = new Railw(id);
+            m.load(con);
+            return m.getRailw_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getRailw_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Railw m = new Railw(id);
+            m.load(con);
+            return m.getRailw_ab();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getBrnch_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Brnch m = new Brnch(id);
+            m.load(con);
+            return m.getBrnch_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getBrnch_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Brnch m = new Brnch(id);
+            m.load(con);
+            return m.getBrnch_ab();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getTrack_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Track m = new Track(id);
+            m.load(con);
+            return m.getTrack_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getTrack_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Track m = new Track(id);
+            m.load(con);
+            return m.getTrack_ab();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getArea_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Area m = new Area(id);
+            m.load(con);
+            return m.getArea_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getArea_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Area m = new Area(id);
+            m.load(con);
+            return m.getArea_ab();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getPjaus_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+        	Pjaus m = new Pjaus(id);
+            m.load(con);
+            return m.getPjaus_nu_pasta();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getUnprd_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Unprd m = new Unprd(id);
+            m.load(con);
+            return m.getUnprd_nm();
+        } else {
+            return null;
+        }
+    }
+   
+    public static String getUnprd_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Unprd m = new Unprd(id);
+            m.load(con);
+            return m.getUnprd_ab();
+        } else {
+            return null;
+        }
+    }
+    
+    public static String getSectn_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Sectn m = new Sectn(id);
+            m.load(con);
+            return m.getSectn_px();
+        } else {
+            return null;
+        }
+    }
+    
+    public static String getRwloc_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Rwloc m = new Rwloc(id);
+            m.load(con);
+            return m.getRwloc_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getRwloc_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Rwloc m = new Rwloc(id);
+            m.load(con);
+            return m.getRwloc_px();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getRwsta_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Rwloc m = new Rwloc(id);
+            m.load(con);
+            return m.getRwloc_px();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getRwsta_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Rwloc m = new Rwloc(id);
+            m.load(con);
+            return m.getRwloc_nm();
+        } else {
+            return null;
+        }
+    }
+    
+    public static String getEmply_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Emply m = new Emply(id);
+            m.load(con);
+            return m.getEmply_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getEmply_ak(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Emply m = new Emply(id);
+            m.load(con);
+            return m.getEmply_cd();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getCodfDesc(Connection con, String tipo, String id) throws SQLException {
+        if (id != null) {
+            tipo = tipo.trim();
+            id = id.trim();
+            Codf codf = new Codf(tipo, id, null);
+            codf.load(con);
+            String dsx = codf.getCodf_ds();
+			if (dsx != null && dsx.indexOf(">") > 0) {
+				dsx = dsx.substring(dsx.indexOf(">")+1,dsx.length());
+	        }
+            String dsxx = dsx.trim();
+            //if (dsxx.equals("-")) {
+                dsx = "";
+            //}
+            return dsx;
+        } else {
+            return null;
+        }
+    }
+
+    public static String getCodfDesc(Connection con, String tipo, String id, String locale) throws SQLException {
+        if (id != null) {
+            Codf codf = new Codf(tipo, id, locale);
+            codf.load(con);
+            String dsx = codf.getCodf_ds();
+			if (dsx != null && dsx.indexOf(">") > 0) {
+				dsx = dsx.substring(dsx.indexOf(">")+1,dsx.length());
+	        }
+            String dsxx = dsx.trim();
+            //if (dsxx.equals("-")) {
+                dsx = "";
+            //}
+            return dsx;
+        } else {
+            return null;
+        }
+    }
+
+    public static String getSolic_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+        	Solic solic = new Solic(id);
+        	solic.load(con);
+            return solic.getSolic_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getHelp_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getHelppus_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getHelpgns_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getHelpgnr_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getHelpcms_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getHelpcmr_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getHelpdtr_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getHelpdts_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+
+    
+    public static String getHelpmaint_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Help help = new Help(id, locale);
+            help.load(con);
+            return help.getHelp_nm();
+        } else {
+            return null;
+        }
+    }
+    
+    public static String getMunicipioDesc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Municipios m = new Municipios(id);
+            m.load(con);
+            return m.getLoc_no();
+        } else {
+            return null;
+        }
+    }
+/*
+    public static String getLoglocalidade_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Loglocalidade m = new Loglocalidade(id);
+            //Loglocalidade m = new Loglocalidade(id);
+            m.load(con);
+            return m.getLoc_no();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getLoglogradouro_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Loglogradouro m = new Loglogradouro(id);
+            return m.getLog_no();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getLoglogradourotipo_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Loglogradourotipo m = new Loglogradourotipo(id);
+            return m.getNome_pat();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getLogbairro_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Logbairro m = new Logbairro(id);
+            return m.getBai_no();
+        } else {
+            return null;
+        }
+    }
+
+*/
+
+    public static String getLoglocalidade_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Loglocalidade m = new Loglocalidade(id);
+            if (m.load(con, new String[] {Loglocalidade.LOC_NO})) {
+                ;
+            }
+            return m.getLoc_no();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getLoglogradouro_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Loglogradouro m = new Loglogradouro(id);
+            if (m.load(con, new String[] {Loglogradouro.LOG_NO})) {
+                ;
+            }
+            return m.getLog_no();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getLoglogradourotipo_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Loglogradourotipo m = new Loglogradourotipo(id);
+            if (m.load(con, new String[] {Loglogradourotipo.NOME_PAT})) {
+                ;
+            }
+            return m.getNome_pat();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getLogbairro_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Logbairro m = new Logbairro(id);
+            if (m.load(con, new String[] {Logbairro.BAI_NO})) {
+                ;
+            }
+            return m.getBai_no();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getImagens_desc(Connection con, Integer id) throws SQLException {
+        if (id != null) {
+            Imagens m = new Imagens(id);
+            m.load(con);
+            return m.getTipo();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getAsset_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Asset m = new Asset(id);
+            m.load(con);
+            return m.getAsset_nu();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getAssetVhwag_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Asset m = new Asset(id);
+            m.load(con);
+            return m.getAsset_nu();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getOpern_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Opern m = new Opern(id);
+            m.load(con);
+            return m.getOpern_ds();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getRole_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Role m = new Role(id);
+            m.load(con);
+            return m.getRole_ds();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getAccr_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Accr m = new Accr(id);
+            m.load(con);
+            return m.getAccr_ds();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getConvs_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+        	Convs m = new Convs(id);
+            m.load(con);
+            return m.getConvs_ds();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getTrans_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Trans m = new Trans(id);
+            m.load(con);
+            return m.getTrans_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getTranscodf_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Trans m = new Trans(id);
+            m.load(con);
+            return m.getTrans_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getTransmenu_desc(Connection con, String id) throws SQLException {
+        if (id != null) { 
+            Trans m = new Trans(id);
+            m.load(con);
+            return m.getTrans_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getMenu_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Trans m = new Trans(id);
+            m.load(con);
+            return m.getTrans_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getUserx_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Userx m = new Userx(id);
+            m.load(con);
+            return m.getUserx_nm();
+        } else {
+            return null; 
+        }
+    }
+
+
+    public static String getInvty_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Invty m = new Invty(id);
+            m.load(con);
+            return m.getInvty_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getImgtp_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+        	Imgtp m = new Imgtp(id);
+            m.load(con);
+            return m.getImgtp_ds();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getDrwng_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+        	Drwng m = new Drwng(id);
+            m.load(con);
+            return m.getDrwng_nm();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getIvprs_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Ivprs m = new Ivprs(id);
+            m.load(con);
+            return m.getIvprs_nm();
+        } else {
+            return null;
+        }
+    }
+    public static String getEmdst_desc(Connection con, String id) throws SQLException {
+        if (id != null) {
+            Emdst m = new Emdst(id);
+            m.load(con);
+            return m.getEmdst_ds();
+        } else {
+            return null;
+        }
+    }
+
+    public static String getMesg_desc(Connection con, String id, String locale) throws SQLException {
+        if (id != null) {
+            Mesg m = new Mesg(id, locale);
+            m.load(con);
+            return m.getMesg_ds();
+        } else {
+            return null;
+        }
+        //return "IIBeanUtils: " + id + locale;
+    }
+
+    public static Date getIntervalDatePatBegin(Connection con) throws SQLException {
+        IntervalDatePat m = new IntervalDatePat();
+        m.setProcedureName("GetIntervalDatePat_pub");
+        m.load(con);
+        return m.getTrnpg_dh_begin();
+    }
+
+    public static Date getIntervalDatePatEnd(Connection con) throws SQLException {
+        IntervalDatePat m = new IntervalDatePat();
+        m.setProcedureName("GetIntervalDatePat_pub");
+        m.load(con);
+        return m.getTrnpg_dh_end();
+    }
+
+} // End of Code

@@ -1,0 +1,10 @@
+[PropertyInfo]
+enabled,boolean,false,false, , ,true,<default>
+enabledSet,boolean,false,false, , ,false,<default>
+styleDisabled,String,false,false,styleDisabled,styleDisabled,true,<default>
+styleClassDisabled,String,false,false,styleClassDisabled,styleClassDisabled,true,<default>
+[IconNames]
+
+
+
+

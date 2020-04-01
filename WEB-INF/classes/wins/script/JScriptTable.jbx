@@ -1,0 +1,12 @@
+[PropertyInfo]
+body,siof.script.JScriptBody,false,false, , ,true,<default>
+border,String,false,false,border,border,true,<default>
+cellpadding,String,false,false,cellpadding,cellpadding,true,<default>
+cellspacing,String,false,false,cellspacing,cellspacing,true,<default>
+header,siof.script.JScriptHeader,false,false, , ,true,<default>
+type,String,false,false, , ,true,<default>
+[IconNames]
+
+
+
+

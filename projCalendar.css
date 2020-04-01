@@ -1,0 +1,35 @@
+.main {
+  width:180px;
+  border:1px solid #9ACEDD;}
+
+.month {
+  background-color:#BCDEE7;
+  font:bold italic 12px arial;
+  color:#003366;}
+
+.daysofweek {
+  background-color:#FCD594;
+  font:bold 12px verdana;
+  color:#003366;}
+
+.days {
+  background-color: #F1F8FA;
+  font-size: 12px;
+  font-family:verdana;
+  color:#003366;
+  padding: 2px;}
+
+.days #today{
+  background-color:#F1F8FA;
+  font-size: 12px;
+  font-weight: bold;
+  color:white;}
+
+.time_title {
+    font-size: 11px;}
+
+.time {
+  background-color: #F1F8FA;
+  font-family:verdana;
+  color:#003366;
+  padding: 0px;}

@@ -1,0 +1,27 @@
+[PropertyInfo]
+bal,java.util.List,false,false, , ,true,<default>
+bcc,java.util.List,false,false, , ,true,<default>
+bco,java.util.List,false,false, , ,true,<default>
+bct,java.util.List,false,false, , ,true,<default>
+bda,java.util.List,false,false, , ,true,<default>
+bde,java.util.List,false,false, , ,true,<default>
+bec,java.util.List,false,false, , ,true,<default>
+bes,java.util.List,false,false, , ,true,<default>
+blp,java.util.List,false,false, , ,true,<default>
+bnc,java.util.List,false,false, , ,true,<default>
+bpe,java.util.List,false,false, , ,true,<default>
+bts,java.util.List,false,false, , ,true,<default>
+btt,java.util.List,false,false, , ,true,<default>
+campo,String,false,false, , ,false,<default>
+codf,siof.data.Codf,false,false, , ,false,<default>
+codf_ds,String,false,false,codf_ds,codf_ds,true,<default>
+codf_id,String,false,false,codf_id,codf_id,true,<default>
+codf_supid,String,false,false,codf_supid,codf_supid,true,<default>
+codf_tp,String,false,false,codf_tp,codf_tp,true,<default>
+descPai,String,false,false,descPai,descPai,true,<default>
+onchange,String,false,false,onchange,onchange,true,<default>
+[IconNames]
+
+
+
+

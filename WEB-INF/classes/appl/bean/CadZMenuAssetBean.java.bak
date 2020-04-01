@@ -1,0 +1,642 @@
+package appl.bean;
+    
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+import java.util.LinkedHashMap;
+import javax.faces.model.SelectItem;
+import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import wins.report.jasperRunner;
+import java.util.List;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.fileupload.FileItem;
+import appl.bean.FooDAO;
+import appl.data.Userx;
+// ---------------------------------------
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import wins.libs.LoginException;
+import appl.libs.IIBeanUtils;
+public class CadZMenuAssetBean extends CadastroBean {
+        protected static Log log = LogFactory.getLog(CadZMenuAssetBean.class);
+    public boolean goBackx = false;
+    public int xtab = 0;
+    // Tabs Validation Status
+    public String tranx = "zmenuasset";
+    private String idx;
+    private String idxm;
+    private int idxmtot;
+    private boolean idxflag;
+    private String tbakloc;
+    private String tranAntx;
+    private String alterando;
+    private Boolean assistnovo;
+    private String filter;
+    private String vc;
+    public String role = "";
+    public Date pw_time;
+    public Integer st = 0;
+    public int imgskk = 0;
+    public int fileskk = 0;
+    public String fileUploaded= "";
+    private int maxResultsTrn = 0;
+    public String valorz = "";
+    public int error = 0;
+    public int selectFromMenu = 0;
+    // Init ---------------------
+    private Map<String, Foo> fooMapx;
+    private List<SelectItem> selectItems;
+    private String selectedItem; // You can also use any Number type, e.g. Long.
+    public boolean canac_menuassetlandbuildingx = false;
+    public boolean canac_menuassetlandbuildingxDone = false;
+    public boolean canac_assetsuper = false;
+    public boolean canac_assetsuperDone = false;
+    public boolean canac_menuassetrollingstock = false;
+    public boolean canac_menuassetrollingstockDone = false;
+    public boolean canac_assetvhwag = false;
+    public boolean canac_assetvhwagDone = false;
+    public boolean canac_assetvheng = false;
+    public boolean canac_assetvhengDone = false;
+    public boolean canac_assetvhaux = false;
+    public boolean canac_assetvhauxDone = false;
+    public boolean canac_assetbldng = false;
+    public boolean canac_assetbldngDone = false;
+    public boolean canac_assetlbdld = false;
+    public boolean canac_assetlbdldDone = false;
+    public boolean canac_menuassetobdoc = false;
+    public boolean canac_menuassetobdocDone = false;
+    public boolean canac_invty = false;
+    public boolean canac_invtyDone = false;
+    
+    // Building Fields Validation Map ---------------
+    private static Map<String, Integer> i_fields = new HashMap<String, Integer>(); static {
+    } // 222
+    
+    // Declaring Validation Map -------------------
+    private HashMap<String, StringBuffer> i_divns = new HashMap<String, StringBuffer>();
+    // ii.properties---------------------------------------
+    private String xbutn_id;
+    private String xuserx_id_login;
+    private String flds_vf_ref;
+    // Filters------------------------------------------
+    // Orders------------------------------------
+    // Constructor--------------------------------------
+    public CadZMenuAssetBean() { 
+        try {
+            rolex = getLoginInfo().getRole_idx();
+        } catch (LoginException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+    FooDAO.getInstance().loadFooMap(rolex);
+    fooMapx = new FooDAO().getInstance().map();
+    fillSelectItems();
+        // Help Types Logic -------------------- 
+        try {
+            verifyHelpFromtrans("zmenuasset");
+        } catch (LoginException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        } catch (SQLException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        }
+        // Password Expiration Logic -------------------- 
+        pw_time = new Date(); 
+        Date recd_ts_db = null;
+        try {
+            st = getLoginInfo().getUserx_st();
+        } catch (LoginException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        if ( st == null) {st = 1;} 
+        try {
+            recd_ts_db = getLoginInfo().getRecd_ts();
+        } catch (LoginException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } // Initialized
+        if (recd_ts_db == null) { recd_ts_db = pw_time; }
+        long tsdb = recd_ts_db.getTime();
+        long tsxx = pw_time.getTime();
+        long daysleft = (tsxx - tsdb)/ (3600000);
+        if ( st == 0) {
+            daysleft = 60 - daysleft / 24;
+        }
+        Integer dayslefti = (int) daysleft;
+        if (st >= 1 || dayslefti < 0  ) {
+           xmesg_rc = 999; st = 2; 
+           mesg_var = getMessageByKey("passwordToBeUpdatedByUser");
+        } else
+        if (daysleft <= 10) {
+           xmesg_rc = 999;
+           mesg_var = getMessageByKey("passwordDaysLeft")  + " " + dayslefti.toString();
+        }
+        getSession().setAttribute("tbakmenu", "zmenuassetcad");
+    } // 333
+    
+    // Returns a Reference to the Associared DataObject-
+    protected Class getDataClass() { return Userx.class;}
+    // Working Variables Methods-------------------------
+    public void setAlterando(String alterando) { this.alterando = alterando; }
+    public String getAlterando() { return alterando;} 
+    
+    // Setters -----------------------------------------
+    public void setXbutn_id (String xbutn_id) {
+        this.xbutn_id = xbutn_id;
+    }
+    public void setXuserx_id_login (String xuserx_id_login) {
+        this.xuserx_id_login = xuserx_id_login;
+    }
+    // Filter Setters-----------------------------------
+    // Order Setters---------------------------
+    
+    // Select One from Menu Action ------------
+    public String action() {
+        String tipoz = fooMapx.get(selectedItem).toString();
+        int start = tipoz.indexOf("ZMenu");
+        int end = tipoz.indexOf(",");
+        tipoz = tipoz.substring(start,end);
+        tipoz = tipoz.toLowerCase() + "cad";
+        //System.out.println("Tipoz: " + tipoz);
+        getSession().setAttribute("tbakmenu", tipoz);
+        selectedItem = null;
+        return tipoz;
+    }
+    public void updateUserMenu() throws SQLException {
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+           String sqlUserx = "update userx set userx_id_trans = 'ZMENUASSET' where userx_id_login = ?";
+           PreparedStatement stmtUserx = con1.prepareStatement(sqlUserx);
+           stmtUserx.setString(1, getLoginInfo().getUserx_id_login());
+           stmtUserx.executeUpdate();
+           stmtUserx.close();
+           mesg_var = getMessageByKey("success_inserir");
+           } catch (Exception ex) {
+               ex.getMessage();
+           } finally {
+                DatabaseUtils.releaseConnection(con1);
+           }
+    }
+    // Getters ---------
+    public List<SelectItem> getSelectItems() {
+        return selectItems;
+    }
+    public String getSelectedItem() {
+        return selectedItem;
+    }
+    // Setters ---------------
+    public void setSelectedItem(String selectedItem) {
+        this.selectedItem = selectedItem;
+    }
+    // Helpers ----------------
+    private void fillSelectItems() {
+        selectItems = new ArrayList<SelectItem>();
+        for (Foo foo : fooMapx.values()) {
+            selectItems.add(new SelectItem(foo.getKey(), foo.getValue()));
+        }
+    }
+    // Getters -----------------------------------------
+    public String getIdxm() {
+        return idxm; 
+    }
+    public boolean isIdxflag() {
+        return idxflag; 
+    }
+    public boolean isGoBackx() {
+        return goBackx; 
+    }
+    public String getXbutn_id() {
+        return xbutn_id; 
+    }
+    public String getXuserx_id_login() {
+        return xuserx_id_login; 
+    }
+    // Filter Getters-----------------------------------
+    // Order Getters-----------------------------
+    
+    protected boolean validate() { // @save @getrecd  
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadZMenuAssetBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+    
+        validateMax(vfbuffer); addErrorMessageFromErrorList(); 
+        addAttribute("validateOn"+tab, "1");
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+        return result; 
+    }   //  End of Validate 
+    
+    protected void validateInserir() {
+        StringBuffer vfbuffer = new StringBuffer();
+        if (tabs_vf != null) {
+            vfbuffer.append(tabs_vf);
+            vfbuffer.setCharAt(49,'0');
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf;
+        }
+    } 
+    
+    public String validateFieldOnChange(String value, String field) {
+        String result = null;
+        vf = 0; int i_field = 0; int valueInteger=0; Date valueDate = null; BigDecimal valueBigDecimal = null;
+    if (i_fields.containsKey(field)) {
+        i_field = i_fields.get(field);
+    }
+        switch (i_field) {
+        // Fields Validation Methods Switch 
+        } // 111
+        return result;
+    }
+    public String checkMaxFieldOnChange(String divn) {
+        vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(Integer.parseInt(divn),selMaxVc(divn).charAt(0));
+        vfbuffer.setCharAt(psvc,selMaxVc(divn).charAt(0));
+        tabsvf = vfbuffer.toString();
+        return vfbuffer.toString();
+    }
+    public String checkVFMaxFieldOnChange(String divn) {
+        return retSelBuffer(divn);
+    }
+    public String retSelBuffer(String divn) {
+        String selBuffer = null;
+        selBuffer = flds_vfsb.toString();
+        return selBuffer;
+    }
+    
+    // Main Record (Univalued) Field Validation Methods...
+    
+    
+    protected void reset() {  
+     try {
+        super.reset(); 
+        // Set initial ABA Number
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("cadbeanx", "cadZMenuAssetBean");
+        if (tab_remember == true) {
+            getSession().getAttribute("cadZMenuAssetBeanx");
+        } else {
+            getSession().setAttribute("cadZMenuAssetBeanx", "1");
+        } 
+        ufmv = "00000000000000000000000000000000000000000000000000";
+        getSession().setAttribute("ufmv", ufmv);
+        // Tabs Validation Status
+        this.tabs_vf = null;
+        this.tabs_vc = null;
+        vf = 0;
+        xmesg_st = "null";
+        // Reset of Main Record ii.properties-----------------
+        this.flds_vf = "null";
+        // Set initial tabsvf
+        tabsvf =    "90000000000000000000000000000000000000000000000909";
+        tabsvf =    "00000000000000000000000000000000000000000000000000";
+        tabsvf_in = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tr = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tp = "90000000000000000000000000000000000000000000000000";
+        // Load flds_vf & chld_vfs into prop vcs;
+        Connection con = DatabaseUtils.getConnection();
+        // Reset Initial Stub Number--------------------------
+        this.xbutn_id = "1";
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        // Orders-Reset------------------------------------
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo.indexOf("psq") >= 0){
+        } else {
+            mesg_var = "";
+            xmesg_rc = 0;
+        }
+    } catch (Exception ex) { ex.getMessage(); }
+    } // Closing Reset Method
+    
+    
+    public void loadDesc() throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+    
+    
+        } finally { DatabaseUtils.releaseConnection(con); }
+    }  //  End of loadDesc 
+    public String doObterRefreshParent() throws SQLException, LoginException { // @getrecd
+        valorz = "refresh";
+        return doObter(); // @getrecd
+    }
+    public String doObterBack() throws SQLException, LoginException { // @getrecd
+        String tbakx = (String) (getSession().getAttribute("tbak"));
+        if (tbakx.contains("cad")) { 
+        } 
+       return tbakx; // @getrecd
+    } 
+    public String doNovo()  throws SQLException, LoginException {  // logic section - Insert a New Record
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        String resultx = super.doNovo();
+        return resultx;
+    } 
+    // a Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObter() throws SQLException, LoginException { // @getrecd
+        xmesg_rc = 000; mesg_var = "";
+        tranAntx = getParameter("tipoant");
+        goBackx = true;
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        getSession().setAttribute("tbakmenu", "zmenuassetcad");
+        // Set Transactio Type 
+        tipo ="zmenuassetcad";
+        String tipoOabv ="zmenuasset";
+        loadBean(); // Load Record @getrecd - 1
+        // Return to Caller if valor is null 
+        if (valorz == null) { valorz = "";} 
+        if (valorz.length() == 0 ) {
+            if ( tranAntx != null && tranAntx.length() > 0 ) {
+                return tranAntx;
+            }
+            return tipoOabv+"psq";
+        }
+        String result = super.doObter(); // @getrecd
+        return tipo; // @getrecd 22
+    } 
+    
+    public Object doObterBean() throws SQLException, LoginException {
+        loadBean();
+        return this;
+    }
+    
+    // Loads bean from dao, based on PK value of Object - @param (valor) from Object PK
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+    // loadBean Get Selection Values from Session  ------------------
+    public void loadBean() throws SQLException, LoginException {
+        String valor = "";
+        tipo = "zmenuassetcad";
+        valorz = valor;
+    //  load Record - Start;
+        valor = (String) getSession().getAttribute(tipo+"valor");
+        if (valor != null &&  valor.length() == 0) {valor = null;}
+        valorz = valor;
+        // Return to caller if key value not received  
+        if (valor == null ) {
+            return;
+        }
+    //  load Record - End;
+        getSession().setAttribute("tipo", tipo);
+        loadBean(valor);
+    } // end of loadBean
+    public boolean isCanMenu() throws SQLException, LoginException {
+        tipo1 = "*zmenuasset";
+        return super.isCanPesquisar();
+    }
+    public boolean isCanac_menuassetlandbuildingx() throws SQLException, LoginException {
+        if ( st == 0 && !canac_menuassetlandbuildingxDone) {
+            canac_menuassetlandbuildingx = getLoginInfo().canDoAction("MENUASSETLANDBUILDINGX.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_menuassetlandbuildingxDone = true; return canac_menuassetlandbuildingx;}
+    public boolean isCanac_assetsuper() throws SQLException, LoginException {
+        if ( st == 0 && !canac_assetsuperDone) {
+            canac_assetsuper = getLoginInfo().canDoAction("ASSETSUPER.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_assetsuperDone = true; return canac_assetsuper;}
+    public boolean isCanac_menuassetrollingstock() throws SQLException, LoginException {
+        if ( st == 0 && !canac_menuassetrollingstockDone) {
+            canac_menuassetrollingstock = getLoginInfo().canDoAction("MENUASSETROLLINGSTOCK.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_menuassetrollingstockDone = true; return canac_menuassetrollingstock;}
+    public boolean isCanac_assetvhwag() throws SQLException, LoginException {
+        if ( st == 0 && !canac_assetvhwagDone) {
+            canac_assetvhwag = getLoginInfo().canDoAction("ASSETVHWAG.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_assetvhwagDone = true; return canac_assetvhwag;}
+    public boolean isCanac_assetvheng() throws SQLException, LoginException {
+        if ( st == 0 && !canac_assetvhengDone) {
+            canac_assetvheng = getLoginInfo().canDoAction("ASSETVHENG.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_assetvhengDone = true; return canac_assetvheng;}
+    public boolean isCanac_assetvhaux() throws SQLException, LoginException {
+        if ( st == 0 && !canac_assetvhauxDone) {
+            canac_assetvhaux = getLoginInfo().canDoAction("ASSETVHAUX.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_assetvhauxDone = true; return canac_assetvhaux;}
+    public boolean isCanac_assetbldng() throws SQLException, LoginException {
+        if ( st == 0 && !canac_assetbldngDone) {
+            canac_assetbldng = getLoginInfo().canDoAction("ASSETBLDNG.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_assetbldngDone = true; return canac_assetbldng;}
+    public boolean isCanac_assetlbdld() throws SQLException, LoginException {
+        if ( st == 0 && !canac_assetlbdldDone) {
+            canac_assetlbdld = getLoginInfo().canDoAction("ASSETLBDLD.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_assetlbdldDone = true; return canac_assetlbdld;}
+    public boolean isCanac_menuassetobdoc() throws SQLException, LoginException {
+        if ( st == 0 && !canac_menuassetobdocDone) {
+            canac_menuassetobdoc = getLoginInfo().canDoAction("MENUASSETOBDOC.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_menuassetobdocDone = true; return canac_menuassetobdoc;}
+    public boolean isCanac_invty() throws SQLException, LoginException {
+        if ( st == 0 && !canac_invtyDone) {
+            canac_invty = getLoginInfo().canDoAction("INVTY.SRCH",getLoginInfo().getUserx_id_role() );
+        }
+        canac_invtyDone = true; return canac_invty;}
+    public String getRole() throws SQLException, LoginException {
+        String role = getLoginInfo().getUserx_id_role();
+        role = role.toLowerCase();
+        String role_tt = "";
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            role_tt = IIBeanUtils.getRole_desc(con, role);
+            if (role_tt.indexOf("@") == 0 ) {
+                role_tt = translateMesg(role_tt.substring(1,role_tt.length()));
+            }
+            String trans_tt = translateMesg("zmenuasset_TT");
+            role_tt = trans_tt + " - Perfil: " +role_tt;
+        } finally { DatabaseUtils.releaseConnection(con); }
+        return role_tt;
+    }
+    
+    // getAssistnovo------------------------------------------------
+    // Verifies whether record selection button is to be rendered right after record insertion
+    public Boolean getAssistnovo() {
+        assistnovo = false;
+        Boolean bb = (Boolean) (getSession().getAttribute(super.tipo));
+        Boolean an = (Boolean) (getSession().getAttribute("novainclusao"));
+        if (bb == null) {bb = false;}
+        if (an == null) {an = false;}
+        if (bb == true && an == true) {assistnovo = true;}
+        return assistnovo;
+    }
+    
+    public String doReturn() throws SQLException, LoginException {
+            tbakcad = tbakloc;
+            return super.doReturn();
+    }
+     
+    public String doSelecionar() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "zmenuassetpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        getSession().setAttribute("filter", null);
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "zmenuassetpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarOnly() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "zmenuassetpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarOnly();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "zmenuassetpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarBackx() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "zmenuassetpsq");
+        pageLength = 999;
+        getSession().setAttribute("filter", null);
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "zmenuassetpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarNull() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        if (tranAntx != null &&  tranAntx.length() > 0) {
+            String tranAntxx = tranAntx; tranAntx = null; return tranAntxx;
+        }
+        getSession().setAttribute("tipo", "zmenuassetpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        tipo = "zmenuassetpsqxxx";
+        String ret = "";
+        int filterx = 0;
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNull();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "zmenuassetpsq"; // updbutton != 1c - end
+    }
+
+} // End of Code

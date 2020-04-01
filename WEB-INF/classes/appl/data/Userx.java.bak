@@ -1,0 +1,268 @@
+package appl.data;
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+import wins.libs.data.DataObject;
+import wins.libs.DatabaseUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import java.sql.Timestamp;
+import java.text.NumberFormat;
+import appl.libs.IIBeanUtils;
+    // Get Security Imports -----------------------------------------
+// Security Imports -----------------
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import appl.libs.IIBeanUtils;
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import appl.data.Rlopr;
+import java.util.Map;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
+import java.math.BigDecimal;
+    
+// Class 
+public class Userx extends DataObject {
+        protected static Log log = LogFactory.getLog(Userx.class);
+public Map<String, Object> mapSecurity;
+    
+    // Validation Control Field-------------------------
+    
+    // Properties---------------------------------------
+    public static final String TABS_VC = "tabs_vc";
+    public static final String TABS_VF = "tabs_vf";
+    public static final String USER_CD = "user_cd";
+    public static final String RECD_TS = "recd_ts";
+    public static final String USERX_ID = "userx_id";
+    public static final String USERX_ID_LOGIN = "userx_id_login";
+    public static final String USERX_PW = "userx_pw";
+    public static final String USERX_NM = "userx_nm";
+    public static final String USERX_ST = "userx_st";
+    public static final String USERX_ID_EXTERNAL = "userx_id_external";
+    public static final String USERX_ID_ROLE = "userx_id_role";
+    public static final String USERX_ID_TRANS = "userx_id_trans";
+    public static final String USERX_CD_EMAIL = "userx_cd_email";
+    public static final String USERX_CD_TELEPHONE = "userx_cd_telephone";
+    
+    // Initializations Methods--------------------------
+    public Userx() { }
+    public Userx (String Id1) {
+        this.setUserx_id_login (Id1); 
+    }
+    public String getTableName () { 
+        return "Userx";
+    }
+    
+    // Setters -----------------------------------------
+    public void setTabs_vc (String tabs_vc) 
+      {setValue (TABS_VC, tabs_vc); }
+    public void setTabs_vf (String tabs_vf) 
+      {setValue (TABS_VF, tabs_vf); }
+    public void setUser_cd (String user_cd) 
+      {setValue (USER_CD, user_cd); }
+    public void setRecd_ts (Date recd_ts) 
+      {setValue (RECD_TS, recd_ts); }
+    public void setUserx_id (Integer userx_id) 
+      {setValue (USERX_ID, userx_id); }
+    public void setUserx_id_login (String userx_id_login) 
+      {setValue (USERX_ID_LOGIN, userx_id_login); }
+    public void setUserx_pw (String userx_pw) 
+      {setValue (USERX_PW, userx_pw); }
+    public void setUserx_nm (String userx_nm) 
+      {setValue (USERX_NM, userx_nm); }
+    public void setUserx_st (Integer userx_st) 
+      {setValue (USERX_ST, userx_st); }
+    public void setUserx_id_external (String userx_id_external) 
+      {setValue (USERX_ID_EXTERNAL, userx_id_external); }
+    public void setUserx_id_role (String userx_id_role) 
+      {setValue (USERX_ID_ROLE, userx_id_role); }
+    public void setUserx_id_trans (String userx_id_trans) 
+      {setValue (USERX_ID_TRANS, userx_id_trans); }
+    public void setUserx_cd_email (String userx_cd_email) 
+      {setValue (USERX_CD_EMAIL, userx_cd_email); }
+    public void setUserx_cd_telephone (String userx_cd_telephone) 
+      {setValue (USERX_CD_TELEPHONE, userx_cd_telephone); }
+    
+    // Getters -----------------------------------------
+    public String getTabs_vc() {return getString(TABS_VC); }
+    public String getTabs_vf() {return getString(TABS_VF); }
+    public String getUser_cd() {return getString(USER_CD); }
+    public Date getRecd_ts() {return getDate(RECD_TS); }
+    public Integer getUserx_id() {return getInteger(USERX_ID); }
+    public String getUserx_id_login() {return getString(USERX_ID_LOGIN); }
+    public String getUserx_pw() {return getString(USERX_PW); }
+    public String getUserx_nm() {return getString(USERX_NM); }
+    public Integer getUserx_st() {return getInteger(USERX_ST); }
+    public String getUserx_id_external() {return getString(USERX_ID_EXTERNAL); }
+    public String getUserx_id_role() {return getString(USERX_ID_ROLE); }
+    // Getters - fpp empty ccc----------------------------------------
+    public String getRole_idx() throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+        return getUserx_id_role(); // zzz
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    // Getters - fpp empty ccc----------------------------------------
+
+        Connection con = DatabaseUtils.getConnection();
+        try {
+     return IIBeanUtils.getRole_desc(con, getUserx_id_role()); // zzp
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    // Getters - fpp empty aaa----------------------------------------
+    public String getUserx_id_role_desc() throws SQLException { // xxx 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return IIBeanUtils.getRole_desc(con, getUserx_id_role()); //777
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    public String getUserx_id_trans() {return getString(USERX_ID_TRANS); }
+    // Getters - fpp empty ccc----------------------------------------
+    public String getTransmenu_desc() throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+     return IIBeanUtils.getTransmenu_desc(con, getUserx_id_trans()); // zzp
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    // Getters - fpp empty aaa----------------------------------------
+    public String getUserx_id_trans_desc() throws SQLException { // xxx 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return IIBeanUtils.getTransmenu_desc(con, getUserx_id_trans()); //777
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    public String getUserx_cd_email() {return getString(USERX_CD_EMAIL); }
+    public String getUserx_cd_telephone() {return getString(USERX_CD_TELEPHONE); }
+    
+    // Get Presention Rules -----------------------------------------
+    // Get Security Do Action Logic -----------------------------------------
+    // Userx Complementary Security DoAction Validation Logic 
+
+    public void loadTableSecurity(ResultSet rs) throws SQLException {
+        //rs.next();
+        if (mapSecurity == null ) {
+        	mapSecurity = new CaseInsensitiveMap();
+        } else {
+        	mapSecurity.clear(); 
+        }
+        while (true) {
+            if (rs.next()) {
+                String role = rs.getString("rlopr_id_role");
+                String opern = rs.getString("rlopr_id_opern");
+                String accr = rs.getString("rlopr_cd_accr");
+                String accr_actions = rs.getString("rlopr_cd_accr_actions");
+                if (accr == null) {accr = "";}
+                if (accr_actions == null) {accr_actions = "";}
+                String field = role.toUpperCase() + ";" + opern.toUpperCase();
+                String value = accr.toUpperCase() + ";" + accr_actions.toUpperCase();
+                mapSecurity.put(field, value);
+            } else {
+                break;
+            }
+        }
+    }
+
+    public boolean canDoAction(String action, String role) throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return canDoAction(con, action, role);
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+
+    public boolean canDoAction(Connection con, String action, String role) throws SQLException {
+        if (action.indexOf("@") == 0 && action.indexOf("SRCH") < 0 ) {
+            action = action.substring(1,action.length());
+        }
+        if(action.indexOf("@") >= 0 && action.indexOf(".SRCH") >=0) {
+            return true;
+        }
+        String accrx = ""; String accr_actionx = "";
+        if (action.indexOf(".INST") >= 0) { accrx = "C";}
+        //if (action.indexOf(".SRCH") >= 0) { accrx = "R";}
+        if (action.indexOf(".SRCH") >= 0) {
+            accrx = "R"; accr_actionx = "";
+        }
+
+        if (action.indexOf(".UPDT") >= 0) { accrx = "U";}
+        if (action.indexOf(".COPY") >= 0) {
+            accrx = "Y";
+        }
+        if (action.indexOf(".DELT") >= 0) { accrx = "D";}
+        if (action.indexOf(".AC") >= 0) {
+            accrx = "";
+            action = action.replace(".AC0",".AC");
+            accr_actionx = action.replace("AC","");
+            int start = accr_actionx.indexOf(".");
+            accr_actionx = accr_actionx.substring(start,accr_actionx.length());
+            accr_actionx = accr_actionx.replace(".",",");
+            accrx = accr_actionx;
+        }
+
+        String trans = action.substring(0,action.indexOf("."));
+
+        if (trans.indexOf("userpw") >= 0) {
+        	return true;
+        }
+
+        String accr = ""; String acc  = "";
+        String accr_actions = "";
+        String key = role+";"+trans;
+        Object act = mapSecurity.get(key.toUpperCase());
+        boolean ok = false;
+        if ( act != null ) {
+            ok = true;
+            acc =  act.toString();
+        }
+
+        if (ok) {
+            accr = acc.substring(0,acc.indexOf(";"));
+            accr_actions = acc.substring(acc.indexOf(";")+1,acc.length());
+
+            if (accr_actions == null) { accr_actions = "";}
+            if (accr == null) { accr = "";}
+
+            if (accr_actions.length() > 0) {
+                //accr_actions = "," + accr_actions + ",";
+                //if (accr_actionx.length() > 0) {
+                //    accr_actionx = "," + accr_actionx + ",";
+                //}
+                if (accr_actions.indexOf(accr_actionx) >= 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+
+                if (action.indexOf("SRCH") >= 0 || action.indexOf("INST") >= 0 || action.indexOf("UPDT") >= 0 || action.indexOf("COPY") >= 0 || action.indexOf("DELT") >= 0 ) {} else {
+                    if (accr.indexOf("U") >= 0   ) {accrx = "U";}
+                }
+                if (accr.indexOf(accrx) >= 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public void checkDoAction(Connection con, String action, String role) throws SQLException {
+        // long ti = System.currentTimeMillis();
+        if (!canDoAction(con, action, role)) {
+        // System.out.println("Tempo de processamento do checkDoAction: " +
+        //  (System.currentTimeMillis() - ti));
+        //  throw new SecurityException("Acesso negado para a operação: " + action);
+        }
+        //  System.out.println("Tempo de processamento do checkDoAction: " +
+        // (System.currentTimeMillis() - ti));
+    }
+
+} // DataObjectGen - End of Code

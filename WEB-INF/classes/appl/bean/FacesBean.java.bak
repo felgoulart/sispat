@@ -1,0 +1,302 @@
+package appl.bean;
+
+import java.util.ResourceBundle;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import appl.data.Userx;
+import wins.libs.LoginException;
+
+public class FacesBean {
+	protected static Log log = LogFactory.getLog(FacesBean.class);
+    public String tabsvf;
+    public String tabsvf_in;
+    public String tabsvf_tr;
+    public String tabsvf_tp;
+    public int kkthread; 
+    public boolean canSearchBack; 
+    public boolean tab_remember;
+    public boolean cancel_partial = false;
+    public String trans_tt;
+    public String orgen_ab;
+    public String orgzn_cd;
+    public String locale;
+    public Integer aba;
+    public Integer msgqt=0;
+    public String abavalidate[] ;
+    public ArrayList errorList = new ArrayList();
+    public boolean resultMessage;
+    public String msgkey;
+    public String mesg_var;
+    public Integer xmesg_rc;
+    public String xmesg_st;
+    public String xhelp_rc;
+
+    public FacesBean() {
+        abavalidate = new String[50]; // Create Aba Validation Control Array
+    }
+
+    protected void addErrorMessage(String msg) {
+        msgqt++;
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(msg));
+    }
+
+    protected String getMessageByKey(String key) {
+        // Receive and Unpack Field and Message Keys
+        FacesContext context = FacesContext.getCurrentInstance();
+        String lang = context.getViewRoot().getLocale().getLanguage();
+        String country = context.getViewRoot().getLocale().getCountry();
+        String countryx = "";
+        if (country.length() == 0) {
+           countryx = "";
+        } else {
+           countryx = "_"+country;
+        }
+        String loc = "_"+lang+countryx;
+        //ResourceBundle bundle = ResourceBundle.getBundle("ApplicationResources"+loc, context.getViewRoot().getLocale());
+        //ResourceBundle bundle = ResourceBundle.getBundle("ApplicationResources", context.getViewRoot().getLocale());
+        loc = CadLangBean.lang_cd_var;
+        //loc = CadastroBean.lang_cd_var;
+
+        if (loc == null) {
+            loc = context.getViewRoot().getLocale().getDefault().toString(); ;
+        }
+        ResourceBundle bundle = ResourceBundle.getBundle("ApplicationResources"+"_"+loc);
+ 
+        String messg = bundle.getString(key);
+        return messg;
+    }
+
+
+    protected void addErrorMessageByKey(String key) {
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        //ResourceBundle bundle = ResourceBundle.getBundle("ApplicationResources", context.getViewRoot().getLocale());
+        String loc = CadLangBean.lang_cd_var;
+        if (loc == null) {
+            loc = context.getViewRoot().getLocale().getDefault().toString(); ;
+        }
+        ResourceBundle bundle = ResourceBundle.getBundle("ApplicationResources"+"_"+loc);
+
+        String validate = (String)getRequest().getAttribute("validateOn");
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        resultMessage = false;
+
+        // Tratamento de Mensagens de Erros - Campo Obrigatorio
+        if (validate == "0") {
+            msgqt++; // Contador do Numero de Linhas de Mensagens
+            addAttribute("validateOn", "1");
+            context.addMessage(null, new FacesMessage("  "+bundle.getString("result_validate")));
+
+            if (aba > 0) {
+                String cadbeanx = (String) getSession().getAttribute("cadbeanx"); //Get Current Bean
+                String abaTp = (String) getSession().getAttribute(cadbeanx+"tp"); // Get Current abaTp
+                //if (abaTp.equals("u")) {
+                msgqt++;
+                context.addMessage(null, new FacesMessage(" " + abaTp + " " + bundle.getString("tab_univalorada")));
+                //} else if (abaTp.equals("m")) {
+                //    msgqt++;
+                //    context.addMessage(null, new FacesMessage(" " + abaTp + " " + bundle.getString("tab_multivalorada")));
+                //}
+            }
+
+        }
+        // Tratamento de Mensagens de Erros - com Abas
+        if (aba != null && aba > 0) {
+            String abaNumber = "";
+            String cadbeanx = (String) getSession().getAttribute("cadbeanx"); //Get Current Bean
+            Object zz = getSession().getAttribute(cadbeanx+"x"); // Get Current abaNumber
+            if (zz instanceof Integer ) {
+                Integer abaNumberi = (Integer) getSession().getAttribute(cadbeanx+"x"); // Get Current abaNumber
+                abaNumber = abaNumberi.toString();
+            } else { abaNumber = zz.toString();}
+
+            //abaNumber = (String) getSession().getAttribute(cadbeanx+"x"); // Get Current abaNumber
+            String abaTp = (String) getSession().getAttribute(cadbeanx+"tp"); // Get Current abaTp
+            String abas = aba.toString();
+            String cadbeanaba = cadbeanx + abas; // Generate the key o access the ABA Title (cadAmfgBean1,cadAmfgBean2,...)
+            abavalidate[aba] = (String) getRequest().getAttribute("validateOn"+abas); //(validateOn1,validateOn2...)
+            if (abavalidate[aba] == "0") {
+                msgqt++;
+                addAttribute("validateOn"+abas, "1");
+                if (abaNumber.equals(abas)) {
+                    context.addMessage(null, new FacesMessage("p" + vfbuffer.substring(aba, aba + 1) + " " + bundle.getString("tab") + " " + translateMesg(key)));
+                } else {
+                    context.addMessage(null, new FacesMessage(" " + vfbuffer.substring(aba, aba + 1) + " " + bundle.getString("tab")  + " " + translateMesg(key)));
+                }
+                return;
+            } else if (abavalidate[aba] == "9") {
+                msgqt++;
+                addAttribute("validateOn"+abas, "1");
+                context.addMessage(null, new FacesMessage(" "+vfbuffer.substring(aba,aba+1)+" "+bundle.getString(cadbeanaba)));
+                return;
+            }
+            //if (abaNumber.equals(abas)) {
+                msgqt++;
+                // Displays Field on Error =====================================
+                //context.addMessage(null, new FacesMessage(translateMesg(key)) );
+                if (key.length() > 0) {context.addMessage(null, new FacesMessage(translateMesg(key)) );}
+
+ //               if (msgkey == null || msgkey == "" ) {
+ //                   context.addMessage(null, new FacesMessage("    - "+bundle.getString(key)) );
+ //               } else
+ //               if (key2.length() == 0 ) {
+ //                   context.addMessage(null, new FacesMessage("    - "+bundle.getString(key1)+" => "+bundle.getString(msgkey)  )  );
+ //               } else
+          //      if (key2.length() > 0 ) {
+          //          context.addMessage(null, new FacesMessage("    - "+bundle.getString(key1)+" > "+bundle.getString(msgkey)+" >> "+bundle.getString(key2)  )  );
+          //      }
+            //}
+
+            return;
+        }
+        msgqt++;
+        if (key.length() > 0) {context.addMessage(null, new FacesMessage(translateMesg(key)) );}
+        //context.addMessage(null, new FacesMessage("  "+bundle.getString(key)));
+    }
+
+    public String translateMesg(String msgkeyed) {
+//        String plamp = " ";
+//        plamp = msgkeyed.substring(0,1);
+//        if (msgkeyed.indexOf("cad") < 0) {
+//            plamp = msgkeyed.substring(0,1);
+//            msgkeyed = msgkeyed.substring(1,msgkeyed.length());
+//        }
+        if (msgkeyed.equals("")) {return "      ";}
+        int keyll = msgkeyed.length(); int keykk = 0; int keytk_start= 0; int keytk_end= 0; int start = 0;
+        String keytk = ""; String prefix = "    > ";
+        String mesg = "";
+        if (msgkeyed.indexOf("branco")>= 0) {prefix = "      ";}
+//        mesg = msgkeyed.substring(0,1);
+        while(keykk <= keyll) {
+            if (keykk < keyll && msgkeyed.substring(start,start+1).equals("@") ) {
+                mesg = mesg + " "; start = start + 1; continue;
+            }
+            keytk_start = msgkeyed.indexOf(":", start);
+            if (keytk_start < 0) {
+                if (keykk == 0) {
+                    mesg = getMessageByKey(msgkeyed);}
+                keykk = keyll + 1;
+                continue;}
+            keytk = msgkeyed.substring(keytk_start-3,keytk_start+1);
+            if (keytk.equals("ptt:")) {
+                start = keytk_start;
+                keytk_end = msgkeyed.indexOf("/", start);
+                keytk = msgkeyed.substring(keytk_start+1,keytk_end)+"_tt";
+                mesg = mesg + getMessageByKey(keytk);
+                start = keytk_end + 1;
+                keykk = start; continue;
+            }
+            //keytk_start = msgkeyed.indexOf("txt:", start);
+            if (keytk.equals("txt:")) {
+                start = keytk_start;
+                keytk_end = msgkeyed.indexOf("/", start);
+                keytk = msgkeyed.substring(keytk_start+1,keytk_end);
+                mesg = mesg + keytk;
+                start = keytk_end + 1;
+                keykk = start; continue;
+            }
+            //keytk_start = msgkeyed.indexOf("key:", start);
+            if (keytk.equals("key:")) {
+                start = keytk_start;
+                keytk_end = msgkeyed.indexOf("/", start);
+                keytk = msgkeyed.substring(keytk_start+1,keytk_end);
+                mesg = mesg + getMessageByKey(keytk);
+                start = keytk_end + 1;
+                keykk = start; continue;
+            }
+
+            keykk = keykk + 1;
+        }
+
+//        mesg = plamp+prefix+mesg;
+        mesg = prefix+mesg;
+        return mesg;
+    }
+
+    public String getLocale() {
+        locale = CadLangBean.lang_cd_var;
+        if (locale == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+        	locale = context.getViewRoot().getLocale().getDefault().toString(); 
+        }
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    public String getOrgzn_cd() {
+    	orgzn_cd = CadOrgznBean.orgzn_cd_var;
+        //if (orgzn_cd == null) {
+        //	orgzn_cd = "";
+        //}
+        return orgzn_cd;
+    }
+    public void setOrgzn_cd(String orgzn_cd) {
+        this.orgzn_cd = orgzn_cd;
+    }
+
+    protected void addErrorMessageFromErrorList() {
+        if (!errorList.isEmpty()) {
+            for (int i=0; i < errorList.size(); i++) {
+                addErrorMessageByKey((String) errorList.get(i));
+            }
+            errorList.clear();
+        }
+    }
+
+    public Integer getAba() {
+        return aba;
+    }
+    public void setAba(Integer x) {
+        this.aba = x;
+    }
+
+    protected HttpServletRequest getRequest() {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        return (HttpServletRequest) context.getRequest();
+    }
+
+    protected HttpSession getSession() {
+        return getRequest().getSession();
+    }
+
+    protected void addAttribute(String name, Object value) {
+        getRequest().setAttribute(name, value);
+    }
+
+    protected void addAttributeMenu(String name, Object value) {
+        getSession().setAttribute(name, value);
+    }
+
+    protected void removeLoginInfo() {
+        getSession().removeAttribute("loginInfo");
+    }
+
+    protected void setLoginInfo(Userx user) {
+        getSession().setAttribute("loginInfo", user);
+    }
+
+    protected Userx getLoginInfo() throws LoginException {
+        Userx userx = (Userx)getSession().getAttribute("loginInfo");
+        if (userx == null) {
+            throw new LoginException();
+        }
+        return userx;
+    }
+
+    protected void endSession() {
+        removeLoginInfo();
+        getSession().invalidate();
+    }
+}

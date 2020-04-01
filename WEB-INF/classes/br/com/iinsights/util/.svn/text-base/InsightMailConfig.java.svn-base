@@ -1,0 +1,27 @@
+package br.com.iinsights.util;
+
+import java.util.Properties;
+
+public class InsightMailConfig {
+
+    public static final Properties MAIL_PROPERTIES = new Properties();
+    static {
+	try {
+	    MAIL_PROPERTIES.load(InsightMailConfig.class.getResourceAsStream("/mailconfig.properties"));
+
+	    for (Object o : MAIL_PROPERTIES.keySet()) {
+		System.out.println("propertie: " + o.toString() + " value: " + MAIL_PROPERTIES.getProperty(o.toString()));
+	    }
+
+	    System.out.println("mailconfig.properties loaded!");
+	} catch (Exception e) {
+	    System.out.println("Error loading mail config file");
+	    e.printStackTrace();
+	}
+
+    }
+
+    public static void main(String[] args) {
+	System.out.println("ok.");
+    }
+}

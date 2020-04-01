@@ -1,0 +1,1178 @@
+package appl.bean;
+    
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import wins.report.jasperRunner;
+import java.util.List;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.fileupload.FileItem;
+import appl.data.IXAbastecimento;
+// ---------------------------------------
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import wins.libs.LoginException;
+import appl.libs.IIBeanUtils;
+public class CadIXAbastecimentoBean extends CadastroBean {
+        protected static Log log = LogFactory.getLog(CadIXAbastecimentoBean.class);
+    public int xtab = 0;
+    // Tabs Validation Status
+    private String tbakloc;
+    private String expo = "SIAD";
+    private String alterando;
+    private Boolean assistnovo;
+    private String filter;
+    private String vc;
+    public String role = "";
+    public int imgskk = 0;
+    public int fileskk = 0;
+    public String fileUploaded= "";
+    
+    // Building Fields Validation Map ---------------
+    private static Map<String, Integer> i_fields = new HashMap<String, Integer>(); static {
+        i_fields.put("abast_aa", 1);
+        i_fields.put("abast_mm", 2);
+        i_fields.put("abast_cd_posto", 3);
+        i_fields.put("abast_lt_viagem", 4);
+        i_fields.put("abast_lt_manobra", 5);
+        i_fields.put("abast_lt_other", 6);
+        i_fields.put("abast_cd_ferrv1", 7);
+        i_fields.put("abast_lt_ferrv1", 8);
+        i_fields.put("abast_cd_ferrv2", 9);
+        i_fields.put("abast_lt_ferrv2", 10);
+        i_fields.put("abast_cd_ferrv3", 11);
+        i_fields.put("abast_lt_ferrv3", 12);
+    } // 222
+    
+    // Declaring Validation Map -------------------
+    private HashMap<String, StringBuffer> i_divns = new HashMap<String, StringBuffer>();
+    // ii.properties---------------------------------------
+    private String xbutn_id;
+    private String xuserx_id_login;
+    private String tabs_vc;
+    private String tabs_vf;
+    private String tabs_vf_old;
+    private String flds_vf;
+    private String user_cd;
+    private Date recd_ts;
+    private String abast_aa;
+    private String abast_aa_vc;
+    private String abast_mm;
+    private String abast_mm_vc;
+    private String abast_cd_posto;
+    private String abast_cd_posto_vc;
+    private Integer abast_lt_viagem;
+    private String abast_lt_viagem_vc;
+    private Integer abast_lt_manobra;
+    private String abast_lt_manobra_vc;
+    private Integer abast_lt_other;
+    private String abast_lt_other_vc;
+    private String abast_cd_ferrv1;
+    private String abast_cd_ferrv1_vc;
+    private Integer abast_lt_ferrv1;
+    private String abast_lt_ferrv1_vc;
+    private String abast_cd_ferrv2;
+    private String abast_cd_ferrv2_vc;
+    private Integer abast_lt_ferrv2;
+    private String abast_lt_ferrv2_vc;
+    private String abast_cd_ferrv3;
+    private String abast_cd_ferrv3_vc;
+    private Integer abast_lt_ferrv3;
+    private String abast_lt_ferrv3_vc;
+    private String flds_vf_ref;
+    // Filters------------------------------------------
+    private String fil_tabs_vc;
+    private String fil_abast_aa;
+    private String fil_abast_mm;
+    private String fil_abast_cd_posto;
+    // Orders------------------------------------
+    private Boolean ord_abast_aa;
+    private Boolean ord_abast_mm;
+    private Boolean ord_abast_cd_posto;
+    // Constructor--------------------------------------
+    public CadIXAbastecimentoBean() { 
+    } // 333
+    
+    // Returns a Reference to the Associared DataObject-
+    protected Class getDataClass() { return IXAbastecimento.class;}
+    // Working Variables Methods-------------------------
+    public void setAlterando(String alterando) { this.alterando = alterando; }
+    public String getAlterando() { return alterando;} 
+    
+    // Setters -----------------------------------------
+    public void setXbutn_id (String xbutn_id) {
+        this.xbutn_id = xbutn_id;
+    }
+    public void setXuserx_id_login (String xuserx_id_login) {
+        this.xuserx_id_login = xuserx_id_login;
+    }
+    public void setTabs_vc (String tabs_vc) {this.tabs_vc = tabs_vc;}
+    public void setTabs_vf (String tabs_vf) {this.tabs_vf = tabs_vf;}
+    public void setFlds_vf (String flds_vf) {this.flds_vf = flds_vf;}
+    
+    public void setFlds_vfsb (StringBuffer flds_vfsb) {this.flds_vfsb = flds_vfsb;}
+    
+    public void setUser_cd (String user_cd) {this.user_cd = user_cd;}
+    
+    public void setRecd_ts (Date recd_ts) {this.recd_ts = recd_ts;}
+    public void setAbast_aa (String abast_aa) {this.abast_aa = abast_aa;}
+    public void setAbast_aa_vc (String abast_aa_vc) {this.abast_aa_vc = abast_aa_vc;}
+    public void setAbast_mm (String abast_mm) {this.abast_mm = abast_mm;}
+    public void setAbast_mm_vc (String abast_mm_vc) {this.abast_mm_vc = abast_mm_vc;}
+    public void setAbast_cd_posto (String abast_cd_posto) {this.abast_cd_posto = abast_cd_posto;}
+    public void setAbast_cd_posto_vc (String abast_cd_posto_vc) {this.abast_cd_posto_vc = abast_cd_posto_vc;}
+    
+    public void setAbast_lt_viagem (Integer abast_lt_viagem) {this.abast_lt_viagem = abast_lt_viagem;}
+    public void setAbast_lt_viagem_vc (String abast_lt_viagem_vc) {this.abast_lt_viagem_vc = abast_lt_viagem_vc;}
+    public void setAbast_lt_manobra (Integer abast_lt_manobra) {this.abast_lt_manobra = abast_lt_manobra;}
+    public void setAbast_lt_manobra_vc (String abast_lt_manobra_vc) {this.abast_lt_manobra_vc = abast_lt_manobra_vc;}
+    public void setAbast_lt_other (Integer abast_lt_other) {this.abast_lt_other = abast_lt_other;}
+    public void setAbast_lt_other_vc (String abast_lt_other_vc) {this.abast_lt_other_vc = abast_lt_other_vc;}
+    
+    public void setAbast_cd_ferrv1 (String abast_cd_ferrv1) {this.abast_cd_ferrv1 = abast_cd_ferrv1;}
+    public void setAbast_cd_ferrv1_vc (String abast_cd_ferrv1_vc) {this.abast_cd_ferrv1_vc = abast_cd_ferrv1_vc;}
+    
+    public void setAbast_lt_ferrv1 (Integer abast_lt_ferrv1) {this.abast_lt_ferrv1 = abast_lt_ferrv1;}
+    public void setAbast_lt_ferrv1_vc (String abast_lt_ferrv1_vc) {this.abast_lt_ferrv1_vc = abast_lt_ferrv1_vc;}
+    
+    public void setAbast_cd_ferrv2 (String abast_cd_ferrv2) {this.abast_cd_ferrv2 = abast_cd_ferrv2;}
+    public void setAbast_cd_ferrv2_vc (String abast_cd_ferrv2_vc) {this.abast_cd_ferrv2_vc = abast_cd_ferrv2_vc;}
+    
+    public void setAbast_lt_ferrv2 (Integer abast_lt_ferrv2) {this.abast_lt_ferrv2 = abast_lt_ferrv2;}
+    public void setAbast_lt_ferrv2_vc (String abast_lt_ferrv2_vc) {this.abast_lt_ferrv2_vc = abast_lt_ferrv2_vc;}
+    
+    public void setAbast_cd_ferrv3 (String abast_cd_ferrv3) {this.abast_cd_ferrv3 = abast_cd_ferrv3;}
+    public void setAbast_cd_ferrv3_vc (String abast_cd_ferrv3_vc) {this.abast_cd_ferrv3_vc = abast_cd_ferrv3_vc;}
+    
+    public void setAbast_lt_ferrv3 (Integer abast_lt_ferrv3) {this.abast_lt_ferrv3 = abast_lt_ferrv3;}
+    public void setAbast_lt_ferrv3_vc (String abast_lt_ferrv3_vc) {this.abast_lt_ferrv3_vc = abast_lt_ferrv3_vc;}
+    // Filter Setters-----------------------------------
+    public void setFil_tabs_vc (String fil_tabs_vc) {this.fil_tabs_vc = fil_tabs_vc;}
+    public void setFil_abast_aa (String fil_abast_aa) {this.fil_abast_aa = fil_abast_aa;}
+    public void setFil_abast_mm (String fil_abast_mm) {this.fil_abast_mm = fil_abast_mm;}
+    public void setFil_abast_cd_posto (String fil_abast_cd_posto) {this.fil_abast_cd_posto = fil_abast_cd_posto;}
+    // Order Setters---------------------------
+    public void setOrd_abast_aa (boolean ord_abast_aa) {this.ord_abast_aa = ord_abast_aa ; }
+    public void setOrd_abast_mm (boolean ord_abast_mm) {this.ord_abast_mm = ord_abast_mm ; }
+    public void setOrd_abast_cd_posto (boolean ord_abast_cd_posto) {this.ord_abast_cd_posto = ord_abast_cd_posto ; }
+    
+    // Getters -----------------------------------------
+    public String getXbutn_id() {
+        return xbutn_id; 
+    }
+    public String getXuserx_id_login() {
+        return xuserx_id_login; 
+    }
+    public String getTabs_vc() {return tabs_vc; }
+    public String getTabs_vf() {return tabs_vf; }
+    public String getFlds_vf() {return flds_vf; }
+    
+    public StringBuffer getFlds_vfsb() {return flds_vfsb; }
+    
+    public String getUser_cd() {return user_cd; }
+    
+    public Date getRecd_ts() {return recd_ts; }
+    public String getAbast_aa() {return abast_aa; }
+    public String getAbast_aa_vc() {return abast_aa_vc; }
+    public String getAbast_mm() {return abast_mm; }
+    public String getAbast_mm_vc() {return abast_mm_vc; }
+    public String getAbast_cd_posto() {return abast_cd_posto; }
+    public String getAbast_cd_posto_vc() {return abast_cd_posto_vc; }
+    
+    public Integer getAbast_lt_viagem() {return abast_lt_viagem; }
+    public String getAbast_lt_viagem_vc() {return abast_lt_viagem_vc; }
+    public Integer getAbast_lt_manobra() {return abast_lt_manobra; }
+    public String getAbast_lt_manobra_vc() {return abast_lt_manobra_vc; }
+    public Integer getAbast_lt_other() {return abast_lt_other; }
+    public String getAbast_lt_other_vc() {return abast_lt_other_vc; }
+    
+    public String getAbast_cd_ferrv1() {return abast_cd_ferrv1; }
+    public String getAbast_cd_ferrv1_vc() {return abast_cd_ferrv1_vc; }
+    
+    public Integer getAbast_lt_ferrv1() {return abast_lt_ferrv1; }
+    public String getAbast_lt_ferrv1_vc() {return abast_lt_ferrv1_vc; }
+    
+    public String getAbast_cd_ferrv2() {return abast_cd_ferrv2; }
+    public String getAbast_cd_ferrv2_vc() {return abast_cd_ferrv2_vc; }
+    
+    public Integer getAbast_lt_ferrv2() {return abast_lt_ferrv2; }
+    public String getAbast_lt_ferrv2_vc() {return abast_lt_ferrv2_vc; }
+    
+    public String getAbast_cd_ferrv3() {return abast_cd_ferrv3; }
+    public String getAbast_cd_ferrv3_vc() {return abast_cd_ferrv3_vc; }
+    
+    public Integer getAbast_lt_ferrv3() {return abast_lt_ferrv3; }
+    public String getAbast_lt_ferrv3_vc() {return abast_lt_ferrv3_vc; }
+    // Filter Getters-----------------------------------
+    public String getFil_tabs_vc() {return fil_tabs_vc; }
+    public String getFil_abast_aa() {return fil_abast_aa; }
+    public String getFil_abast_mm() {return fil_abast_mm; }
+    public String getFil_abast_cd_posto() {return fil_abast_cd_posto; }
+    // Order Getters-----------------------------
+    public boolean isOrd_abast_aa() {return ord_abast_aa; }
+    public boolean isOrd_abast_aa_desc() {return !ord_abast_aa; }
+    public boolean isOrd_abast_mm() {return ord_abast_mm; }
+    public boolean isOrd_abast_mm_desc() {return !ord_abast_mm; }
+    public boolean isOrd_abast_cd_posto() {return ord_abast_cd_posto; }
+    public boolean isOrd_abast_cd_posto_desc() {return !ord_abast_cd_posto; }
+    
+    protected boolean validate() { // @save @getrecd  
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadIXAbastecimentoBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        abast_aa_vc = valAbast_aa(abast_aa); 
+        abast_mm_vc = valAbast_mm(abast_mm); 
+        abast_cd_posto_vc = valAbast_cd_posto(abast_cd_posto); 
+        abast_lt_viagem_vc = valAbast_lt_viagem(abast_lt_viagem); 
+        abast_lt_manobra_vc = valAbast_lt_manobra(abast_lt_manobra); 
+        abast_lt_other_vc = valAbast_lt_other(abast_lt_other); 
+        abast_cd_ferrv1_vc = valAbast_cd_ferrv1(abast_cd_ferrv1); 
+        abast_lt_ferrv1_vc = valAbast_lt_ferrv1(abast_lt_ferrv1); 
+        abast_cd_ferrv2_vc = valAbast_cd_ferrv2(abast_cd_ferrv2); 
+        abast_lt_ferrv2_vc = valAbast_lt_ferrv2(abast_lt_ferrv2); 
+        abast_cd_ferrv3_vc = valAbast_cd_ferrv3(abast_cd_ferrv3); 
+        abast_lt_ferrv3_vc = valAbast_lt_ferrv3(abast_lt_ferrv3); 
+    
+        validateMax(vfbuffer); addErrorMessageFromErrorList(); 
+        addAttribute("validateOn"+tab, "1");
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+        return result; 
+    }   //  End of Validate 
+    public void updateRecdTs() {
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            if (result) {
+                this.recd_ts = new Date();
+            }
+        } catch (Exception ex) { ex.getMessage(); }
+    }
+    
+    protected void validateInserir() {
+        StringBuffer vfbuffer = new StringBuffer();
+        if (tabs_vf != null) {
+            vfbuffer.append(tabs_vf);
+            vfbuffer.setCharAt(49,'0');
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf;
+        }
+    } 
+    
+    public String validateFieldOnChange(String value, String field) {
+        String result = null;
+        vf = 0; int i_field = 0; int valueInteger=0; Date valueDate = null; BigDecimal valueBigDecimal = null;
+    if (i_fields.containsKey(field)) {
+        i_field = i_fields.get(field);
+    }
+        switch (i_field) {
+        // Fields Validation Methods Switch 
+           case 1: result = valAbast_aa(value); break;
+           case 2: result = valAbast_mm(value); break;
+           case 3: result = valAbast_cd_posto(value); break;
+           case 4: result = valAbast_lt_viagem(toInteger(value)); break;
+           case 5: result = valAbast_lt_manobra(toInteger(value)); break;
+           case 6: result = valAbast_lt_other(toInteger(value)); break;
+           case 7: result = valAbast_cd_ferrv1(value); break;
+           case 8: result = valAbast_lt_ferrv1(toInteger(value)); break;
+           case 9: result = valAbast_cd_ferrv2(value); break;
+           case 10: result = valAbast_lt_ferrv2(toInteger(value)); break;
+           case 11: result = valAbast_cd_ferrv3(value); break;
+           case 12: result = valAbast_lt_ferrv3(toInteger(value)); break;
+        } // 111
+        return result;
+    }
+    public String checkMaxFieldOnChange(String divn) {
+        vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(Integer.parseInt(divn),selMaxVc(divn).charAt(0));
+        vfbuffer.setCharAt(psvc,selMaxVc(divn).charAt(0));
+        tabsvf = vfbuffer.toString();
+        return vfbuffer.toString();
+    }
+    public String checkVFMaxFieldOnChange(String divn) {
+        return retSelBuffer(divn);
+    }
+    public String retSelBuffer(String divn) {
+        String selBuffer = null;
+        selBuffer = flds_vfsb.toString();
+        return selBuffer;
+    }
+    
+    // Main Record (Univalued) Field Validation Methods...
+    
+    public Boolean valRecd_ts(Connection con) throws SQLException {
+        if (abast_mm != null) {
+            msgkey = "";
+            IXAbastecimento IXAbastecimentox = new IXAbastecimento(abast_aa, abast_mm, abast_cd_posto);
+            IXAbastecimentox.loadUfmv(this);
+            IXAbastecimentox.setLoadChilds(true);
+            IXAbastecimentox.load(con);
+            Date recd_ts_db = IXAbastecimentox.getRecd_ts();
+            if (recd_ts_db != null && this.recd_ts != null) {
+                String tsdb = recd_ts_db.toString();
+                String ts = this.recd_ts.toString();
+                if (!ts.equals(tsdb) ) {
+                    msgkey = "key:valrecd_ts/";
+                    errorList.add(msgkey);
+                    addErrorMessageFromErrorList();
+                    log.error("IXAbastecimento lock event: key:"+abast_mm+", ts:"+ts+", tsdb:"+tsdb);
+                    return false;
+                 }
+            } else {
+                  recd_ts = new Date();
+            }
+        } else {
+            recd_ts = new Date();
+        }
+        return true;
+    }
+    public String valAbast_aa(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.abast_aa = "";
+        } else {
+            this.abast_aa = value;
+        }
+        abast_aa_vc = valEntryString("9", value,"IXAbastecimento_abast_aa");
+        return abast_aa_vc;
+    }
+    public String valAbast_mm(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.abast_mm = "";
+        } else {
+            this.abast_mm = value;
+        }
+        abast_mm_vc = valEntryString("9", value,"IXAbastecimento_abast_mm");
+        return abast_mm_vc;
+    }
+    public String valAbast_cd_posto(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.abast_cd_posto = "";
+        } else {
+            this.abast_cd_posto = value;
+        }
+        abast_cd_posto_vc = valEntryString("9", value,"IXAbastecimento_abast_cd_posto");
+        return abast_cd_posto_vc;
+    }
+    public String valAbast_lt_viagem(Integer value) {
+        this.abast_lt_viagem = value;
+        abast_lt_viagem_vc = valEntryNumber("0", value,"IXAbastecimento_abast_lt_viagem");
+        return abast_lt_viagem_vc;
+    }
+    public String valAbast_lt_manobra(Integer value) {
+        this.abast_lt_manobra = value;
+        abast_lt_manobra_vc = valEntryNumber("0", value,"IXAbastecimento_abast_lt_manobra");
+        return abast_lt_manobra_vc;
+    }
+    public String valAbast_lt_other(Integer value) {
+        this.abast_lt_other = value;
+        abast_lt_other_vc = valEntryNumber("0", value,"IXAbastecimento_abast_lt_other");
+        return abast_lt_other_vc;
+    }
+    public String valAbast_cd_ferrv1(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.abast_cd_ferrv1 = "";
+        } else {
+            this.abast_cd_ferrv1 = value;
+        }
+        abast_cd_ferrv1_vc = valEntryString("0", value,"IXAbastecimento_abast_cd_ferrv1");
+        return abast_cd_ferrv1_vc;
+    }
+    public String valAbast_lt_ferrv1(Integer value) {
+        this.abast_lt_ferrv1 = value;
+        abast_lt_ferrv1_vc = valEntryNumber("0", value,"IXAbastecimento_abast_lt_ferrv1");
+        return abast_lt_ferrv1_vc;
+    }
+    public String valAbast_cd_ferrv2(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.abast_cd_ferrv2 = "";
+        } else {
+            this.abast_cd_ferrv2 = value;
+        }
+        abast_cd_ferrv2_vc = valEntryString("0", value,"IXAbastecimento_abast_cd_ferrv2");
+        return abast_cd_ferrv2_vc;
+    }
+    public String valAbast_lt_ferrv2(Integer value) {
+        this.abast_lt_ferrv2 = value;
+        abast_lt_ferrv2_vc = valEntryNumber("0", value,"IXAbastecimento_abast_lt_ferrv2");
+        return abast_lt_ferrv2_vc;
+    }
+    public String valAbast_cd_ferrv3(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.abast_cd_ferrv3 = "";
+        } else {
+            this.abast_cd_ferrv3 = value;
+        }
+        abast_cd_ferrv3_vc = valEntryString("0", value,"IXAbastecimento_abast_cd_ferrv3");
+        return abast_cd_ferrv3_vc;
+    }
+    public String valAbast_lt_ferrv3(Integer value) {
+        this.abast_lt_ferrv3 = value;
+        abast_lt_ferrv3_vc = valEntryNumber("0", value,"IXAbastecimento_abast_lt_ferrv3");
+        return abast_lt_ferrv3_vc;
+    }
+    
+    protected void reset() {  
+     try {
+        super.reset(); 
+        // Set initial ABA Number
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("cadbeanx", "cadIXAbastecimentoBean");
+        if (tab_remember == true) {
+            getSession().getAttribute("cadIXAbastecimentoBeanx");
+        } else {
+            getSession().setAttribute("cadIXAbastecimentoBeanx", "1");
+        } 
+        ufmv = "00000000000000000000000000000000000000000000000000";
+        getSession().setAttribute("ufmv", ufmv);
+        // Tabs Validation Status
+        this.tabs_vf = null;
+        this.tabs_vc = null;
+        vf = 0;
+        xmesg_st = "null";
+        // Reset of Main Record ii.properties-----------------
+        this.flds_vf = "0";
+        // Set initial tabsvf
+        tabsvf =    "90000000000000000000000000000000000000000000000909";
+        tabsvf_in = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tr = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tp = "90000000000000000000000000000000000000000000000000";
+        // Load flds_vf & chld_vfs into prop vcs;
+        Connection con = DatabaseUtils.getConnection();
+        // Reset Initial Stub Number--------------------------
+        this.xbutn_id = "1";
+        this.abast_aa = null; // Reset PK not defined as FK Unconditionally
+        this.abast_mm = null; // Reset PK not defined as FK Unconditionally
+        this.abast_cd_posto = null; // Reset PK not defined as FK Unconditionally
+        this.abast_lt_viagem = 0;
+        this.abast_lt_manobra = 0;
+        this.abast_lt_other = 0;
+        this.abast_cd_ferrv1 = null; // Reset of any other variable --
+        this.abast_lt_ferrv1 = 0;
+        this.abast_cd_ferrv2 = null; // Reset of any other variable --
+        this.abast_lt_ferrv2 = 0;
+        this.abast_cd_ferrv3 = null; // Reset of any other variable --
+        this.abast_lt_ferrv3 = 0;
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        // Orders-Reset------------------------------------
+        this.ord_abast_aa = false;
+        this.ord_abast_mm = false;
+        this.ord_abast_cd_posto = false;
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo.indexOf("psq") >= 0){
+            mesg_var = getMessageByKey("selectViaFilters");
+            xmesg_rc = 777;
+        } else {
+            mesg_var = "";
+            xmesg_rc = 0;
+        }
+    } catch (Exception ex) { ex.getMessage(); }
+    } // Closing Reset Method
+    // Filters-Reset------------------------------------
+    protected void resetFilters() {  
+        this.fil_tabs_vc = null;
+        this.fil_abast_aa = null;
+        this.fil_abast_mm = null;
+        this.fil_abast_cd_posto = null;
+    }
+    
+    
+    public void loadDesc() throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+    
+    
+        } finally { DatabaseUtils.releaseConnection(con); }
+    }  //  End of loadDesc 
+    public String doObterBack() throws SQLException, LoginException { // @getrecd
+        String tbakx = (String) (getSession().getAttribute("tbak"));
+        if (tbakx.contains("cad")) { 
+           loadBean(); // @getrecd
+           String result = super.doObter(); // @getrecd
+        } 
+       return tbakx; // @getrecd
+    } 
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObter() throws SQLException, LoginException { // @getrecd
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+       tipo ="ixabastecimentocad";
+       loadBean(); // @getrecd
+       String result = super.doObter(); // @getrecd
+       String goBackBeanx = (String)getSession().getAttribute("goBackBean");
+       if (goBackBeanx != null) {
+           // reset();
+       }
+       result = "ixabastecimentocad"; // @getrecd
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return "success"; // @getrecd
+       } 
+    } 
+    
+    public Object doObterBean() throws SQLException, LoginException {
+        loadBean();
+        return this;
+    }
+    
+    // Loads bean from dao, based on PK value of Object - @param (valor) from Object PK
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+    // loadBean Get Selection Values from Session  ------------------
+    public void loadBean() throws SQLException, LoginException {
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        // Used only if not loadFromGIS - Start 
+        String valor = (String) getSession().getAttribute("ixabastecimentocadvalor");
+        // Used only if not loadFromGIS - End 
+        getSession().setAttribute("tipo", tipox);
+        loadBean(valor);
+    } // end of loadBean
+    // LoadSheet------------------------------------
+    public void loadSheet() throws LoginException, SQLException {  
+       Connection con55 = DatabaseUtils.getConnection();
+        Calendar today = Calendar.getInstance();
+        Integer yy = today.get(Calendar.YEAR );
+        String yyx = yy.toString();
+        Integer mm = today.get(Calendar.MONTH) + 1;
+        String mmx = mm.toString();
+        if (mmx.length() == 1 ) { mmx = "0"+mmx;  }
+        Integer dd = today.get(Calendar.DAY_OF_MONTH );
+        String ddx = dd.toString();
+        if (ddx.length() == 1 ) { ddx = "0"+ddx;  }
+        Integer hh = today.get(Calendar.HOUR_OF_DAY);
+        String hhx = hh.toString();
+        if (hhx.length() == 1 ) { hhx = "0"+hhx;  }
+        Integer mn = today.get(Calendar.MINUTE);
+        String mnx = mn.toString();
+        if (mnx.length() == 1 ) { mnx = "0"+mnx;  }
+        String datex = yyx + mmx + ddx + "-" + hhx + mnx;
+       String valuex ="";  Number valueNumb = 0; Long valueLong = null;
+       BigDecimal valueDec = null; Integer valueNum = null;
+       String src = ""; String dst = "";
+       linex = ""; int ttFoundFlag = 0; importErrorFlag = 0;
+       content[ckk] = ">>>> SispatGeo - Relatório de Atualização em Lote"; ckk = ckk + 1;
+       content[ckk] = ""; ckk = ckk + 1;
+       ttFoundFlag = 0;
+       try {
+           int start = fileUploaded.indexOf("_");
+           abast_aa = fileUploaded.substring(start+1,start+5);
+           abast_mm = fileUploaded.substring(start+5,start+7);
+           if (abast_mm.length() > 1) {
+               abast_mm = abast_mm.replace("0","");
+           }
+           try {
+               PreparedStatement ps_file = con55.prepareStatement("delete from IXAbastecimento  where abast_aa = ? and  abast_mm = ? ");
+               ps_file.setString(1, abast_aa);
+               ps_file.setString(2, abast_mm);
+               ResultSet rs_file = ps_file.executeQuery();
+               } catch (
+                 Exception ex
+               ) {
+               } finally {
+               }
+           String impDirFile = "C:\\sispat_mrs_imports"+"\\" + fileUploaded;
+           src = impDirFile;
+           dst = "C:\\sispat_mrs_imports\\Abastecimento"+"\\" + fileUploaded;
+           String[][] matrix = ExcelUtils.load(new File(impDirFile), "Plan1");
+           for (int rowIndex = 1; rowIndex < matrix.length; rowIndex++) {
+                propCDTTList.clear(); linex = " ";
+               for (int colIndex = 0; colIndex < matrix[rowIndex].length; colIndex++) {
+       	          System.out.println(matrix[rowIndex][colIndex]);
+                       ttFoundFlag = 0;
+                   if (matrix[0][colIndex].equals("ANO") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_aa-ANO");
+               	      this.abast_aa = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           abast_aa = valuex;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("MES") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_mm-MES");
+               	      this.abast_mm = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           abast_mm = valuex;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("CODIGOPOSTO") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_cd_posto-CODIGOPOSTO");
+               	      this.abast_cd_posto = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           abast_cd_posto = valuex;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("LITROSVIAGEM") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_lt_viagem-LITROSVIAGEM");
+               	      this.abast_lt_viagem = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           valuex = valuex.replace(".","");
+                           int stt = valuex.indexOf("E");
+                           if (stt > 0) {
+                               valuex = valuex.substring(0,stt);
+                           }
+                           valueNum = Integer.parseInt(valuex);
+                           abast_lt_viagem = valueNum;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("LITROSMANOBRA") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_lt_manobra-LITROSMANOBRA");
+               	      this.abast_lt_manobra = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           valuex = valuex.replace(".","");
+                           int stt = valuex.indexOf("E");
+                           if (stt > 0) {
+                               valuex = valuex.substring(0,stt);
+                           }
+                           valueNum = Integer.parseInt(valuex);
+                           abast_lt_manobra = valueNum;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("LITROSOUTRO") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_lt_other-LITROSOUTRO");
+               	      this.abast_lt_other = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           valuex = valuex.replace(".","");
+                           int stt = valuex.indexOf("E");
+                           if (stt > 0) {
+                               valuex = valuex.substring(0,stt);
+                           }
+                           valueNum = Integer.parseInt(valuex);
+                           abast_lt_other = valueNum;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("FERROVIA1") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_cd_ferrv1-FERROVIA1");
+               	      this.abast_cd_ferrv1 = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           abast_cd_ferrv1 = valuex;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("LITROSFERROVIA1") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_lt_ferrv1-LITROSFERROVIA1");
+               	      this.abast_lt_ferrv1 = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           valuex = valuex.replace(".","");
+                           int stt = valuex.indexOf("E");
+                           if (stt > 0) {
+                               valuex = valuex.substring(0,stt);
+                           }
+                           valueNum = Integer.parseInt(valuex);
+                           abast_lt_ferrv1 = valueNum;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("FERROVIA2") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_cd_ferrv2-FERROVIA2");
+               	      this.abast_cd_ferrv2 = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           abast_cd_ferrv2 = valuex;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("LITROSFERROVIA2") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_lt_ferrv2-LITROSFERROVIA2");
+               	      this.abast_lt_ferrv2 = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           valuex = valuex.replace(".","");
+                           int stt = valuex.indexOf("E");
+                           if (stt > 0) {
+                               valuex = valuex.substring(0,stt);
+                           }
+                           valueNum = Integer.parseInt(valuex);
+                           abast_lt_ferrv2 = valueNum;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("FERROVIA3") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_cd_ferrv3-FERROVIA3");
+               	      this.abast_cd_ferrv3 = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           abast_cd_ferrv3 = valuex;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (matrix[0][colIndex].equals("LITROSFERROVIA3") ) {
+                       ttFoundFlag = 1;
+                       propCDTTList.add("abast_lt_ferrv3-LITROSFERROVIA3");
+               	      this.abast_lt_ferrv3 = null;
+                       valuex = matrix[rowIndex][colIndex];
+                       if (valuex != null) {
+                           valuex = valuex.replace(".","");
+                           int stt = valuex.indexOf("E");
+                           if (stt > 0) {
+                               valuex = valuex.substring(0,stt);
+                           }
+                           valueNum = Integer.parseInt(valuex);
+                           abast_lt_ferrv3 = valueNum;
+                        }
+                        linex = linex + ",    -" + matrix[0][colIndex] + "=" + valuex;
+                   } // end of if 
+                   if (ttFoundFlag == 0 && rowIndex == 1 ) {
+                      content[ckk] = ">>>> Título de Coluna não Encontrada: "+matrix[0][colIndex];
+                      ckk = ckk + 1; importErrorFlag = 1; continue;
+                   }
+                   continue;
+               } // b
+               // String debugxxxx = ""; 
+               if ( rowIndex == 1 ) {
+                   content[ckk] = "   "; ckk = ckk + 1; continue; 
+               } 
+               String ret = "";
+               ret = doInserir(); 
+                   DatabaseUtils.releaseConnection(con55);
+           } // c
+        } catch (IOException e) {
+    	     // TODO Auto-generated catch block
+    	     e.printStackTrace();
+        }
+        fileUploaded = "";
+        try {
+            if (importErrorFlag == 1) {
+            		String uploadErrorFile = "Sispat_Log_IXAbastecimento_" + datex;
+            		HttpHelpers.enviarArquivo(content, uploadErrorFile, TipoDeArquivo.CSV);
+            }
+        } catch (IOException e) {
+    	     // TODO Auto-generated catch block
+    	     e.printStackTrace();
+        }
+        getSession().setAttribute("fileUploaded","");
+        try {
+            copyDirectory copy = new  copyDirectory(src, dst, "");
+            File filedel = new File(src);
+            filedel.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        xmesg_rc = 777;
+        mesg_var = getMessageByKey("msg_dataImpoted");
+    } // d
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBean(String valor) throws SQLException, LoginException {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        if (valor == null) { return; }
+        Connection con = DatabaseUtils.getConnection();
+        // Build List of Keys --------------------------------------------------------
+        String[] keys_vl = new String[4];
+        int start_ix = 0; int end_ix = 0;
+        int kkv = 1;
+        while(kkv <= 3) {
+            if (kkv == 1) {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                if (valor.length() > 1) {
+                   keys_vl[1] = valor.substring(start_ix,end_ix);
+                } else { keys_vl[1] = valor; }
+                start_ix = end_ix+1;
+            } else {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                keys_vl[kkv] = valor.substring(start_ix,end_ix);
+                start_ix = end_ix+1;
+            }
+            kkv = kkv + 1;
+        }
+        // Logic 2 - if ( ( ii.pcmd.indexOf('recdFromTabl') >= 0 || ii.daoBeanUtils.length() > 0   )  )   
+        String id1 = keys_vl[1];
+        String id2 = keys_vl[2];
+        String id3 = keys_vl[3];
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        IXAbastecimento IXAbastecimentox = new IXAbastecimento(id1 ,id2 ,id3);
+        IXAbastecimentox.loadUfmv(this);
+        IXAbastecimentox.load(con);
+        
+        IXAbastecimentox.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    public void loadFieldBean() {
+        abast_aa_vc = valAbast_aa(abast_aa); 
+        abast_mm_vc = valAbast_mm(abast_mm); 
+        abast_cd_posto_vc = valAbast_cd_posto(abast_cd_posto); 
+        abast_lt_viagem_vc = valAbast_lt_viagem(abast_lt_viagem); 
+        abast_lt_manobra_vc = valAbast_lt_manobra(abast_lt_manobra); 
+        abast_lt_other_vc = valAbast_lt_other(abast_lt_other); 
+        abast_cd_ferrv1_vc = valAbast_cd_ferrv1(abast_cd_ferrv1); 
+        abast_lt_ferrv1_vc = valAbast_lt_ferrv1(abast_lt_ferrv1); 
+        abast_cd_ferrv2_vc = valAbast_cd_ferrv2(abast_cd_ferrv2); 
+        abast_lt_ferrv2_vc = valAbast_lt_ferrv2(abast_lt_ferrv2); 
+        abast_cd_ferrv3_vc = valAbast_cd_ferrv3(abast_cd_ferrv3); 
+        abast_lt_ferrv3_vc = valAbast_lt_ferrv3(abast_lt_ferrv3); 
+    } // end of loadFieldBean
+     
+    public String selMaxVc(String divn) {
+        String vc = "0"; String vc5 = "0"; 
+        Integer divni = Integer.parseInt(divn);
+            vc = abast_aa_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_mm_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_cd_posto_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_lt_viagem_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_lt_manobra_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_lt_other_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_cd_ferrv1_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_lt_ferrv1_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_cd_ferrv2_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_lt_ferrv2_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_cd_ferrv3_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = abast_lt_ferrv3_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        if (vc5.equals("5")) {vc = "5";}
+        return vc;
+    } 
+    
+    protected void mountFilter() {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (fil_abast_aa == null) { fil_abast_aa = "";}
+        if (fil_abast_mm == null) { fil_abast_mm = "";}
+        if (fil_abast_cd_posto == null) { fil_abast_cd_posto = "";}
+        addFieldToFilter(IXAbastecimento.ABAST_AA, fil_abast_aa);
+        addFieldToFilter(IXAbastecimento.ABAST_MM, fil_abast_mm);
+        addFieldToFilter(IXAbastecimento.ABAST_CD_POSTO, fil_abast_cd_posto);
+    } // end of mountFilter
+    
+    // doOrd_abast_aa--------------------------------------------------------
+    public String doOrd_abast_aa() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + IXAbastecimento.ABAST_AA + ")", !ord_abast_aa);
+        ord_abast_aa = !ord_abast_aa;
+        ord_abast_mm = false;
+        ord_abast_cd_posto = false;
+        return super.doSelecionar();
+    }
+    
+    // doOrd_abast_mm--------------------------------------------------------
+    public String doOrd_abast_mm() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + IXAbastecimento.ABAST_MM + ")", !ord_abast_mm);
+        ord_abast_mm = !ord_abast_mm;
+        ord_abast_aa = false;
+        ord_abast_cd_posto = false;
+        return super.doSelecionar();
+    }
+    
+    // doOrd_abast_cd_posto--------------------------------------------------------
+    public String doOrd_abast_cd_posto() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + IXAbastecimento.ABAST_CD_POSTO + ")", !ord_abast_cd_posto);
+        ord_abast_cd_posto = !ord_abast_cd_posto;
+        ord_abast_aa = false;
+        ord_abast_mm = false;
+        return super.doSelecionar();
+    }
+    
+    public String doRetornaPesquisa() {
+        getSession().setAttribute("novainclusao", false);
+        return super.tipo;
+    }
+    public boolean isCanMenu() throws SQLException, LoginException {
+        tipo1 = "*ixabastecimento";
+        return super.isCanPesquisar();
+    }
+    
+    // getAssistnovo------------------------------------------------
+    // Verifies whether record selection button is to be rendered right after record insertion
+    public Boolean getAssistnovo() {
+        assistnovo = false;
+        Boolean bb = (Boolean) (getSession().getAttribute(super.tipo));
+        Boolean an = (Boolean) (getSession().getAttribute("novainclusao"));
+        if (bb == null) {bb = false;}
+        if (an == null) {an = false;}
+        if (bb == true && an == true) {assistnovo = true;}
+        return assistnovo;
+    }
+    
+    public String doReturn() throws SQLException, LoginException {
+            tbakcad = tbakloc;
+            return super.doReturn();
+    }
+     
+    public String doSelecionar() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "ixabastecimentopsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        addFieldToOrder("(" + IXAbastecimento.ABAST_AA + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_MM + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_CD_POSTO + ")", true);
+        getSession().setAttribute("filter", null);
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "ixabastecimentopsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarOnly() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "ixabastecimentopsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        addFieldToOrder("(" + IXAbastecimento.ABAST_AA + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_MM + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_CD_POSTO + ")", true);
+        String ret = "";
+        int filterx = 0;
+        if (fil_abast_aa != null && fil_abast_aa.length()> 0) {filterx = 1;}
+        if (fil_abast_mm != null && fil_abast_mm.length()> 0) {filterx = 1;}
+        if (fil_abast_cd_posto != null && fil_abast_cd_posto.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarOnly();
+        }
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "ixabastecimentopsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarBackx() throws LoginException, SQLException { // @search ccc
+        fileUploaded = (String) getSession().getAttribute("fileUploaded");
+        if ( fileUploaded != null && fileUploaded.length() > 1) {
+            loadSheet();
+        }
+        firstentry = 0;
+        setOrder("");
+        getSession().setAttribute("tipo", "ixabastecimentopsq");
+        pageLength = 999;
+        addFieldToOrder("(" + IXAbastecimento.ABAST_AA + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_MM + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_CD_POSTO + ")", true);
+        getSession().setAttribute("filter", null);
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "ixabastecimentopsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarNull() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "ixabastecimentopsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        tipo = "ixabastecimentopsqxxx";
+        addFieldToOrder("(" + IXAbastecimento.ABAST_AA + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_MM + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_CD_POSTO + ")", true);
+        String ret = "";
+        int filterx = 0;
+        if (fil_abast_aa != null && fil_abast_aa.length()> 0) {filterx = 1;}
+        if (fil_abast_mm != null && fil_abast_mm.length()> 0) {filterx = 1;}
+        if (fil_abast_cd_posto != null && fil_abast_cd_posto.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNull();
+        }
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "ixabastecimentopsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarXlsExport_xls_stb() throws LoginException, SQLException { // @search bbb
+        setOrder("");
+        getSession().setAttribute("tipo", "ixabastecimentopsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        addFieldToOrder("(" + IXAbastecimento.ABAST_AA + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_MM + ")", false);
+        addFieldToOrder("(" + IXAbastecimento.ABAST_CD_POSTO + ")", true);
+        String ret = "";
+        int filterx = 0;
+        if (fil_abast_aa != null && fil_abast_aa.length()> 0) {filterx = 1;}
+        if (fil_abast_mm != null && fil_abast_mm.length()> 0) {filterx = 1;}
+        if (fil_abast_cd_posto != null && fil_abast_cd_posto.length()> 0) {filterx = 1;}
+        // 140810 String ret = super.doSelecionar("");
+        ret = super.doSelecionarExp("");
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "ixabastecimentopsq"; // updbutton != 1 - end
+    }
+    
+    protected void reloadPesqDataExp(Connection con) throws SQLException, LoginException {
+        loadDesc(); boolean res = true;
+        String subtype = "SIAD-ABAST";
+        String valor = (String) getSession().getAttribute(tipo+"valor");
+            super.entregarCsvAntt("", subtype,subtype);
+            super.reloadPesqData(con);
+    } // tttt
+    protected Object chaveadorCF(final String coluna, final Object valor) {
+        //TODO Teste de sobreposição
+        if(coluna.equals("asset_cd_locado_terc")){
+            return "TESTE DO CF";
+        }
+        return valor;
+    }
+    public String doXlsExport_xls_stb() throws LoginException, SQLException { // @search aaa
+        setOrder("");
+        getSession().setAttribute("tipo", "ixabastecimentopsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        String ret = "";
+        doSelecionarXlsExport_xls_stb();
+        loadDesc();
+        String subtype = "ABAST-" + "SIAD-EX";
+        super.deliveryExcel(subtype, subtype);
+        if (pesqData.size() == maxResults) {
+            mesg_var = getMessageByKey("maxResultsExceededWithReport");
+        }
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return ret; // updbutton != 1 - end
+    }
+
+} // End of Code

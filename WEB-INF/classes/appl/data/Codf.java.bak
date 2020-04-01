@@ -1,0 +1,100 @@
+package appl.data;
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+import wins.libs.data.DataObject;
+import wins.libs.DatabaseUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import java.sql.Timestamp;
+import java.text.NumberFormat;
+import appl.libs.IIBeanUtils;
+    // Get Security Imports -----------------------------------------
+import java.math.BigDecimal;
+    
+// Class 
+public class Codf extends DataObject {
+        protected static Log log = LogFactory.getLog(Codf.class);
+    
+    // Validation Control Field-------------------------
+    
+    // Properties---------------------------------------
+    public static final String TABS_VC = "tabs_vc";
+    public static final String TABS_VF = "tabs_vf";
+    public static final String CODF_VF = "codf_vf";
+    public static final String USER_CD = "user_cd";
+    public static final String RECD_TS = "recd_ts";
+    public static final String CODF_TP = "codf_tp";
+    public static final String CODF_ID = "codf_id";
+    public static final String CODF_LG = "codf_lg";
+    public static final String CODF_DS = "codf_ds";
+    public static final String CODF_SUPID = "codf_supid";
+    
+    // Initializations Methods--------------------------
+    public Codf() { }
+    public Codf (String Id1, String Id2, String Id3) {
+        this.setCodf_tp (Id1); 
+        this.setCodf_id (Id2); 
+        this.setCodf_lg (Id3); 
+    }
+    public String getTableName () { 
+        return "Codf";
+    }
+    
+    // Setters -----------------------------------------
+    public void setTabs_vc (String tabs_vc) 
+      {setValue (TABS_VC, tabs_vc); }
+    public void setTabs_vf (String tabs_vf) 
+      {setValue (TABS_VF, tabs_vf); }
+    public void setCodf_vf (String codf_vf) 
+      {setValue (CODF_VF, codf_vf); }
+    public void setUser_cd (String user_cd) 
+      {setValue (USER_CD, user_cd); }
+    public void setRecd_ts (Date recd_ts) 
+      {setValue (RECD_TS, recd_ts); }
+    public void setCodf_tp (String codf_tp) 
+      {setValue (CODF_TP, codf_tp); }
+    public void setCodf_id (String codf_id) 
+      {setValue (CODF_ID, codf_id); }
+    public void setCodf_lg (String codf_lg) 
+      {setValue (CODF_LG, codf_lg); }
+    public void setCodf_ds (String codf_ds) 
+      {setValue (CODF_DS, codf_ds); }
+    public void setCodf_supid (String codf_supid) 
+      {setValue (CODF_SUPID, codf_supid); }
+    
+    // Getters -----------------------------------------
+    public String getTabs_vc() {return getString(TABS_VC); }
+    public String getTabs_vf() {return getString(TABS_VF); }
+    public String getCodf_vf() {return getString(CODF_VF); }
+    public String getUser_cd() {return getString(USER_CD); }
+    public Date getRecd_ts() {return getDate(RECD_TS); }
+    public String getCodf_tp() {return getString(CODF_TP); }
+    // Getters - fpp empty ccc----------------------------------------
+    public String getTrans_desc() throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return IIBeanUtils.getTrans_desc(con, getCodf_tp()); // zzz
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    // Getters - fpp empty aaa----------------------------------------
+    public String getCodf_tp_desc() throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return IIBeanUtils.getTrans_desc(con, getCodf_tp());
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    public String getCodf_id() {return getString(CODF_ID); }
+    public String getCodf_lg() {return getString(CODF_LG); }
+    public String getCodf_ds() {return getString(CODF_DS); }
+    public String getCodf_supid() {return getString(CODF_SUPID); }
+    
+    // Get Presention Rules -----------------------------------------
+    // Get Security Do Action Logic -----------------------------------------
+
+} // DataObjectGen - End of Code

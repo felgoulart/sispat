@@ -1,0 +1,121 @@
+package appl.data;
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+import wins.libs.data.DataObject;
+import wins.libs.DatabaseUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import java.sql.Timestamp;
+import java.text.NumberFormat;
+import appl.libs.IIBeanUtils;
+    // Get Security Imports -----------------------------------------
+import java.math.BigDecimal;
+    
+// Class 
+public class Obaed extends DataObject {
+        protected static Log log = LogFactory.getLog(Obaed.class);
+    
+    // Validation Control Field-------------------------
+    
+    // Properties---------------------------------------
+    public static final String TABS_VC = "tabs_vc";
+    public static final String TABS_VF = "tabs_vf";
+    public static final String OBAED_VF = "obaed_vf";
+    public static final String USER_CD = "user_cd";
+    public static final String RECD_TS = "recd_ts";
+    public static final String OBAED_ID = "obaed_id";
+    public static final String OBAED_SQ = "obaed_sq";
+    public static final String OBAED_TP = "obaed_tp";
+    public static final String OBAED_VL = "obaed_vl";
+    
+    // Initializations Methods--------------------------
+    public Obaed() { }
+    public Obaed (String Id1, Integer Id2) {
+        this.setObaed_id (Id1); 
+        this.setObaed_sq (Id2); 
+    }
+    public String getTableName () { 
+        return "wbrl_obaed";
+    }
+    
+    // Setters -----------------------------------------
+    public void setTabs_vc (String tabs_vc) 
+      {setValue (TABS_VC, tabs_vc); }
+    public void setTabs_vf (String tabs_vf) 
+      {setValue (TABS_VF, tabs_vf); }
+    public void setObaed_vf (String obaed_vf) 
+      {setValue (OBAED_VF, obaed_vf); }
+    public void setUser_cd (String user_cd) 
+      {setValue (USER_CD, user_cd); }
+    public void setRecd_ts (Date recd_ts) 
+      {setValue (RECD_TS, recd_ts); }
+    public void setRecd_ts_str ( String recd_ts_str) 
+      {setValue (RECD_TS, (Date) ConvertUtils.lookup(Date.class).convert(Timestamp.class, recd_ts_str));  }
+    public void setObaed_id (String obaed_id) 
+      {setValue (OBAED_ID, obaed_id); }
+    public void setObaed_sq (Integer obaed_sq) 
+      {setValue (OBAED_SQ, obaed_sq); }
+    public void setObaed_tp (String obaed_tp) 
+      {setValue (OBAED_TP, obaed_tp); }
+    public void setObaed_vl (String obaed_vl) 
+      {setValue (OBAED_VL, obaed_vl); }
+    
+    // Getters -----------------------------------------
+    public String getTabs_vc() {return getString(TABS_VC); }
+    public String getTabs_vf() {return getString(TABS_VF); }
+    public String getObaed_vf() {return getString(OBAED_VF); }
+    public String getUser_cd() {return getString(USER_CD); }
+    public Date getRecd_ts() {return getDate(RECD_TS); }
+    public String getObaed_id() {return getString(OBAED_ID); }
+    // Getters - fpp empty ccc----------------------------------------
+    public String getAsset_desc() throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+     return IIBeanUtils.getAsset_desc(con, getObaed_id()); // zzp
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    // Getters - fpp empty aaa----------------------------------------
+    public String getObaed_id_desc() throws SQLException { // xxx 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return IIBeanUtils.getAsset_desc(con, getObaed_id()); //777
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    public Integer getObaed_sq() {return getInteger(OBAED_SQ); }
+    public String getObaed_tp() {return getString(OBAED_TP); }
+    public String getObaed_tp_desc() throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return "-"+IIBeanUtils.getCodfDesc(con, "TPAED", getObaed_tp()); //qqq
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    public String getObaed_tp_desc(String locale) throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return "-"+IIBeanUtils.getCodfDesc(con, "TPAED", getObaed_tp(), locale);
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    public String getObaed_vl() {return getString(OBAED_VL); }
+    public String getObaed_vl_desc() throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return "-"+IIBeanUtils.getCodfDesc(con, "TPACO", getObaed_vl()); //qqq
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    public String getObaed_vl_desc(String locale) throws SQLException { 
+        Connection con = DatabaseUtils.getConnection();
+        try {
+            return "-"+IIBeanUtils.getCodfDesc(con, "TPACO", getObaed_vl(), locale);
+        } finally { DatabaseUtils.releaseConnection(con);}
+    }
+    
+    // Get Presention Rules -----------------------------------------
+    // Get Security Do Action Logic -----------------------------------------
+
+} // DataObjectGen - End of Code

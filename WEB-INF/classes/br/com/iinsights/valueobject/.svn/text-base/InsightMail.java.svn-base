@@ -1,0 +1,110 @@
+package br.com.iinsights.valueobject;
+
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.activation.DataHandler;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.Message.RecipientType;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+
+import br.com.iinsights.util.InsightMailConfig;
+
+public class InsightMail {
+
+    private String body;
+    private Map<String, byte[]> files = new HashMap<String, byte[]>();
+    private List<String> recipients = new ArrayList<String>();
+    private String subject;
+
+    public InsightMail() {
+
+    }
+
+    public String getBody() {
+	return body;
+    }
+
+    public void setBody(String body) {
+	this.body = body;
+    }
+
+    public Map<String, byte[]> getFiles() {
+	return files;
+    }
+
+    public void setFiles(Map<String, byte[]> files) {
+	this.files = files;
+    }
+
+    public List<String> getRecipients() {
+	return recipients;
+    }
+
+    public void setRecipients(List<String> recipients) {
+	this.recipients = recipients;
+    }
+
+    public void addRecipient(String email) {
+	this.recipients.add(email);
+    }
+
+    public void addFile(String fileName, byte[] bytes) {
+	this.files.put(fileName, bytes);
+    }
+
+    public String getSubject() {
+	return subject;
+    }
+
+    public void setSubject(String subject) {
+	this.subject = subject;
+    }
+
+    public void send() throws Exception {
+	Session session = Session.getInstance(InsightMailConfig.MAIL_PROPERTIES);
+
+	Message msg = new MimeMessage(session);
+	msg.setFrom(new InternetAddress(InsightMailConfig.MAIL_PROPERTIES.getProperty("mail.from")));
+
+	for (String s : recipients) {
+	    msg.addRecipient(RecipientType.TO, new InternetAddress(s));
+	}
+
+	Multipart mp = new MimeMultipart();
+	msg.setContent(mp);
+
+	MimeBodyPart mbp1 = new MimeBodyPart();
+	mp.addBodyPart(mbp1);
+	mbp1.setText("Relatório");
+
+	for (String s : this.files.keySet()) {
+
+	    byte[] bArr = files.get(s);
+	    ByteArrayInputStream ins = new ByteArrayInputStream(bArr);
+
+	    DataHandler dh = new DataHandler(new ByteArrayDataSource(ins, "multpart/mixed"));
+
+	    MimeBodyPart mbp = new MimeBodyPart();
+	    mp.addBodyPart(mbp);
+	    mbp.setDataHandler(dh);
+	    mbp.setFileName(s);
+	}
+
+	msg.setSubject("Relatório");
+	msg.setHeader("X-Mailer", "LOTONtechEmail");
+	msg.setSentDate(new Date());
+	Transport.send(msg);
+    }
+}

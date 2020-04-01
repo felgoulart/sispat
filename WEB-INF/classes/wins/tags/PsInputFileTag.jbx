@@ -1,0 +1,11 @@
+[PropertyInfo]
+accept,String,false,false,accept,accept,true,<default>
+componentType,String,false,false, , ,true,<default>
+rendererType,String,false,false, , ,true,<default>
+styleClass,String,false,false, , ,true,<default>
+value,String,false,false, , ,true,<default>
+[IconNames]
+
+
+
+

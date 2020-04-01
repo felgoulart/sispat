@@ -1,0 +1,80 @@
+package wins.libs.servlet;
+import java.awt.image.RenderedImage;
+import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import wins.libs.ImageUtils;
+public class ShowImageServlet extends HttpServlet {
+    private static final long serialVersionUID = -3957486108173429675L;
+        public void showImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String img = (String) request.getParameter("img");
+        int parmpos = img.indexOf("parm");
+        String parm = ""; 
+        if ( parmpos > 0) {
+            parm = img.substring(parmpos + 5,parmpos + 10);
+        }
+        img = img.substring(0,parmpos);    
+        System.out.println(" xxxxxxxxxxxxxxxxxxxxx img: " + img);
+        if (img.length() > 0) {
+            /* Caminho relativo à aplicação */
+
+            //InputStream is = new FileInputStream("+ii.dq+imagespath+ii.dq+"+ parm + "+ii.dq+"/"+ii.dq+" + img);");
+        	//InputStream is = new FileInputStream(File.separator + "sispat_mrs_images" + parm + File.separator + img);
+        	//Object imgx = getServletContext().getRealPath("/")).getParent() + File.separator + "/sispat_mrs_images" + parm + File.separator + img);
+            //+ File.separator + "/sispat_mrs_images" + parm + File.separator + img;
+            //System.out.println("parm: " + parm);
+            
+        	InputStream is = new FileInputStream(new File(getServletContext().getRealPath("/")).getParent()
+	            + File.separator + "/sispat_mrs_images" + parm + File.separator + img);
+
+        	byte[] b = new byte[is.available()];
+            is.read(b);
+            response.getOutputStream().write(b);
+        }
+    }
+    public void showThumbnail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String img = (String) request.getParameter("img");
+        int parmpos = img.indexOf("parm");
+        String parm = "";
+        if ( parmpos > 0) {
+            parm = img.substring(img.length() - 5, img.length());
+        }
+        img = img.substring(0,parmpos);
+        //img = "fileDownload3.jpg"; 
+        /* Caminho relativo à aplicação */
+        img = new File(getServletContext().getRealPath("/")).getParent() 
+	           + File.separator + "sispat_mrs_images" + parm + File.separator + img;
+        File file = new File(img);
+        InputStream is = new FileInputStream(img);
+        
+        //System.out.println("mostrar imagem.1.."+file.getPath());
+        String strCodec = ImageUtils.getCodecName(file);
+        RenderedImage rendered = ImageUtils.getImage(strCodec, b);
+        int width = 50;
+        int height = 50;
+        ImageUtils.writeJpegImage(ImageUtils.createTumb(rendered, width, height), response.getOutputStream());
+        //System.out.println("mostrar imagem ok...");
+    }
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            //response.setContentType("image/jpg");
+        	response.setContentType("image/png");
+            String tipo = request.getParameter("tipo");
+            if ("icone".equals(tipo)) {
+                //System.out.println("icone.1..");
+                showThumbnail(request, response);
+            } else {
+                //System.out.println("Image.1..");
+                showImage(request, response);
+            }
+        } catch (Exception e) {
+                e.printStackTrace();
+            throw new IOException("");
+        }
+    }
+}

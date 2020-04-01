@@ -1,0 +1,14 @@
+TrainNewsletter_train_ds_eng - 4 parametro
+TrainNewsletter_trmvt_ob - 5 parametro
+TrainNewsletter_unprd_nm_current - 6 parametro (2 col)
+TrainNewsletter_train_nm_rwloc_origin - 7 parametro
+TrainNewsletter_trmvt_dh_arrived_current - ultimo parametro
+
+TrainNewsletter_railw_ab_owner - 5 campo
+TrainNewsletter_rwloc_px_origin - 6 campo
+TrainNewsletter_porte_ds_direction - 9 campo
+TrainNewsletter_comdt_nm - 10 campo
+TrainNewsletter_custm_nm_sender - 11 campo
+TrainNewsletter_porte_wt_load_org - 13 campo
+TrainNewsletter_vhopr_wt_gross - 14 campo
+TrainNewsletter_porte_cd_cfprttp - ultimo campo

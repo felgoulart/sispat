@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+  <display-name></display-name>
+  <description></description>
+  <context-param>
+    <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+    <param-value>server</param-value>
+  </context-param>
+  
+  <context-param>
+   <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+   <param-value>false</param-value>
+ </context-param>
+  
+  <context-param>
+    <param-name>com.sun.faces.validateXml</param-name>
+    <param-value>true</param-value>
+    <description>Set this flag to true if you want the JSF            Reference Implementation to validate the XML in your            faces-config.xml resources against the DTD.  Default            value is false.</description>
+  </context-param>
+
+  <context-param>
+    <param-name>com.sun.faces.enableHighAvailability</param-name>
+    <param-value>true</param-value>
+    <description>Set this flag to true if you want the JSF            Reference Implementation to validate the XML in your            faces-config.xml resources against the DTD.  Default            value is false.</description>
+  </context-param>
+
+  <context-param>
+    <param-name>com.sun.faces.verifyObjects</param-name>
+     <param-value>true</param-value>
+     <description>Set this flag to true if you want the JSF            Reference Implementation to verify that all of the application            objects you have configured (components, converters,            renderers, and validators) can be successfully created.            Default value is false.</description>
+  </context-param>
+  <context-param>
+    <param-name>javax.faces.CONFIG_FILES</param-name>
+    <param-value>/WEB-INF/faces-config.xml,/WEB-INF/faces-config-remoto.xml</param-value>
+  </context-param>
+  <context-param>
+    <param-name>com.sun.faces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
+    <param-value>999</param-value>
+  </context-param>
+  <listener>
+    <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>connectionFactory</servlet-name>
+    <servlet-class>wins.libs.servlet.ConnectionFactoryServlet</servlet-class>
+    <init-param>
+      <param-name>database</param-name>
+      <param-value>sqlserver</param-value>
+    </init-param>
+    <init-param>
+      <param-name>driver</param-name>
+      <param-value>net.sourceforge.jtds.jdbc.Driver</param-value> 
+    </init-param>
+    <init-param>
+      <param-name>service</param-name>
+      <param-value>SQLEXPRESS08</param-value>
+    </init-param>
+    <init-param>
+      <param-name>server</param-name>
+      <param-value>SERGIO/SISPAT_VLI</param-value>
+    </init-param>
+    <init-param>
+      <param-name>port</param-name>
+      <param-value>1433</param-value>
+    </init-param>
+    <init-param>
+      <param-name>user</param-name>
+      <param-value>sa</param-value>
+    </init-param>
+    <init-param>
+      <param-name>password</param-name>
+      <param-value>FfdrHKVtmzgT</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>ShowImageServlet</servlet-name>
+    <servlet-class>wins.libs.servlet.ShowImageServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ShowImageServletPjaus</servlet-name>
+    <servlet-class>wins.libs.servlet.ShowImageServletPjaus</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AxisServlet</servlet-name>
+    <display-name>Apache-Axis Servlet</display-name>
+    <servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminServlet</servlet-name>
+    <display-name>Axis Admin Servlet</display-name>
+    <servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>AjaxServlet</servlet-name>
+    <display-name>Ajax Servlet</display-name>
+    <servlet-class>servlets.AjaxServlet</servlet-class>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>/faces/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ShowImageServlet</servlet-name>
+    <url-pattern>/servlet/ShowImageServlet.jpg</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ShowImageServletPjaus</servlet-name>
+    <url-pattern>/servlet/ShowImageServletPjaus.jpg</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/servlet/AxisServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>*.jws</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminServlet</servlet-name>
+    <url-pattern>/servlet/AdminServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AjaxServlet</servlet-name>
+    <url-pattern>/servlets/AjaxServlet</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
+  <error-page>
+    <exception-type>wins.libs.LoginException</exception-type>
+    <location>/iiErrorLogin.jsp</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/iiErrorInternal.jsp</location>
+  </error-page>
+  <security-constraint>
+    <display-name>Restrict access to JSP pages</display-name>
+    <web-resource-collection>
+       <web-resource-name>Restrict access to JSP pages</web-resource-name>
+    </web-resource-collection>
+    <auth-constraint>
+       <description>With no roles defined, no access granted</description>
+    </auth-constraint>
+  </security-constraint>
+  <context-param>
+    <param-name>onload-config</param-name>
+    <param-value>/WEB-INF/onload-config.xml</param-value>
+  </context-param>
+</web-app>

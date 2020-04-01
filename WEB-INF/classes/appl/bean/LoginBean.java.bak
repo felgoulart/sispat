@@ -1,0 +1,258 @@
+package appl.bean;
+import appl.data.Userx;
+import appl.data.Mssg;
+import wins.libs.DatabaseUtils;
+import java.sql.Connection;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.util.Date;
+import java.util.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+public class LoginBean extends FacesBean {
+    private String mssg;
+    private String login;
+    private String senha;
+    private String role;
+    private Date pw_time;
+	private Boolean adAuthenticated;
+
+	public LoginBean() throws SQLException {  // logic section - User Login
+    	
+        mssg = "";
+        Connection con;
+        con = null;
+        try {
+            con = DatabaseUtils.getConnection();
+        } catch (SQLException e) {
+                e.printStackTrace();
+                mssg =  e.toString();
+        }
+        if (mssg.length() > 0 ) {
+            mssg = mssg.substring(mssg.indexOf(":")+1,mssg.length());
+            mssg = "Contact Technical Support: " + mssg;
+        }
+        if (mssg.length() == 0 ) {
+            try {
+                List list = null;
+                try {
+                    list = new Mssg().find(con, "mssg_cd", "login");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                if (!list.isEmpty()) {
+                    Mssg mssgx = (Mssg)list.get(0);
+                    mssg = mssgx.getMssg_ds();
+                }
+            } finally {
+                DatabaseUtils.releaseConnection(con);
+            }
+        }
+    }
+    public void setMssg(String mssg) {
+        this.mssg = mssg;
+    }
+    public void setLogin(String login) {
+        this.login = login;
+    }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+    public void setRole(String Role) {
+        this.role = role;
+    }
+    public String getMssg() {
+        return mssg;
+    }
+    public String getLogin() {
+        return login;
+    }
+    public String getSenha() {
+        return senha;
+    }
+    public String getRole() {
+        return role;
+    }
+    
+	public String doAdAuth() throws SQLException, Exception {
+		String remoteUser = getRequest().getRemoteUser();
+		System.out.println("remoteUser = " + remoteUser);
+		if (remoteUser != null) {
+			login = remoteUser.substring(remoteUser.indexOf('\\')+1);
+			System.out.println("User '" + login + "' logged!");
+			adAuthenticated = true;
+			getSession().setAttribute("adAuthenticated", adAuthenticated);
+			
+			System.out.println("RemoteUser Groups:");
+			for (String group : getGroups("localhost", "athena", "Administrator", "Wendel", login)) {
+				System.out.println("\t" + group);
+			}
+			
+			return doLogin();
+		} else {
+			return doLogout();
+		}
+	}
+    
+    public String doLogin() throws SQLException, Exception {
+         
+         //if(!getAdAuthenticated()) {
+         //	 endSession();
+         //}
+         
+         Connection con = DatabaseUtils.getConnection();
+         try {        	 
+            List list = new Userx().find(con, adAuthenticated ? "userx_id_external" : "userx_id_login", this.login);
+            List list = new Userx().find(con, "userx_id_login", this.login);   // AD-NOT
+            if (!list.isEmpty()) {
+                Userx userx = (Userx)list.get(0);
+                
+                // Password Expiration Logic -------------------- 
+                pw_time = new Date(); 
+                Calendar today = Calendar.getInstance();
+                int yy = today.get(Calendar.YEAR );
+                int mm  = today.get(Calendar.MONTH) + 1;
+                int dd = today.get(Calendar.DAY_OF_MONTH);
+                int hh = today.get(Calendar.HOUR_OF_DAY );
+                int mn = today.get(Calendar.MINUTE );
+                int ss = today.get(Calendar.SECOND );
+                String pw_time_str = yy+"-"+mm+"-"+dd+" "+hh+":"+mn+":"+ss;
+                Date recd_ts_db = userx.getRecd_ts();
+                Integer st = userx.getUserx_st();
+                if (st == null) {st = 1;}
+                if (recd_ts_db == null) {st = 1; recd_ts_db = pw_time; }
+                long tsdb = recd_ts_db.getTime();
+                long tsxx = pw_time.getTime();
+                long daysleft = (tsxx - tsdb)/ (3600000);
+                    if ( st == 0) {
+                       daysleft = 60 - daysleft / 24;
+                    }
+                if (daysleft <= 0) {
+                     st = 1;
+                }
+                String pwinmd5 = "";
+                if(!adAuthenticated) {
+                	this.senha = this.senha.toLowerCase();
+                	pwinmd5 = getStringAsMD5(this.senha);
+                }
+                String pwdb = userx.getUserx_pw();
+                if (pwdb == null) { pwdb = "";  } 
+                String pwdbmd5 = "";
+                if (pwdb.length() > 30 ){ pwdbmd5 = pwdb;}
+                else {pwdbmd5 = getStringAsMD5(pwdb);}
+                if ( pwinmd5.equals(pwdbmd5) || adAuthenticated) {
+                    role = userx.getUserx_id_role();
+                    rolex = role;  
+                    PreparedStatement ps_sec = con.prepareStatement("select * from rlopr where rlopr_id_role=?");
+                    ps_sec.setString(1, role);
+                    ResultSet rs_sec = ps_sec.executeQuery();
+                    userx.loadTableSecurity(rs_sec);
+                    ps_sec.close();
+                    rs_sec.close();
+                    setLoginInfo(userx);
+                    role = userx.getUserx_id_role();
+                    if (role == null || role.trim().equals("")) {
+                        addErrorMessageByKey("login_error_role");
+                        return "failed";
+                    }
+                    String trans = userx.getUserx_id_trans();
+                    if (trans == null || trans.trim().equals("")) {
+                       addErrorMessageByKey("login_error_trans");
+                    } else {
+                        String key = userx.getUserx_id_login();
+                        String msg = "";
+                        if (st == 1 ) {
+                            st = st + 1;
+                            Connection con1 = DatabaseUtils.getConnection();
+                            try {
+                            PreparedStatement ps_max = con1.prepareStatement("UPDATE USERX SET  recd_ts = '"+pw_time_str+"', userx_st = "+st+" where userx_id_login = '"+key+"'");
+                            ResultSet rs_max = ps_max.executeQuery();
+                            con1.commit(); con1.close();
+                            } catch (Exception ex) { msg = ex.getMessage(); }
+                              finally {
+                              DatabaseUtils.releaseConnection(con1);
+                            }
+                        }
+                        trans = trans.toLowerCase();
+                        String menu_key = trans + "_TT_ta";
+                        String menu_tt = getMessageByKey(menu_key); 
+                        getSession().setAttribute("menu", menu_tt);
+                        trans = trans + "cad";
+                    }
+                    return trans;
+                } else {
+                    addErrorMessageByKey("login_error_senha");
+                }
+            } else {
+                addErrorMessageByKey("login_error_login");
+            }
+            return "failed";
+        } finally {
+            DatabaseUtils.releaseConnection(con);
+        }
+    }
+    public String getStringAsMD5(String str) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        BigInteger hash = new BigInteger(1, md.digest(str.getBytes()));
+        String s2 = hash.toString(16);
+        return s2;
+    }
+    public String doLogout() {
+        endSession();
+        return "logout";
+    }
+    
+    public Boolean getAdAuthenticated() {
+    	adAuthenticated = (Boolean) getSession().getAttribute("adAuthenticated");
+    	if(adAuthenticated == null || this.senha != null) {
+    		adAuthenticated = false;
+    	}
+		return adAuthenticated;
+	}
+    
+	public Set<String> getGroups(String serverDomain, String domain, String domainUsername, String domainPassword, String remoteUsername) throws NamingException {
+		Set<String> groups = new HashSet<String>();
+		
+		Hashtable<String, String> env = new Hashtable<String,String>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
+		env.put(Context.PROVIDER_URL, "ldap://"+serverDomain+":389");
+		env.put(Context.SECURITY_AUTHENTICATION,"simple");
+		env.put(Context.SECURITY_PRINCIPAL, domain.toUpperCase()+"\\"+domainUsername);
+		env.put(Context.SECURITY_CREDENTIALS,domainPassword);
+		DirContext ctx = new InitialDirContext(env);
+		SearchControls controls = new SearchControls();
+		controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		
+		String rootSearch = "CN=Users,DC="+domain.toLowerCase()+",DC=local";
+		NamingEnumeration<SearchResult> results = ctx.search(rootSearch, "(&(cn="+remoteUsername+"))",controls);
+		
+		while (results.hasMore()) {
+            SearchResult nc = (SearchResult)results.next();
+			Attributes att = nc.getAttributes();
+            NamingEnumeration<?> atts = att.get("memberOf").getAll();
+            while(atts.hasMore()) {
+            	String item = atts.nextElement().toString();
+				groups.add(item.replace(rootSearch,"").replace("CN=", "").replace(",", ""));
+            }
+        }
+		
+		return groups;
+	}
+}

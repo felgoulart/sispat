@@ -1,0 +1,1668 @@
+package appl.bean;
+    
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+import javax.faces.model.SelectItem;
+import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import wins.report.jasperRunner;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import java.util.List;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.fileupload.FileItem;
+import appl.data.Obdocpj;
+// ---------------------------------------
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import wins.libs.LoginException;
+import appl.libs.IIBeanUtils;
+public class CadObdocpjcklBean extends CadastroBean {
+        protected static Log log = LogFactory.getLog(CadObdocpjcklBean.class);
+    public int xtab = 0;
+    // Tabs Validation Status
+    private String idx;
+    private String idxm;
+    private int idxmtot;
+    private boolean idxflag;
+    private String tbakloc;
+    private String alterando;
+    private Boolean assistnovo;
+    private String filter;
+    private String vc;
+    public String role = "";
+    public int imgskk = 0;
+    public int fileskk = 0;
+    public String fileUploaded= "";
+    private int maxResultsTrn = 0;
+    public String valorz = "";
+    public int error = 0;
+    
+    // Building Fields Validation Map ---------------
+    private static Map<String, Integer> i_fields = new HashMap<String, Integer>(); static {
+        i_fields.put("obdocpj_cl", 1);
+        i_fields.put("obdocpj_cl_type", 2);
+        i_fields.put("obdocpj_st", 3);
+        i_fields.put("obdocpj_dt_envio", 4);
+        i_fields.put("obdocpj_dt_recepcao", 5);
+        i_fields.put("obdocpj_cd_file", 6);
+        i_fields.put("obdocpj_tp_cfpjtp", 7);
+        i_fields.put("obdocpj_nm", 8);
+        i_fields.put("obdocpj_ds", 9);
+        i_fields.put("obdocpj_dt", 10);
+        i_fields.put("obdocpj_ct", 11);
+        i_fields.put("obdocpj_nm_file", 12);
+    } // 222
+    
+    private FileItem file;
+    // Declaring Validation Map -------------------
+    private HashMap<String, StringBuffer> i_divns = new HashMap<String, StringBuffer>();
+    // ii.properties---------------------------------------
+    private String xbutn_id;
+    private String xuserx_id_login;
+    private String obdocpj_vc;
+    private String tabs_vf;
+    private String tabs_vf_old;
+    private String obdocpj_vf;
+    private String user_cd;
+    private Date recd_ts;
+    private String recd_ts_str;
+    private String recd_ts_dt;
+    private String obdocpj_id;
+    private String obdocpj_id_old ;
+    private String obdocpj_id_desc;
+    private Integer obdocpj_sq;
+    private Integer obdocpj_sq_old ;
+    private String obdocpj_sq_vc;
+    private String obdocpj_cl;
+    private String obdocpj_cl_desc;
+    private String obdocpj_cl_vc;
+    private String obdocpj_cl_type;
+    private String obdocpj_cl_type_desc;
+    private String obdocpj_cl_type_vc;
+    private String obdocpj_st;
+    private String obdocpj_st_desc;
+    private String obdocpj_st_vc;
+    private Date obdocpj_dt_envio;
+    private String obdocpj_dt_envio_str;
+    private String obdocpj_dt_envio_dt;
+    private String obdocpj_dt_envio_vc;
+    private Date obdocpj_dt_recepcao;
+    private String obdocpj_dt_recepcao_str;
+    private String obdocpj_dt_recepcao_dt;
+    private String obdocpj_dt_recepcao_vc;
+    private String obdocpj_cd_file;
+    private String obdocpj_cd_file_desc;
+    private String obdocpj_cd_file_vc;
+    private String obdocpj_tp_cfpjtp;
+    private String obdocpj_tp_cfpjtp_desc;
+    private String obdocpj_tp_cfpjtp_vc;
+    private String obdocpj_nm;
+    private String obdocpj_nm_vc;
+    private String obdocpj_ds;
+    private String obdocpj_ds_vc;
+    private Date obdocpj_dt;
+    private String obdocpj_dt_str;
+    private String obdocpj_dt_dt;
+    private String obdocpj_dt_vc;
+    private String obdocpj_ct;
+    private String obdocpj_ct_vc;
+    private String obdocpj_nm_file;
+    private String obdocpj_nm_file_vc;
+    private String flds_vf_ref;
+    // Filters------------------------------------------
+    private String fil_obdocpj_vc;
+    private String fil_obdocpj_id;
+    private String fil_obdocpj_cl;
+    private String fil_obdocpj_cl_type;
+    private String fil_obdocpj_ds;
+    private String fil_obdocpj_nm_file;
+    // Orders------------------------------------
+    private Boolean ord_obdocpj_cl;
+    private Boolean ord_obdocpj_cl_type;
+    private Boolean ord_obdocpj_nm_file;
+    private FileItem obdocpj_file;
+    // Constructor--------------------------------------
+    public CadObdocpjcklBean() { 
+    } // 333
+    
+    // Returns a Reference to the Associared DataObject-
+    protected Class getDataClass() { return Obdocpj.class;}
+    // Working Variables Methods-------------------------
+    public void setAlterando(String alterando) { this.alterando = alterando; }
+    public String getAlterando() { return alterando;} 
+    
+    // Setters -----------------------------------------
+    public void setXbutn_id (String xbutn_id) {
+        this.xbutn_id = xbutn_id;
+    }
+    public void setXuserx_id_login (String xuserx_id_login) {
+        this.xuserx_id_login = xuserx_id_login;
+    }
+    public void setObdocpj_vc (String obdocpj_vc) {this.obdocpj_vc = obdocpj_vc;}
+    public void setTabs_vf (String tabs_vf) {this.tabs_vf = tabs_vf;}
+    public void setObdocpj_vf (String obdocpj_vf) {this.obdocpj_vf = obdocpj_vf;}
+    
+    public void setFlds_vfsb (StringBuffer flds_vfsb) {this.flds_vfsb = flds_vfsb;}
+    
+    public void setUser_cd (String user_cd) {this.user_cd = user_cd;}
+    
+    public void setRecd_ts (Date recd_ts) {this.recd_ts = recd_ts;}
+    
+    public void setObdocpj_id (String obdocpj_id) {this.obdocpj_id = obdocpj_id;}
+    public void setObdocpj_id_desc (String obdocpj_id_desc) {this.obdocpj_id_desc = obdocpj_id_desc;}
+    
+    public void setObdocpj_sq (Integer obdocpj_sq) {this.obdocpj_sq = obdocpj_sq;}
+    public void setObdocpj_cl (String obdocpj_cl) {this.obdocpj_cl = obdocpj_cl;}
+    public void setObdocpj_cl_desc (String obdocpj_cl_desc) {this.obdocpj_cl_desc = obdocpj_cl_desc;}
+    public void setObdocpj_cl_vc (String obdocpj_cl_vc) {this.obdocpj_cl_vc = obdocpj_cl_vc;}
+    public void setObdocpj_cl_type (String obdocpj_cl_type) {this.obdocpj_cl_type = obdocpj_cl_type;}
+    public void setObdocpj_cl_type_desc (String obdocpj_cl_type_desc) {this.obdocpj_cl_type_desc = obdocpj_cl_type_desc;}
+    public void setObdocpj_cl_type_vc (String obdocpj_cl_type_vc) {this.obdocpj_cl_type_vc = obdocpj_cl_type_vc;}
+    public void setObdocpj_st (String obdocpj_st) {this.obdocpj_st = obdocpj_st;}
+    public void setObdocpj_st_desc (String obdocpj_st_desc) {this.obdocpj_st_desc = obdocpj_st_desc;}
+    public void setObdocpj_st_vc (String obdocpj_st_vc) {this.obdocpj_st_vc = obdocpj_st_vc;}
+    
+    public void setObdocpj_dt_envio (Date obdocpj_dt_envio) {this.obdocpj_dt_envio = obdocpj_dt_envio;}
+    public void setObdocpj_dt_envio_str (String obdocpj_dt_envio_str) {
+       this.obdocpj_dt_envio_str = obdocpj_dt_envio_str; }
+    public void setObdocpj_dt_envio_vc (String obdocpj_dt_envio_vc) {this.obdocpj_dt_envio_vc = obdocpj_dt_envio_vc;}
+    public void setObdocpj_dt_recepcao (Date obdocpj_dt_recepcao) {this.obdocpj_dt_recepcao = obdocpj_dt_recepcao;}
+    public void setObdocpj_dt_recepcao_str (String obdocpj_dt_recepcao_str) {
+       this.obdocpj_dt_recepcao_str = obdocpj_dt_recepcao_str; }
+    public void setObdocpj_dt_recepcao_vc (String obdocpj_dt_recepcao_vc) {this.obdocpj_dt_recepcao_vc = obdocpj_dt_recepcao_vc;}
+    
+    public void setObdocpj_cd_file (String obdocpj_cd_file) {this.obdocpj_cd_file = obdocpj_cd_file;}
+    public void setObdocpj_cd_file_desc (String obdocpj_cd_file_desc) {this.obdocpj_cd_file_desc = obdocpj_cd_file_desc;}
+    public void setObdocpj_cd_file_vc (String obdocpj_cd_file_vc) {this.obdocpj_cd_file_vc = obdocpj_cd_file_vc;}
+    public void setObdocpj_tp_cfpjtp (String obdocpj_tp_cfpjtp) {this.obdocpj_tp_cfpjtp = obdocpj_tp_cfpjtp;}
+    public void setObdocpj_tp_cfpjtp_desc (String obdocpj_tp_cfpjtp_desc) {this.obdocpj_tp_cfpjtp_desc = obdocpj_tp_cfpjtp_desc;}
+    public void setObdocpj_tp_cfpjtp_vc (String obdocpj_tp_cfpjtp_vc) {this.obdocpj_tp_cfpjtp_vc = obdocpj_tp_cfpjtp_vc;}
+    public void setObdocpj_nm (String obdocpj_nm) {this.obdocpj_nm = obdocpj_nm;}
+    public void setObdocpj_nm_vc (String obdocpj_nm_vc) {this.obdocpj_nm_vc = obdocpj_nm_vc;}
+    public void setObdocpj_ds (String obdocpj_ds) {this.obdocpj_ds = obdocpj_ds;}
+    public void setObdocpj_ds_vc (String obdocpj_ds_vc) {this.obdocpj_ds_vc = obdocpj_ds_vc;}
+    
+    public void setObdocpj_dt (Date obdocpj_dt) {this.obdocpj_dt = obdocpj_dt;}
+    public void setObdocpj_dt_str (String obdocpj_dt_str) {
+       this.obdocpj_dt_str = obdocpj_dt_str; }
+    public void setObdocpj_dt_vc (String obdocpj_dt_vc) {this.obdocpj_dt_vc = obdocpj_dt_vc;}
+    
+    public void setObdocpj_ct (String obdocpj_ct) {this.obdocpj_ct = obdocpj_ct;}
+    public void setObdocpj_ct_vc (String obdocpj_ct_vc) {this.obdocpj_ct_vc = obdocpj_ct_vc;}
+    public void setObdocpj_nm_file (String obdocpj_nm_file) {this.obdocpj_nm_file = obdocpj_nm_file;}
+    public void setObdocpj_nm_file_vc (String obdocpj_nm_file_vc) {this.obdocpj_nm_file_vc = obdocpj_nm_file_vc;}
+    // Filter Setters-----------------------------------
+    public void setFil_obdocpj_vc (String fil_obdocpj_vc) {this.fil_obdocpj_vc = fil_obdocpj_vc;}
+    public void setFil_obdocpj_id (String fil_obdocpj_id) {this.fil_obdocpj_id = fil_obdocpj_id;}
+    public void setFil_obdocpj_cl (String fil_obdocpj_cl) {this.fil_obdocpj_cl = fil_obdocpj_cl;}
+    public void setFil_obdocpj_cl_type (String fil_obdocpj_cl_type) {this.fil_obdocpj_cl_type = fil_obdocpj_cl_type;}
+    public void setFil_obdocpj_ds (String fil_obdocpj_ds) {this.fil_obdocpj_ds = fil_obdocpj_ds;}
+    public void setFil_obdocpj_nm_file (String fil_obdocpj_nm_file) {this.fil_obdocpj_nm_file = fil_obdocpj_nm_file;}
+    // Order Setters---------------------------
+    public void setOrd_obdocpj_cl (boolean ord_obdocpj_cl) {this.ord_obdocpj_cl = ord_obdocpj_cl ; }
+    public void setOrd_obdocpj_cl_type (boolean ord_obdocpj_cl_type) {this.ord_obdocpj_cl_type = ord_obdocpj_cl_type ; }
+    public void setOrd_obdocpj_nm_file (boolean ord_obdocpj_nm_file) {this.ord_obdocpj_nm_file = ord_obdocpj_nm_file ; }
+    public FileItem getFile() {
+        return file;
+    }
+    public void setFile(FileItem file) {
+        this.file = file;
+    }
+    
+    // Getters -----------------------------------------
+    public String getIdxm() {
+        return idxm; 
+    }
+    public boolean isIdxflag() {
+        return idxflag; 
+    }
+    public String getXbutn_id() {
+        return xbutn_id; 
+    }
+    public String getXuserx_id_login() {
+        return xuserx_id_login; 
+    }
+    public String getObdocpj_vc() {return obdocpj_vc; }
+    public String getTabs_vf() {return tabs_vf; }
+    public String getObdocpj_vf() {return obdocpj_vf; }
+    
+    public StringBuffer getFlds_vfsb() {return flds_vfsb; }
+    
+    public String getUser_cd() {return user_cd; }
+    
+    public Date getRecd_ts() {return recd_ts; }
+    
+    public String getObdocpj_id() {return obdocpj_id; }
+    public String getObdocpj_id_old() {return obdocpj_id_old; }
+    public String getObdocpj_id_desc() {return obdocpj_id_desc; }
+    
+    public Integer getObdocpj_sq() {return obdocpj_sq; }
+    public Integer getObdocpj_sq_old() {return obdocpj_sq_old; }
+    public String getObdocpj_cl() {return obdocpj_cl; }
+    public String getObdocpj_cl_desc() {return obdocpj_cl_desc; }
+    public String getObdocpj_cl_vc() {return obdocpj_cl_vc; }
+    public String getObdocpj_cl_type() {return obdocpj_cl_type; }
+    public String getObdocpj_cl_type_desc() {return obdocpj_cl_type_desc; }
+    public String getObdocpj_cl_type_vc() {return obdocpj_cl_type_vc; }
+    public String getObdocpj_st() {return obdocpj_st; }
+    public String getObdocpj_st_desc() {return obdocpj_st_desc; }
+    public String getObdocpj_st_vc() {return obdocpj_st_vc; }
+    
+    public Date getObdocpj_dt_envio() {return obdocpj_dt_envio; }
+    public String getObdocpj_dt_envio_str() {
+        return obdocpj_dt_envio_str;}
+    public String getObdocpj_dt_envio_vc() {return obdocpj_dt_envio_vc; }
+    public Date getObdocpj_dt_recepcao() {return obdocpj_dt_recepcao; }
+    public String getObdocpj_dt_recepcao_str() {
+        return obdocpj_dt_recepcao_str;}
+    public String getObdocpj_dt_recepcao_vc() {return obdocpj_dt_recepcao_vc; }
+    
+    public String getObdocpj_cd_file() {return obdocpj_cd_file; }
+    public String getObdocpj_cd_file_desc() {return obdocpj_cd_file_desc; }
+    public String getObdocpj_cd_file_vc() {return obdocpj_cd_file_vc; }
+    public String getObdocpj_tp_cfpjtp() {return obdocpj_tp_cfpjtp; }
+    public String getObdocpj_tp_cfpjtp_desc() {return obdocpj_tp_cfpjtp_desc; }
+    public String getObdocpj_tp_cfpjtp_vc() {return obdocpj_tp_cfpjtp_vc; }
+    public String getObdocpj_nm() {return obdocpj_nm; }
+    public String getObdocpj_nm_vc() {return obdocpj_nm_vc; }
+    public String getObdocpj_ds() {return obdocpj_ds; }
+    public String getObdocpj_ds_vc() {return obdocpj_ds_vc; }
+    
+    public Date getObdocpj_dt() {return obdocpj_dt; }
+    public String getObdocpj_dt_str() {
+        return obdocpj_dt_str;}
+    public String getObdocpj_dt_vc() {return obdocpj_dt_vc; }
+    
+    public String getObdocpj_ct() {return obdocpj_ct; }
+    public String getObdocpj_ct_vc() {return obdocpj_ct_vc; }
+    public String getObdocpj_nm_file() {return obdocpj_nm_file; }
+    public String getObdocpj_nm_file_vc() {return obdocpj_nm_file_vc; }
+    // Filter Getters-----------------------------------
+    public String getFil_obdocpj_vc() {return fil_obdocpj_vc; }
+    public String getFil_obdocpj_id() {return fil_obdocpj_id; }
+    public String getFil_obdocpj_cl() {return fil_obdocpj_cl; }
+    public String getFil_obdocpj_cl_type() {return fil_obdocpj_cl_type; }
+    public String getFil_obdocpj_ds() {return fil_obdocpj_ds; }
+    public String getFil_obdocpj_nm_file() {return fil_obdocpj_nm_file; }
+    // Order Getters-----------------------------
+    public boolean isOrd_obdocpj_cl() {return ord_obdocpj_cl; }
+    public boolean isOrd_obdocpj_cl_desc() {return !ord_obdocpj_cl; }
+    public boolean isOrd_obdocpj_cl_type() {return ord_obdocpj_cl_type; }
+    public boolean isOrd_obdocpj_cl_type_desc() {return !ord_obdocpj_cl_type; }
+    public boolean isOrd_obdocpj_nm_file() {return ord_obdocpj_nm_file; }
+    public boolean isOrd_obdocpj_nm_file_desc() {return !ord_obdocpj_nm_file; }
+    
+    protected boolean validateParms() { 
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadObdocpjcklBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        obdocpj_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,obdocpj_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+    //  for childMainRecord
+        return result; 
+    }   //  End of Validate 
+    
+    public String doFileUpload() throws LoginException, Exception { // check
+        String result = "";
+        if (file == null || file.get() == null || file.get().length == 0) {
+            mesg_var = getMessageByKey("insertAFile");
+            return result;
+        }
+        createFilesDirectory();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String filx = file.getName();;
+        filx = filx.replace("%","");
+        filx = filx.replace("@","");
+        filx = filx.replace("!","");
+        filx = filx.replace("*","");
+        filx = filx.replace("#","");
+        filx = filx.replace("$","");
+        filx = filx.replace("&","");
+        filx = filx.replace("$","");
+        filx = filx.replace("*","");
+        int start = filx.lastIndexOf("\\")+1;
+        String filex = filx.substring(start,filx.length());
+        String projx = obdocpj_id.replace("/","-");
+        /* Caminho Absoluto docs */
+        int endfilex = filex.indexOf(".");
+        String filez = filex.substring(0,endfilex);
+        String filexd = filez;
+        String extz  = filex.substring(endfilex,filex.length());
+        extz = extz.replace(".pdf.pdf", ".pdf");
+        filex = filez;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String datetimex = dateFormat.format(date);
+        datetimex = datetimex.substring(2,datetimex.length()-2);
+        filex = filex + "--" + datetimex;
+        filex = filex.replace("/","");
+        filex = filex.replace("\\","");
+        filex = filex.replace(":","");
+        filex = filex.replace(" ","-");
+        filex = filex + extz;
+        File myFile = new File("c:/sispat_mrs_pjaus_files/" + projx +"/"+ filex);
+        OutputStream os = new FileOutputStream(myFile);
+        //os.write(imagem.get());
+        os.write(file.get());
+        os.flush();
+        os.close();
+        obdocpj_nm_file = myFile.getName();
+        Obdocpj obdocpj = new Obdocpj();
+        obdocpj_dt_recepcao = new Date();
+        obdocpj_dt_recepcao_str = new SimpleDateFormat("dd/MM/yyyy").format(obdocpj_dt_recepcao);
+        obdocpj.setObdocpj_dt_recepcao(obdocpj_dt_recepcao);
+        obdocpj_st = "RC";
+        obdocpj.setObdocpj_st(obdocpj_st);
+        obdocpj.setObdocpj_id(obdocpj_id);
+        obdocpj.setObdocpj_nm_file(obdocpj_nm_file);
+        getSession().setAttribute("fileUploaded", filex);
+        result = doUpdate();
+        result = "success";
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            PreparedStatement ps_filex = con1.prepareStatement("update wbrl_obdocpj set obdocpj_st = 'VA' where obdocpj_id  = ? and obdocpj_nm like ?");
+            ps_filex.setString(1, ""+obdocpj_id+"");
+            ps_filex.setString(2, "%"+filexd+"%");
+            int resultx = ps_filex.executeUpdate();
+            } catch (Exception ex) {
+                return "success";
+            }
+        try {
+            PreparedStatement ps_file = con1.prepareStatement("update wbrl_pjaus set file_vx = '1' where pjaus_id like ?");
+            ps_file.setString(1, "%"+obdocpj_id+"%");
+            int resultz = ps_file.executeUpdate();
+            } catch (Exception ex) {
+                return "success";
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+                   xmesg_rc = 777;
+                   mesg_var = getMessageByKey("msg_fileUploaded");
+        return result;
+    }
+    
+    protected boolean validate() { // @save @getrecd  
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadObdocpjcklBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        obdocpj_cl_vc = valObdocpj_cl(obdocpj_cl); 
+        obdocpj_cl_type_vc = valObdocpj_cl_type(obdocpj_cl_type); 
+        obdocpj_st_vc = valObdocpj_st(obdocpj_st); 
+        try {
+            obdocpj_dt_envio = simpleDateFormat.parse(obdocpj_dt_envio_str.replace("/", "-"));
+            setObdocpj_dt_envio(obdocpj_dt_envio);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        obdocpj_dt_envio_vc = valObdocpj_dt_envio(obdocpj_dt_envio); 
+        try {
+            obdocpj_dt_recepcao = simpleDateFormat.parse(obdocpj_dt_recepcao_str.replace("/", "-"));
+            setObdocpj_dt_recepcao(obdocpj_dt_recepcao);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        obdocpj_dt_recepcao_vc = valObdocpj_dt_recepcao(obdocpj_dt_recepcao); 
+        obdocpj_cd_file_vc = valObdocpj_cd_file(obdocpj_cd_file); 
+        obdocpj_tp_cfpjtp_vc = valObdocpj_tp_cfpjtp(obdocpj_tp_cfpjtp); 
+        obdocpj_nm_vc = valObdocpj_nm(obdocpj_nm); 
+        obdocpj_ds_vc = valObdocpj_ds(obdocpj_ds); 
+        try {
+            obdocpj_dt = simpleDateFormat.parse(obdocpj_dt_str.replace("/", "-"));
+            setObdocpj_dt(obdocpj_dt);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        obdocpj_dt_vc = valObdocpj_dt(obdocpj_dt); 
+        obdocpj_ct_vc = valObdocpj_ct(obdocpj_ct); 
+        obdocpj_nm_file_vc = valObdocpj_nm_file(obdocpj_nm_file); 
+    
+        validateMax(vfbuffer); addErrorMessageFromErrorList(); 
+        addAttribute("validateOn"+tab, "1");
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        obdocpj_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,obdocpj_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+    //  for childMainRecord
+        return result; 
+    }   //  End of Validate 
+    public void updateRecdTs() {
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            if (result) {
+                this.recd_ts = new Date();
+            }
+        } catch (Exception ex) { ex.getMessage(); }
+    }
+    
+    protected void validateInserir() {
+        StringBuffer vfbuffer = new StringBuffer();
+        if (tabs_vf != null) {
+            vfbuffer.append(tabs_vf);
+            vfbuffer.setCharAt(49,'0');
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf;
+        }
+    } 
+    protected void updateMrobOnChldInsert() throws SQLException {
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            PreparedStatement ps_file = con1.prepareStatement("update wbrl_Pjaus set file_vx = '1' where pjaus_id like ?");
+            ps_file.setString(1, "%"+obdocpj_id+"%");
+            ResultSet rs_file = ps_file.executeQuery();
+            } catch (Exception ex) {
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    protected void updateMrobOnChldDelete() throws SQLException {
+        if (codfqt > 1) {return;}
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            PreparedStatement ps_file = con1.prepareStatement("update wbrl_Pjaus set obdocpj_vx = '0' where pjaus_id like ?");
+            ps_file.setString(1, "%"+obdocpj_id+"%");
+            ResultSet rs_file = ps_file.executeQuery();
+            } catch (Exception ex) {
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    
+    public String validateFieldOnChange(String value, String field) {
+        String result = null;
+        vf = 0; int i_field = 0; int valueInteger=0; Date valueDate = null; BigDecimal valueBigDecimal = null;
+    if (i_fields.containsKey(field)) {
+        i_field = i_fields.get(field);
+    }
+        switch (i_field) {
+        // Fields Validation Methods Switch 
+           case 1: result = valObdocpj_cl(value); break;
+           case 2: result = valObdocpj_cl_type(value); break;
+           case 3: result = valObdocpj_st(value); break;
+           case 4: valueDate = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, value ); result = valObdocpj_dt_envio(valueDate); break;
+           case 5: valueDate = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, value ); result = valObdocpj_dt_recepcao(valueDate); break;
+           case 6: result = valObdocpj_cd_file(value); break;
+           case 7: result = valObdocpj_tp_cfpjtp(value); break;
+           case 8: result = valObdocpj_nm(value); break;
+           case 9: result = valObdocpj_ds(value); break;
+           case 10: valueDate = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, value ); result = valObdocpj_dt(valueDate); break;
+           case 11: result = valObdocpj_ct(value); break;
+           case 12: result = valObdocpj_nm_file(value); break;
+        } // 111
+        return result;
+    }
+    public String checkMaxFieldOnChange(String divn) {
+        vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(Integer.parseInt(divn),selMaxVc(divn).charAt(0));
+        vfbuffer.setCharAt(psvc,selMaxVc(divn).charAt(0));
+        tabsvf = vfbuffer.toString();
+        return vfbuffer.toString();
+    }
+    public String checkVFMaxFieldOnChange(String divn) {
+        return retSelBuffer(divn);
+    }
+    public String retSelBuffer(String divn) {
+        String selBuffer = null;
+        selBuffer = flds_vfsb.toString();
+        return selBuffer;
+    }
+    
+    // Main Record (Univalued) Field Validation Methods...
+    
+    public Boolean valRecd_ts(Connection con) throws SQLException {
+        msgkey = "";
+        Obdocpj Obdocpjx = new Obdocpj(obdocpj_id, obdocpj_sq);
+        Obdocpjx.loadUfmv(this);
+        Obdocpjx.setLoadChilds(true);
+        Obdocpjx.load(con);
+        Date recd_ts_db = Obdocpjx.getRecd_ts();
+        if (recd_ts_db == null || this.recd_ts == null) {
+            recd_ts_db = new Date();
+        	   this.recd_ts = recd_ts_db;
+        }
+        String tsdb = recd_ts_db.toString();
+        String ts = this.recd_ts.toString();
+        if (!ts.equals(tsdb) ) {
+            msgkey = "key:valrecd_ts/";
+            errorList.add(msgkey);
+            addErrorMessageFromErrorList();
+            log.error("Obdocpjckl lock event: key:"+obdocpj_id+", ts:"+ts+", tsdb:"+tsdb);
+            return false;
+        }
+        return true;
+    }
+    public String valObdocpj_cl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_cl = "";
+            this.obdocpj_cl_desc = "";
+        } else {
+            this.obdocpj_cl = value;
+        }
+        obdocpj_cl_vc = valEntryString("9", value,"Obdocpjckl_obdocpj_cl");
+        return obdocpj_cl_vc;
+    }
+    public String valObdocpj_cl_type(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_cl_type = "";
+            this.obdocpj_cl_type_desc = "";
+        } else {
+            this.obdocpj_cl_type = value;
+        }
+        obdocpj_cl_type_vc = valEntryString("9", value,"Obdocpjckl_obdocpj_cl_type");
+        return obdocpj_cl_type_vc;
+    }
+    public String valObdocpj_st(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_st = "";
+            this.obdocpj_st_desc = "";
+        } else {
+            this.obdocpj_st = value;
+        }
+        obdocpj_st_vc = valEntryString("0", value,"Obdocpjckl_obdocpj_st");
+        return obdocpj_st_vc;
+    }
+    public String valObdocpj_dt_envio(Date value) {
+        this.obdocpj_dt_envio = value;
+        obdocpj_dt_envio_vc = valEntryDate("0", value,"Obdocpjckl_obdocpj_dt_envio");
+        return obdocpj_dt_envio_vc;
+    }
+    public String valObdocpj_dt_recepcao(Date value) {
+        this.obdocpj_dt_recepcao = value;
+        obdocpj_dt_recepcao_vc = valEntryDate("0", value,"Obdocpjckl_obdocpj_dt_recepcao");
+        return obdocpj_dt_recepcao_vc;
+    }
+    public String valObdocpj_cd_file(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_cd_file = "";
+            this.obdocpj_cd_file_desc = "";
+        } else {
+            this.obdocpj_cd_file = value;
+        }
+        obdocpj_cd_file_vc = valEntryString("0", value,"Obdocpjckl_obdocpj_cd_file");
+        return obdocpj_cd_file_vc;
+    }
+    public String valObdocpj_tp_cfpjtp(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_tp_cfpjtp = "";
+            this.obdocpj_tp_cfpjtp_desc = "";
+        } else {
+            this.obdocpj_tp_cfpjtp = value;
+        }
+        Connection con;
+            try {
+                    con = DatabaseUtils.getConnection();
+      if (obdocpj_id != null) {
+        PreparedStatement ps17 = con.prepareStatement("select pjaus_tp  from Wbrl_pjaus where pjaus_id like '%"+obdocpj_id.toString()+"%'");
+        ResultSet rs17 = ps17.executeQuery();
+        String pjaus_tp17_rs = "";
+        if (rs17.next()) {
+            pjaus_tp17_rs = rs17.getString("pjaus_tp");
+        }
+        ps17.close(); rs17.close();
+        this.obdocpj_tp_cfpjtp = pjaus_tp17_rs;
+        this.obdocpj_tp_cfpjtp_vc = "0";
+      }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        obdocpj_tp_cfpjtp_vc = valEntryString("0", value,"Obdocpjckl_obdocpj_tp_cfpjtp");
+    //  for childMainRecord
+        if (value != null) { // 77zz 
+    //  for childMainRecord
+        } // end val 1
+        return obdocpj_tp_cfpjtp_vc;
+    }
+    public String valObdocpj_nm(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_nm = "";
+        } else {
+            this.obdocpj_nm = value;
+        }
+        obdocpj_nm_vc = valEntryString("0", value,"Obdocpjckl_obdocpj_nm");
+        return obdocpj_nm_vc;
+    }
+    public String valObdocpj_ds(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_ds = "";
+        } else {
+            this.obdocpj_ds = value;
+        }
+        obdocpj_ds_vc = valEntryString("0", value,"Obdocpjckl_obdocpj_ds");
+        return obdocpj_ds_vc;
+    }
+    public String valObdocpj_dt(Date value) {
+        this.obdocpj_dt = value;
+        obdocpj_dt_vc = valEntryDate("0", value,"Obdocpjckl_obdocpj_dt");
+        return obdocpj_dt_vc;
+    }
+    public String valObdocpj_ct(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_ct = "";
+        } else {
+            this.obdocpj_ct = value;
+        }
+        obdocpj_ct_vc = valEntryString("0", value,"Obdocpjckl_obdocpj_ct");
+        return obdocpj_ct_vc;
+    }
+    public String valObdocpj_nm_file(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.obdocpj_nm_file = "";
+        } else {
+            this.obdocpj_nm_file = value;
+        }
+        obdocpj_nm_file_vc = valEntryString("0", value,"Obdocpjckl_obdocpj_nm_file");
+        return obdocpj_nm_file_vc;
+    }
+    
+    protected void reset() {  
+     try {
+        super.reset(); 
+        // Set initial ABA Number
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("cadbeanx", "cadObdocpjcklBean");
+        if (tab_remember == true) {
+            getSession().getAttribute("cadObdocpjcklBeanx");
+        } else {
+            getSession().setAttribute("cadObdocpjcklBeanx", "1");
+        } 
+        ufmv = "00000000000000000000000000000000000000000000000000";
+        getSession().setAttribute("ufmv", ufmv);
+        // Tabs Validation Status
+        this.tabs_vf = null;
+        this.obdocpj_vc = null;
+        vf = 0;
+        xmesg_st = "null";
+        // Reset of Main Record ii.properties-----------------
+        this.flds_vf = "0";
+    //  for childMainRecord
+        this.obdocpj_vf = "0";
+        this.obdocpj_vc = "0";
+        // Set initial tabsvf
+        tabsvf =    "90000000000000000000000000000000000000000000000909";
+        tabsvf_in = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tr = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tp = "90000000000000000000000000000000000000000000000000";
+        // Load flds_vf & chld_vfs into prop vcs;
+        Connection con = DatabaseUtils.getConnection();
+        // Reset Initial Stub Number--------------------------
+        this.xbutn_id = "1";
+        this.obdocpj_id_old = null;
+    //  Reset Fks.2. --
+        this.obdocpj_id = null; // Reset PK that is FK Unconditionally
+        this.obdocpj_id_desc = null;
+        this.obdocpj_sq_old = null;
+        this.obdocpj_sq = null; // Reset PK not defined as FK Unconditionally
+        this.obdocpj_cl = "DCCKL"; // simple iniv 
+        this.obdocpj_cl_desc = IIBeanUtils.getCodfDesc(con, "DOCCL", obdocpj_cl);
+        this.obdocpj_cl_type = null; // Reset Codf --
+        this.obdocpj_cl_type_desc = null;
+        this.obdocpj_st = "PD"; // simple iniv 
+        this.obdocpj_st_desc = IIBeanUtils.getCodfDesc(con, "STCKL", obdocpj_st);
+        this.obdocpj_dt_envio_str = (String)getSession().getAttribute("obdocpj_dt_envio");
+        this.obdocpj_dt_recepcao = null; // Reset of any other variable --
+        this.obdocpj_dt_recepcao_str = null; // Reset of any other variable --
+        this.obdocpj_cd_file = "DG"; // simple iniv 
+        this.obdocpj_cd_file_desc = IIBeanUtils.getCodfDesc(con, "DOCFD", obdocpj_cd_file);
+        this.obdocpj_tp_cfpjtp = null; // Reset Codf --
+        this.obdocpj_tp_cfpjtp_desc = null;
+        this.obdocpj_nm = null; // Reset of any other variable --
+        this.obdocpj_ds = null; // Reset of any other variable --
+        this.obdocpj_dt = null; // Reset of any other variable --
+        this.obdocpj_dt_str = null; // Reset of any other variable --
+        this.obdocpj_ct = null; // Reset of any other variable --
+        this.obdocpj_nm_file = null; // Reset of any other variable --
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        // Orders-Reset------------------------------------
+        this.ord_obdocpj_cl = false;
+        this.ord_obdocpj_cl_type = false;
+        this.ord_obdocpj_nm_file = false;
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo.indexOf("psq") >= 0){
+            mesg_var = getMessageByKey("selectViaFiltersMagGlass");
+            xmesg_rc = 777;
+        } else {
+            mesg_var = "";
+            xmesg_rc = 0;
+        }
+    } catch (Exception ex) { ex.getMessage(); }
+    } // Closing Reset Method
+    // Filters-Reset------------------------------------
+    protected void resetFilters() {  
+        this.fil_obdocpj_vc = null;
+        this.fil_obdocpj_id = null;
+        this.fil_obdocpj_cl = null;
+        this.fil_obdocpj_cl_type = null;
+        this.fil_obdocpj_ds = null;
+        this.fil_obdocpj_nm_file = null;
+    }
+    
+    public String doNovoUpload() throws LoginException, SQLException { 
+        verifyHelpFromtrans(tipo);
+        tab_remember = false;
+        cancel_partial = false;
+        String obdocpj_id_sav = obdocpj_id;
+        reset();
+        obdocpj_id = obdocpj_id_sav;
+        mesg_var = ""; xmesg_rc = 0;
+        validateAll=2;validate();
+        String destino = (String) (getSession().getAttribute("history"));
+        getSession().setAttribute("novo", true);
+        tipo = (String)getSession().getAttribute("tipo");
+        int ix = tipo.indexOf("cad");
+        if (ix < 0) {ix = tipo.indexOf("psq");}
+        String ttran = tipo.substring(0,ix);
+        trans_tt = getMessageByKey(ttran+"_TT");
+        getSession().setAttribute(tipo, true); // Set assist true for goback buutons
+        setCanAlterar(true);
+        setCanInserir(true);
+        if (obdocpj_nm_file != null && obdocpj_nm_file.length() > 0  ) {
+            setCanUpload(false);
+            setCanDownload(true);
+        } else {
+            setCanUpload(true);
+            setCanDownload(false);
+        }
+        return tipo; // @getrecd 99
+    }   
+    
+    public void loadDesc() throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+    
+        // Load FK Desc ------------------------
+        obdocpj_id_desc = IIBeanUtils.getPjaus_desc(con, obdocpj_id);
+         obdocpj_cl_desc = IIBeanUtils.getCodfDesc(con, "DOCCL", obdocpj_cl, getLocale());
+         obdocpj_cl_type_desc = IIBeanUtils.getCodfDesc(con, "TPCKL", obdocpj_cl_type, getLocale());
+         obdocpj_st_desc = IIBeanUtils.getCodfDesc(con, "STCKL", obdocpj_st, getLocale());
+         obdocpj_cd_file_desc = IIBeanUtils.getCodfDesc(con, "DOCFD", obdocpj_cd_file, getLocale());
+         obdocpj_tp_cfpjtp_desc = IIBeanUtils.getCodfDesc(con, "TPPRJ", obdocpj_tp_cfpjtp, getLocale());
+    
+        } finally { DatabaseUtils.releaseConnection(con); }
+    }  //  End of loadDesc 
+    public String doObterRefreshParent() throws SQLException, LoginException { // @getrecd
+        valorz = "refresh";
+        return doObter(); // @getrecd
+    }
+    public String doObterBack() throws SQLException, LoginException { // @getrecd
+        String tbakx = (String) (getSession().getAttribute("tbak"));
+        if (tbakx.contains("cad")) { 
+        } 
+       return tbakx; // @getrecd
+    } 
+    
+    // a Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObter() throws SQLException, LoginException { // @getrecd
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        idx = "";
+        // Set Transactio Type 
+        tipo ="obdocpjcklcad";
+        String tipoOabv ="obdocpjckl";
+        loadBean(); // Load Record @getrecd - 1
+        // Return to Caller if valor is null 
+        if (valorz == null) { return tipoOabv+"psq";}
+        if (valorz != null && valorz.length() == 0 ) {return tipoOabv+"psq";}
+        valorz = null; 
+    obdocpj_id_old = obdocpj_id;
+    obdocpj_sq_old = obdocpj_sq;
+        if (obdocpj_nm_file != null && obdocpj_nm_file.length() > 0  ) {
+            setCanUpload(false);
+            setCanDownload(true);
+        } else {
+            setCanUpload(true);
+            setCanDownload(false);
+        }
+        String result = super.doObter(); // @getrecd
+        return tipo; // @getrecd 22
+    } 
+    
+    public Object doObterBean() throws SQLException, LoginException {
+        loadBean();
+        return this;
+    }
+    
+    // Loads bean from dao, based on PK value of Object - @param (valor) from Object PK
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+    
+    // doObterRefreshGen - c Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterRefresh() throws SQLException, LoginException { // @getrecd
+       tipo ="obdocpjcklcad";
+       String tipoOabv ="obdocpjckl";
+       loadBean(); // @getrecd - 3
+        obdocpj_id_old = obdocpj_id;
+        obdocpj_sq_old = obdocpj_sq;
+       if (obdocpj_nm_file != null && obdocpj_nm_file.length() > 0  ) {
+           setCanUpload(false);
+           setCanDownload(true);
+       } else {
+           setCanUpload(true);
+           setCanDownload(false);
+       }
+       String result = super.doObter(); // @getrecd
+        return tipo; // @getrecd 66
+    } 
+    
+    
+    // d Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterNext() throws SQLException, LoginException { // @getrecd
+       tipo ="obdocpjcklcad";
+       String tipoOabv ="obdocpjckl";
+       loadBeanNext(); // @getrecd
+       obdocpj_id_old = obdocpj_id;
+       obdocpj_sq_old = obdocpj_sq;
+       if (obdocpj_nm_file != null && obdocpj_nm_file.length() > 0  ) {
+           setCanUpload(false);
+           setCanDownload(true);
+       } else {
+           setCanUpload(true);
+           setCanDownload(false);
+       }
+       String result = super.doObterNext(); // @getrecd
+        return tipo; // @getrecd 88
+    } 
+    
+    // d Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterPrev() throws SQLException, LoginException { // @getrecd
+       tipo ="obdocpjcklcad";
+       String tipoOabv ="obdocpjckl";
+       loadBeanPrev(); // @getrecd
+       obdocpj_id_old = obdocpj_id;
+       obdocpj_sq_old = obdocpj_sq;
+       if (obdocpj_nm_file != null && obdocpj_nm_file.length() > 0  ) {
+           setCanUpload(false);
+           setCanDownload(true);
+       } else {
+           setCanUpload(true);
+           setCanDownload(false);
+       }
+       String result = super.doObterPrev(); // @getrecd
+        return tipo; // @getrecd 88
+    } 
+    //  for childMainRecord
+    
+    // Getting Parent for aCamcel Child Record Clean for New Insert  
+    public String doObterParentForCancel() throws SQLException, LoginException { // @getparent 
+        String savex = obdocpj_id;
+        reset(); validate(); // @getparent
+        obdocpj_id = savex;
+        fil_obdocpj_id = savex;
+        idxm = "";
+        tipo ="obdocpjcklcad";
+        String tipoOabv ="obdocpjcklcad";
+        String result = super.doObter(); // @getparent 
+        setCanInserir(true);
+        if (obdocpj_nm_file != null && obdocpj_nm_file.length() > 0  ) {
+            setCanUpload(false);
+            setCanDownload(true);
+        } else {
+            setCanUpload(true);
+            setCanDownload(false);
+        }
+        return tipo; // @getrecd 00
+    } 
+    public DataObject setTableAliasBean(DataObject dao) {
+        dao.setTableAlias("OBDOCPJCKL_OBDOCPJ");
+        return dao;
+    }
+    // loadBean Get Selection Values from Session  ------------------
+    public void loadBean() throws SQLException, LoginException {
+        String valor = "";
+        tipo = "obdocpjcklcad";
+        valorz = valor;
+    //  load Record - Start;
+        valor = (String) getSession().getAttribute(tipo+"valor");
+        if (valor != null &&  valor.length() == 0) {valor = null;}
+        valorz = valor;
+        // Return to caller if key value not received  
+        if (valor == null ) {
+            return;
+        }
+    //  load Record - End;
+        getSession().setAttribute("tipo", tipo);
+        loadBean(valor);
+    } // end of loadBean
+    // if (ii.fileUploadFlag == 1 || ii.fileAnnexFlag == 1 )------
+    public String doUpdate() throws SQLException, LoginException {
+        String result = super.doUpdate();
+        return result;
+    }
+    public String doExcluir() throws SQLException, LoginException {
+        String result = super.doExcluir();
+        loadBean();
+        return result;
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBean(String valor) throws SQLException, LoginException {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        // Build List of Keys --------------------------------------------------------
+        String[] keys_vl = new String[3];
+        int start_ix = 0; int end_ix = 0;
+        int kkv = 1;
+        while(kkv <= 2) {
+            if (kkv == 1) {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                if (valor.length() > 1) {
+                   keys_vl[1] = valor.substring(start_ix,end_ix);
+                } else { keys_vl[1] = valor; }
+                start_ix = end_ix+1;
+            } else {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                keys_vl[kkv] = valor.substring(start_ix,end_ix);
+                start_ix = end_ix+1;
+            }
+            kkv = kkv + 1;
+        }
+        // Logic 2x - if ( ( ii.pcmd.indexOf('recdFromTabl') >= 0 || ii.daoBeanUtils.length() > 0   )  )   
+        String id1 = keys_vl[1];
+        int id2 = 0;
+        if (keys_vl[2] == null) { id2 = 0;}
+        id2 = toInteger(keys_vl[2]);
+        if(keys_vl[2].matches("\\d+") ) {
+            id2 = Integer.parseInt(keys_vl[2]);
+        } else {
+            tipo = "obdocpjcklpsq"; return;
+        }
+        if(id2 == 0 ) {
+            tipo = "obdocpjcklpsq"; return;
+        }
+        //  next prev navigation - loadBean(valor)
+        if (idx != null && idx.length() > 0) {
+            id2 = toInteger(idx);
+        }
+        int found = 0;  hasNext = true; int kkx = 0; idxmtot = 0; idxflag = true;
+        found = 0;
+        while (found == 0) {
+            if (!list_itrx.hasPrevious()) {
+            	   found = 1; continue;
+            }
+            list_itrx.previous();
+        }
+        while (list_itrx.hasNext()) {
+        	   list_itrx.next();
+            idxmtot++;
+        }
+        if ( idxmtot == 1) {idxflag = false;}
+        found = 0;
+        while (found == 0) {
+            if (!list_itrx.hasPrevious()) {
+            	   found = 1; continue;
+            }
+            list_itrx.previous();
+        }
+        found = 0;
+        while (found == 0) {
+            Obdocpj ObdocpjList = ((Obdocpj)list_itrx.next());
+            obdocpj_sq = ObdocpjList.getObdocpj_sq();
+            if (id2 == obdocpj_sq ) {
+                found = 1;
+                if (kkx == 0) {
+                    mesg_var = getMessageByKey("firstRecord");
+                    xmesg_rc = 1;
+                }
+                if (! list_itrx.hasNext()) {
+                   mesg_var = getMessageByKey("lastRecord");
+                   xmesg_rc = 1;
+                }
+                if (!idxflag) {
+                   mesg_var = "";
+                   xmesg_rc = 0;
+                }
+            }
+            kkx = kkx + 1;
+        }
+        hasNext = list_itrx.hasNext();
+        hasPrev = list_itrx.hasPrevious();
+        if (kkx == 1 ) { hasPrev = false;}
+        idxm = Integer.toString(kkx)+"/"+Integer.toString(idxmtot);
+        // Logic 5a - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Obdocpj Obdocpjx = new Obdocpj(id1 ,id2); // 333
+        Obdocpjx.loadUfmv(this);
+        Obdocpjx.setTableAlias("OBDOCPJCKL_OBDOCPJ");
+        Obdocpjx.load(con);
+        
+        Obdocpjx.saveToBean(this);
+         if (obdocpj_dt_envio == null) {} else {;
+             obdocpj_dt_envio_str = new SimpleDateFormat("dd/MM/yyyy").format(obdocpj_dt_envio);
+         }
+         if (obdocpj_dt_recepcao == null) {} else {;
+             obdocpj_dt_recepcao_str = new SimpleDateFormat("dd/MM/yyyy").format(obdocpj_dt_recepcao);
+         }
+         if (obdocpj_dt == null) {} else {;
+             obdocpj_dt_str = new SimpleDateFormat("dd/MM/yyyy").format(obdocpj_dt);
+         }
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        idx = "";
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBeanNext() throws SQLException, LoginException {
+        
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        getSession().setAttribute("tipo", tipox);
+        
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        
+        // Next Prev Mavigation - loadBeanNav - loads message in boundary record 
+        if ( xmesg_rc == 1 && idx.length() == 0) {
+        }
+        boolean ttt = list_itrx.hasNext();
+        if (!ttt) {
+            mesg_var = getMessageByKey("lastRecord");
+            xmesg_rc = 1;
+            return;
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        Obdocpj ObdocpjList = ((Obdocpj)list_itrx.next() );
+        hasNext = list_itrx.hasNext();
+        hasPrev = true;
+        String id1 = ObdocpjList.getObdocpj_id();
+        int id2 = ObdocpjList.getObdocpj_sq();
+        if (id2 == obdocpj_sq) {
+            ObdocpjList = ((Obdocpj)list_itrx.next() );
+            hasNext = list_itrx.hasNext();
+            hasPrev = true;
+            id1 = ObdocpjList.getObdocpj_id();
+            id2 = ObdocpjList.getObdocpj_sq();
+        }
+            idx = Integer.toString(id2);
+        idxm = Integer.toString(list_itrx.nextIndex())+"/"+Integer.toString(idxmtot);
+        
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Obdocpj Obdocpjx = new Obdocpj(id1 ,id2); // 444
+        Obdocpjx.loadUfmv(this);
+        Obdocpjx.setTableAlias("OBDOCPJCKL_OBDOCPJ");
+        Obdocpjx.load(con);
+        
+        Obdocpjx.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        // Next Prev Mavigation - loadBeanNav  - loads message after next record
+        if ( xmesg_rc == 0 && idx.length() == 0) {
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        ttt = list_itrx.hasNext();
+        if (!ttt) {
+            mesg_var = getMessageByKey("lastRecord");
+            xmesg_rc = 1;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBeanPrev() throws SQLException, LoginException {
+        
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        getSession().setAttribute("tipo", tipox);
+        
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        
+        // Next Prev Mavigation - loadBeanNav - loads message in boundary record 
+        if ( xmesg_rc == 1 && idx.length() == 0) {
+        	   list_itrx.previous(); idx = "x";
+        }
+        boolean ttt = list_itrx.hasPrevious();
+        if (!ttt) {
+            mesg_var = getMessageByKey("firstRecord");
+            xmesg_rc = 1;
+            return;
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        Obdocpj ObdocpjList = ((Obdocpj)list_itrx.previous() );
+        hasPrev = list_itrx.hasPrevious();
+        hasNext = true;
+        String id1 = ObdocpjList.getObdocpj_id();
+        int id2 = ObdocpjList.getObdocpj_sq();
+        if (id2 == obdocpj_sq) {
+            ObdocpjList = ((Obdocpj)list_itrx.previous() );
+            hasPrev = list_itrx.hasPrevious();
+            hasNext = true;
+            id1 = ObdocpjList.getObdocpj_id();
+            id2 = ObdocpjList.getObdocpj_sq();
+        }
+            idx = Integer.toString(id2);
+        idxm = Integer.toString(list_itrx.previousIndex()+ 2)+"/"+Integer.toString(idxmtot);
+        
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Obdocpj Obdocpjx = new Obdocpj(id1 ,id2); // 444
+        Obdocpjx.loadUfmv(this);
+        Obdocpjx.setTableAlias("OBDOCPJCKL_OBDOCPJ");
+        Obdocpjx.load(con);
+        
+        Obdocpjx.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        // Next Prev Mavigation - loadBeanNav  - loads message after next record
+        if ( xmesg_rc == 0 && idx.length() == 0) {
+        	   list_itrx.previous();
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        ttt = list_itrx.hasPrevious();
+        if (!ttt) {
+            mesg_var = getMessageByKey("firstRecord");
+            xmesg_rc = 1;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    public void loadFieldBean() {
+        obdocpj_cl_vc = valObdocpj_cl(obdocpj_cl); 
+        obdocpj_cl_type_vc = valObdocpj_cl_type(obdocpj_cl_type); 
+        obdocpj_st_vc = valObdocpj_st(obdocpj_st); 
+        obdocpj_dt_envio_vc = valObdocpj_dt_envio(obdocpj_dt_envio); 
+        obdocpj_dt_recepcao_vc = valObdocpj_dt_recepcao(obdocpj_dt_recepcao); 
+        obdocpj_cd_file_vc = valObdocpj_cd_file(obdocpj_cd_file); 
+        obdocpj_tp_cfpjtp_vc = valObdocpj_tp_cfpjtp(obdocpj_tp_cfpjtp); 
+        obdocpj_nm_vc = valObdocpj_nm(obdocpj_nm); 
+        obdocpj_ds_vc = valObdocpj_ds(obdocpj_ds); 
+        obdocpj_dt_vc = valObdocpj_dt(obdocpj_dt); 
+        obdocpj_ct_vc = valObdocpj_ct(obdocpj_ct); 
+        obdocpj_nm_file_vc = valObdocpj_nm_file(obdocpj_nm_file); 
+    } // end of loadFieldBean
+     
+    public String selMaxVc(String divn) {
+        String vc = "0"; String vc5 = "0"; 
+        Integer divni = Integer.parseInt(divn);
+            vc = obdocpj_cl_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_cl_type_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_st_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_dt_envio_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_dt_recepcao_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_cd_file_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_tp_cfpjtp_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_nm_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_ds_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_dt_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_ct_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = obdocpj_nm_file_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        if (vc5.equals("5")) {vc = "5";}
+        return vc;
+    } 
+    
+    protected void mountFilter() {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (fil_obdocpj_id == null) { fil_obdocpj_id = "";}
+        if (fil_obdocpj_id != null) {
+            fil_obdocpj_id = removeAccents(fil_obdocpj_id);
+        }
+        if (fil_obdocpj_cl == null) { fil_obdocpj_cl = "";}
+        if (fil_obdocpj_cl != null) {
+            fil_obdocpj_cl = removeAccents(fil_obdocpj_cl);
+        }
+        if (fil_obdocpj_cl_type == null) { fil_obdocpj_cl_type = "";}
+        if (fil_obdocpj_cl_type != null) {
+            fil_obdocpj_cl_type = removeAccents(fil_obdocpj_cl_type);
+        }
+        if (fil_obdocpj_ds == null) { fil_obdocpj_ds = "";}
+        if (fil_obdocpj_ds != null) {
+            fil_obdocpj_ds = removeAccents(fil_obdocpj_ds);
+        }
+        if (fil_obdocpj_nm_file == null) { fil_obdocpj_nm_file = "";}
+        if (fil_obdocpj_nm_file != null) {
+            fil_obdocpj_nm_file = removeAccents(fil_obdocpj_nm_file);
+        }
+        String campo1 = null;
+        campo1 = (String) getSession().getAttribute("campo1");
+        valorz =  campo1; 
+        if (valorz == null) { return; }
+        if (campo1 != null) {
+            if (!campo1.equals("")) {
+                fil_obdocpj_id = campo1;
+                obdocpj_id = campo1;
+           }
+        }
+    // if (ii.prop_fttype[kk].indexOf('subType') >= 0 && ii.proc.length() == 0
+        String campo2 = null;
+        campo2 = getParameter("campo2");
+    // if (ii.prop_fttype[kk].indexOf('subTypeTable') >= 0 && ii.proc.length() == 0
+        if (campo2 != null) {
+           if (!campo2.equals("")) {
+              fil_obdocpj_cl = campo2;
+           }
+        }
+        if (super.tipo.indexOf("obdocpjckl") >= 0) {
+            fil_obdocpj_cl = "DCCKL";
+        }
+        addFieldToFilterPk(Obdocpj.OBDOCPJ_ID, fil_obdocpj_id);
+        addFieldToFilter(Obdocpj.OBDOCPJ_CL, fil_obdocpj_cl);
+        addFieldToFilter(Obdocpj.OBDOCPJ_CL_TYPE, fil_obdocpj_cl_type);
+        addFieldToFilter(Obdocpj.OBDOCPJ_DS, fil_obdocpj_ds);
+        addFieldToFilter(Obdocpj.OBDOCPJ_NM_FILE, fil_obdocpj_nm_file);
+    } // end of mountFilter
+    
+    // doOrd_obdocpj_cl--------------------------------------------------------
+    public String doOrd_obdocpj_cl() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + Obdocpj.OBDOCPJ_VC + ")", !ord_obdocpj_cl);
+        ord_obdocpj_cl = !ord_obdocpj_cl;
+        ord_obdocpj_cl_type = false;
+        ord_obdocpj_nm_file = false;
+        return super.doSelecionar();
+    }
+    
+    // doOrd_obdocpj_cl_type--------------------------------------------------------
+    public String doOrd_obdocpj_cl_type() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + Obdocpj.OBDOCPJ_VC + ")", !ord_obdocpj_cl_type);
+        ord_obdocpj_cl_type = !ord_obdocpj_cl_type;
+        ord_obdocpj_cl = false;
+        ord_obdocpj_nm_file = false;
+        return super.doSelecionar();
+    }
+    
+    // doOrd_obdocpj_nm_file--------------------------------------------------------
+    public String doOrd_obdocpj_nm_file() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + Obdocpj.OBDOCPJ_VC + ")", !ord_obdocpj_nm_file);
+        ord_obdocpj_nm_file = !ord_obdocpj_nm_file;
+        ord_obdocpj_cl = false;
+        ord_obdocpj_cl_type = false;
+        return super.doSelecionar();
+    }
+    
+    public String doRetornaPesquisa() {
+        getSession().setAttribute("novainclusao", false);
+        return super.tipo;
+    }
+    public boolean isCanMenu() throws SQLException, LoginException {
+        tipo1 = "*obdocpjckl";
+        return super.isCanPesquisar();
+    }
+    protected void createFilesDirectory() {
+        /* File Path */
+        File file = new File("C://sispat_mrs_pjaus_files");
+        boolean exists = file.exists();
+        if (!exists) {
+            boolean success = file.mkdir();
+        }
+    }
+    public String downloadFile() throws LoginException, IOException {
+         HttpServletResponse response = (HttpServletResponse ) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+         valuex = (String)getSession().getAttribute("tipo");
+         if (valuex.indexOf("obdocpjcklpsq")>= 0 ) {return "success";}
+         String filename = "/sispat_mrs_pjaus_files/" + obdocpj_nm_file;
+         File file = new File(filename);
+         download(file, response);
+         return "success";
+    }
+    public static void download( File file, HttpServletResponse response )
+            throws IOException {
+            download( file.getName(), read( file ), response );
+    }
+    public static byte[] read( File file ) throws IOException {
+        byte[] content = null;
+        int fileLength = (int) file.length();
+        FileInputStream fileInput = null;
+        try {
+            fileInput = new FileInputStream(file);
+            BufferedInputStream bufferedInput = new BufferedInputStream(
+            fileInput); 
+            content = new byte[fileLength];
+            bufferedInput.read(content, 0, fileLength);
+            bufferedInput.close();
+       } finally {
+             if (fileInput != null) {
+                fileInput.close();
+             }
+       }
+       return content;
+    }
+    public static void download( String filename, byte[] content, HttpServletResponse response ) throws IOException {
+        response.addHeader( "Content-Disposition",
+                            "attachment; filename=" + filename );
+        response.setContentType( "application/octet-stream" );
+        ServletOutputStream outStream = response.getOutputStream();
+        // envia o conteúdo do arquivo para o stream de resposta
+        try {
+            outStream.write( content );
+            outStream.flush();
+        } finally {
+            outStream.close();
+        }
+    }
+    
+    // getAssistnovo------------------------------------------------
+    // Verifies whether record selection button is to be rendered right after record insertion
+    public Boolean getAssistnovo() {
+        assistnovo = false;
+        Boolean bb = (Boolean) (getSession().getAttribute(super.tipo));
+        Boolean an = (Boolean) (getSession().getAttribute("novainclusao"));
+        if (bb == null) {bb = false;}
+        if (an == null) {an = false;}
+        if (bb == true && an == true) {assistnovo = true;}
+        return assistnovo;
+    }
+    
+    public String doReturn() throws SQLException, LoginException {
+            tbakcad = tbakloc;
+            return super.doReturn();
+    }
+     
+    public String doSelecionar() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        getSession().setAttribute("tipo", "obdocpjcklpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        addFieldToOrder("(" + Obdocpj.OBDOCPJ_CL_TYPE + ")", true);
+        addFieldToOrder("(" + Obdocpj.OBDOCPJ_NM_FILE + ")", true);
+        String ret = "";
+        int filterx = 0;
+        if (fil_obdocpj_id != null && fil_obdocpj_id.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_cl != null && fil_obdocpj_cl.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_cl_type != null && fil_obdocpj_cl_type.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_ds != null && fil_obdocpj_ds.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_nm_file != null && fil_obdocpj_nm_file.length()> 0) {filterx = 1;}
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "obdocpjcklpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarOnly() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        getSession().setAttribute("tipo", "obdocpjcklpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        addFieldToOrder("(" + Obdocpj.OBDOCPJ_CL_TYPE + ")", true);
+        addFieldToOrder("(" + Obdocpj.OBDOCPJ_NM_FILE + ")", true);
+        String ret = "";
+        int filterx = 0;
+        if (fil_obdocpj_id != null && fil_obdocpj_id.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_cl != null && fil_obdocpj_cl.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_cl_type != null && fil_obdocpj_cl_type.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_ds != null && fil_obdocpj_ds.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_nm_file != null && fil_obdocpj_nm_file.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarOnly();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "obdocpjcklpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarBackx() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "obdocpjcklpsq");
+        pageLength = 999;
+        addFieldToOrder("(" + Obdocpj.OBDOCPJ_CL_TYPE + ")", true);
+        addFieldToOrder("(" + Obdocpj.OBDOCPJ_NM_FILE + ")", true);
+        String ret = "";
+        int filterx = 0;
+        if (fil_obdocpj_id != null && fil_obdocpj_id.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_cl != null && fil_obdocpj_cl.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_cl_type != null && fil_obdocpj_cl_type.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_ds != null && fil_obdocpj_ds.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_nm_file != null && fil_obdocpj_nm_file.length()> 0) {filterx = 1;}
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "obdocpjcklpsq"; // updbutton != 1c - end
+    }
+    
+    public String doSelecionarNull() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        maxResults = maxResultsTot;
+        maxResultsTrn = maxResults;
+        getSession().setAttribute("tipo", "obdocpjcklpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        tipo = "obdocpjcklpsqxxx";
+        addFieldToOrder("(" + Obdocpj.OBDOCPJ_CL_TYPE + ")", true);
+        addFieldToOrder("(" + Obdocpj.OBDOCPJ_NM_FILE + ")", true);
+        String ret = "";
+        int filterx = 0;
+        if (fil_obdocpj_id != null && fil_obdocpj_id.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_cl != null && fil_obdocpj_cl.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_cl_type != null && fil_obdocpj_cl_type.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_ds != null && fil_obdocpj_ds.length()> 0) {filterx = 1;}
+        if (fil_obdocpj_nm_file != null && fil_obdocpj_nm_file.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNull();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } 
+        }
+        return "obdocpjcklpsq"; // updbutton != 1c - end
+    }
+    
+    protected void reloadPesqData(Connection con) throws SQLException, LoginException { // 1 
+        loadDesc(); boolean res = true;
+        super.reloadPesqData(con);
+        // next / prev navigation
+        list_itrx = pesqData.listIterator();
+        if (pesqData.size() == maxResults) {
+            mesg_var = getMessageByKey("maxResultsExceeded");
+        }
+    } // tttt
+
+} // End of Code

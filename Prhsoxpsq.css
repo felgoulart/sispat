@@ -1,0 +1,64 @@
+/* Prop:prhso_id_pross */
+.grid-header th:nth-child(1),
+.grid-filter td:nth-child(1),
+.grid-filter td:nth-child(1) input,
+.grid-result td:nth-child(1) { width: 80px;text-align: left;}
+/* Prop:prhso_sq_dthm */
+.grid-header th:nth-child(2),
+.grid-filter td:nth-child(2),
+.grid-filter td:nth-child(2) input,
+.grid-result td:nth-child(2) { width: 120px;text-align: left;}
+/* Prop:prhso_dt_evento */
+.grid-header th:nth-child(3),
+.grid-filter td:nth-child(3),
+.grid-filter td:nth-child(3) input,
+.grid-result td:nth-child(3) { width: 60px;text-align: left;}
+/* Prop:prhso_tp_entidade */
+.grid-header th:nth-child(4),
+.grid-filter td:nth-child(4),
+.grid-filter td:nth-child(4) input,
+.grid-result td:nth-child(4) { width: 60px;text-align: left;}
+/* Prop:prhso_tp_acao */
+.grid-header th:nth-child(5),
+.grid-filter td:nth-child(5),
+.grid-filter td:nth-child(5) input,
+.grid-result td:nth-child(5) { width: 60px;text-align: left;}
+/* Prop:prhso_cd_de */
+.grid-header th:nth-child(6),
+.grid-filter td:nth-child(6),
+.grid-filter td:nth-child(6) input,
+.grid-result td:nth-child(6) { width: 200px;text-align: left;}
+/* Prop:prhso_cd_para */
+.grid-header th:nth-child(7),
+.grid-filter td:nth-child(7),
+.grid-filter td:nth-child(7) input,
+.grid-result td:nth-child(7) { width: 200px;text-align: left;}
+/* Prop:prhso_cd_prcc */
+.grid-header th:nth-child(8),
+.grid-filter td:nth-child(8),
+.grid-filter td:nth-child(8) input,
+.grid-result td:nth-child(8) { width: 100px;text-align: left;}
+/* Prop:prhso_ds_assunto */
+.grid-header th:nth-child(9),
+.grid-filter td:nth-child(9),
+.grid-filter td:nth-child(9) input,
+.grid-result td:nth-child(9) { width: 210px;text-align: left;}
+/* Prop:tabs_vc */
+.grid-header th:nth-child(10),
+.grid-filter td:nth-child(10),
+.grid-filter td:nth-child(10) input,
+.grid-result td:nth-child(10) { width: 25px;text-align: left;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(11),
+.grid-filter td:nth-child(11),
+.grid-filter td:nth-child(11) input,
+.grid-result td:nth-child(11) { width: 30px;text-align: center;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(12),
+.grid-filter td:nth-child(12),
+.grid-filter td:nth-child(12) input,
+.grid-result td:nth-child(12) { width: 17px;text-align: center;}
+/* Scroll space css right */
+.grid-header th:nth-child(13),
+.grid-filter td:nth-child(13) { width: 17px;}
+#div_dtDados {direction: ltr;}

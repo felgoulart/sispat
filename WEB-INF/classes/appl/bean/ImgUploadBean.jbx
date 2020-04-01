@@ -1,0 +1,9 @@
+[PropertyInfo]
+idImagem,Integer,false,false, , ,true,<default>
+imagem,org.apache.commons.fileupload.FileItem,false,false, , ,true,<default>
+srcImage,String,false,false,srcImage,srcImage,true,<default>
+[IconNames]
+
+
+
+

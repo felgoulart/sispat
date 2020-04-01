@@ -1,0 +1,170 @@
+.h3branca {
+color: white;
+}
+
+.valignmiddle {
+	margin:auto;
+}
+
+.h7 {
+	font-size: 0.9rem;
+    color: black;
+    margin-bottom: 0.5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #000000bd;
+}
+
+.h8 {
+	font-size: 0.7rem;
+    color: gray;
+    margin-bottom: 0.5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.h10 {
+    font-size: 0.7rem;
+    color: black;
+    margin-bottom: 0.5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    color: black;
+    vertical-align: middle;
+    padding-top: 5px;
+}
+
+.PsqDsc {
+	font-size: 0.7rem;
+    color: black;
+    margin-bottom: 0.5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    color: black;
+    vertical-align: middle;
+    padding-top: 0px;
+}
+
+.hr.style1{
+	border-top: 1px solid #8c8b8b;
+}
+
+
+
+body,html,.row-offcanvas {
+  height:100%;
+}
+
+
+
+#sidebar {
+  width: inherit;
+  max-width: 220px;
+  background-color:#4b4b4b;
+  float: left;
+  height:100%;
+  position:relative;
+  overflow-y:auto;
+  overflow-x:hidden;
+  transition: max-width 0.2s;
+}
+#main {
+  height:100%;
+  overflow:auto;
+}
+
+/*
+ * off Canvas sidebar
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 768px) {
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all 0.25s ease-out;
+    -moz-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out;
+    width:calc(100% + 220px);
+  }
+    
+  .row-offcanvas-left
+  {
+    left: -220px;
+  }
+
+  .row-offcanvas-left.active {
+    left: 0;
+  }
+
+  .sidebar-offcanvas {
+    position: absolute;
+    top: 0;
+  }
+}
+
+.tituloFiltro {
+  padding-top: 12px;
+  color: white;
+  align: center;
+  font-size: 25px;
+  text-align: center;
+  background: #0000007a;
+  padding-bottom: 12px;
+}
+
+.rowFiltro {
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: 0px;
+    margin-left:  0px;
+    color: #ffffffa6;
+}
+	
+
+	
+/* The sidebar menu */
+
+
+/* The sidebar links */
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #gray;
+  display: block;
+}
+/* When you mouse over the navigation links, change their color */
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s; /* If you want a transition effect */
+  padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}
+
+.btn-icon {
+  background: white;
+  border: none;
+  color: #000000a1;
+  cursor: pointer;
+  border-color: none !important;
+  outline: 0;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}

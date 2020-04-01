@@ -1,0 +1,11 @@
+[PropertyInfo]
+tableName,String,false,false, , ,true,<default>
+codf_tp,String,false,false,codf_tp,codf_tp,true,<default>
+codf_id,String,false,false,codf_id,codf_id,true,<default>
+codf_ds,String,false,false,codf_ds,codf_ds,true,<default>
+codf_supId,String,false,false,codf_supId,codf_supId,true,<default>
+[IconNames]
+
+
+
+

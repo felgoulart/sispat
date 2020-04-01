@@ -1,0 +1,24 @@
+/* Prop:help_cd */
+.grid-header th:nth-child(1),
+.grid-filter td:nth-child(1),
+.grid-filter td:nth-child(1) input,
+.grid-result td:nth-child(1) { width: 180px;text-align: left;}
+/* Prop:help_nm */
+.grid-header th:nth-child(2),
+.grid-filter td:nth-child(2),
+.grid-filter td:nth-child(2) input,
+.grid-result td:nth-child(2) { width: 400px;text-align: left;}
+/* Prop:buttonHelp */
+.grid-header th:nth-child(3),
+.grid-filter td:nth-child(3),
+.grid-filter td:nth-child(3) input,
+.grid-result td:nth-child(3) { width: 0px;text-align: left;}
+/* Prop:buttonHelp */
+.grid-header th:nth-child(4),
+.grid-filter td:nth-child(4),
+.grid-filter td:nth-child(4) input,
+.grid-result td:nth-child(4) { width: 0px;text-align: left;}
+/* Scroll space css right */
+.grid-header th:nth-child(5),
+.grid-filter td:nth-child(5) { width: 17px;}
+#div_dtDados {direction: ltr;}

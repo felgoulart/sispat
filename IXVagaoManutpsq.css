@@ -1,0 +1,54 @@
+/* Prop:vgmnt_aa */
+.grid-header th:nth-child(1),
+.grid-filter td:nth-child(1),
+.grid-filter td:nth-child(1) input,
+.grid-result td:nth-child(1) { width: 47px;text-align: left;}
+/* Prop:vgmnt_mm */
+.grid-header th:nth-child(2),
+.grid-filter td:nth-child(2),
+.grid-filter td:nth-child(2) input,
+.grid-result td:nth-child(2) { width: 47px;text-align: left;}
+/* Prop:vgmnt_cd_local */
+.grid-header th:nth-child(3),
+.grid-filter td:nth-child(3),
+.grid-filter td:nth-child(3) input,
+.grid-result td:nth-child(3) { width: 47px;text-align: left;}
+/* Prop:vgmnt_nu_vagao */
+.grid-header th:nth-child(4),
+.grid-filter td:nth-child(4),
+.grid-filter td:nth-child(4) input,
+.grid-result td:nth-child(4) { width: 92px;text-align: left;}
+/* Prop:vgmnt_qt_manut_corr */
+.grid-header th:nth-child(5),
+.grid-filter td:nth-child(5),
+.grid-filter td:nth-child(5) input,
+.grid-result td:nth-child(5) { width: 74px;text-align: right;}
+/* Prop:vgmnt_qt_manut_prev */
+.grid-header th:nth-child(6),
+.grid-filter td:nth-child(6),
+.grid-filter td:nth-child(6) input,
+.grid-result td:nth-child(6) { width: 74px;text-align: right;}
+/* Prop:vgmnt_qt_manut_prev_ger */
+.grid-header th:nth-child(7),
+.grid-filter td:nth-child(7),
+.grid-filter td:nth-child(7) input,
+.grid-result td:nth-child(7) { width: 74px;text-align: right;}
+/* Prop:tabs_vc */
+.grid-header th:nth-child(8),
+.grid-filter td:nth-child(8),
+.grid-filter td:nth-child(8) input,
+.grid-result td:nth-child(8) { width: 25px;text-align: left;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(9),
+.grid-filter td:nth-child(9),
+.grid-filter td:nth-child(9) input,
+.grid-result td:nth-child(9) { width: 30px;text-align: center;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(10),
+.grid-filter td:nth-child(10),
+.grid-filter td:nth-child(10) input,
+.grid-result td:nth-child(10) { width: 17px;text-align: center;}
+/* Scroll space css right */
+.grid-header th:nth-child(11),
+.grid-filter td:nth-child(11) { width: 17px;}
+#div_dtDados {direction: ltr;}

@@ -1,0 +1,94 @@
+/* Prop:lcdsp_aa */
+.grid-header th:nth-child(1),
+.grid-filter td:nth-child(1),
+.grid-filter td:nth-child(1) input,
+.grid-result td:nth-child(1) { width: 47px;text-align: left;}
+/* Prop:lcdsp_mm */
+.grid-header th:nth-child(2),
+.grid-filter td:nth-child(2),
+.grid-filter td:nth-child(2) input,
+.grid-result td:nth-child(2) { width: 56px;text-align: left;}
+/* Prop:lcdsp_cd_nom_modelo */
+.grid-header th:nth-child(3),
+.grid-filter td:nth-child(3),
+.grid-filter td:nth-child(3) input,
+.grid-result td:nth-child(3) { width: 100px;text-align: left;}
+/* Prop:lcdsp_lt_consumo_comb */
+.grid-header th:nth-child(4),
+.grid-filter td:nth-child(4),
+.grid-filter td:nth-child(4) input,
+.grid-result td:nth-child(4) { width: 74px;text-align: right;}
+/* Prop:lcdsp_vl_imob_ofina_prop */
+.grid-header th:nth-child(5),
+.grid-filter td:nth-child(5),
+.grid-filter td:nth-child(5) input,
+.grid-result td:nth-child(5) { width: 83px;text-align: right;}
+/* Prop:lcdsp_vl_imob_ofina_terc */
+.grid-header th:nth-child(6),
+.grid-filter td:nth-child(6),
+.grid-filter td:nth-child(6) input,
+.grid-result td:nth-child(6) { width: 92px;text-align: right;}
+/* Prop:lcdsp_vl_imob_morta */
+.grid-header th:nth-child(7),
+.grid-filter td:nth-child(7),
+.grid-filter td:nth-child(7) input,
+.grid-result td:nth-child(7) { width: 70px;text-align: right;}
+/* Prop:lcdsp_vl_disp_naoutil_prop */
+.grid-header th:nth-child(8),
+.grid-filter td:nth-child(8),
+.grid-filter td:nth-child(8) input,
+.grid-result td:nth-child(8) { width: 70px;text-align: right;}
+/* Prop:lcdsp_vl_disp_naoutil_terc */
+.grid-header th:nth-child(9),
+.grid-filter td:nth-child(9),
+.grid-filter td:nth-child(9) input,
+.grid-result td:nth-child(9) { width: 70px;text-align: right;}
+/* Prop:lcdsp_vl_util_prop */
+.grid-header th:nth-child(10),
+.grid-filter td:nth-child(10),
+.grid-filter td:nth-child(10) input,
+.grid-result td:nth-child(10) { width: 70px;text-align: right;}
+/* Prop:lcdsp_vl_util_terc */
+.grid-header th:nth-child(11),
+.grid-filter td:nth-child(11),
+.grid-filter td:nth-child(11) input,
+.grid-result td:nth-child(11) { width: 60px;text-align: right;}
+/* Prop:lcdsp_vl_util_servint */
+.grid-header th:nth-child(12),
+.grid-filter td:nth-child(12),
+.grid-filter td:nth-child(12) input,
+.grid-result td:nth-child(12) { width: 60px;text-align: right;}
+/* Prop:lcdsp_vl_tkb_tracionada */
+.grid-header th:nth-child(13),
+.grid-filter td:nth-child(13),
+.grid-filter td:nth-child(13) input,
+.grid-result td:nth-child(13) { width: 80px;text-align: right;}
+/* Prop:lcdsp_vl_tku_tracionada */
+.grid-header th:nth-child(14),
+.grid-filter td:nth-child(14),
+.grid-filter td:nth-child(14) input,
+.grid-result td:nth-child(14) { width: 80px;text-align: right;}
+/* Prop:lcdsp_vl_dist_percorrida */
+.grid-header th:nth-child(15),
+.grid-filter td:nth-child(15),
+.grid-filter td:nth-child(15) input,
+.grid-result td:nth-child(15) { width: 70px;text-align: right;}
+/* Prop:tabs_vc */
+.grid-header th:nth-child(16),
+.grid-filter td:nth-child(16),
+.grid-filter td:nth-child(16) input,
+.grid-result td:nth-child(16) { width: 25px;text-align: left;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(17),
+.grid-filter td:nth-child(17),
+.grid-filter td:nth-child(17) input,
+.grid-result td:nth-child(17) { width: 30px;text-align: center;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(18),
+.grid-filter td:nth-child(18),
+.grid-filter td:nth-child(18) input,
+.grid-result td:nth-child(18) { width: 17px;text-align: center;}
+/* Scroll space css right */
+.grid-header th:nth-child(19),
+.grid-filter td:nth-child(19) { width: 17px;}
+#div_dtDados {direction: ltr;}

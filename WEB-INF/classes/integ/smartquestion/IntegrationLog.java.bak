@@ -1,0 +1,95 @@
+package integ.smartquestion;
+
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
+import appl.data.Impld;
+import appl.data.Implg;
+import wins.libs.DatabaseUtils;
+
+public class IntegrationLog {
+	
+	private Implg implg = new Implg();
+	private List<String> implgMessages = new ArrayList<String>();
+	
+	private String nuAtdm;
+	private String nbp;
+	private AtdmLogType atdmLogType = AtdmLogType.OK;
+	private List<Impld> atdmLogDetails = new ArrayList<Impld>();
+	
+	public void mode(IntegrationMode integrationMode) {
+		implg.setImplg_st(integrationMode.getInitials());
+	}
+	
+	public void begin() {
+		implgMessages.clear();
+		Date now = Calendar.getInstance().getTime();
+		implg.setImplg_id(new SimpleDateFormat("yyMMdd-HHmmss").format(now));
+		implg.setImplg_dh_ini(now);
+		implg.setImplg_qt_ok(0);
+		implg.setImplg_qt_er(0);
+		try {
+			implg.save(DatabaseUtils.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void openAtdm(String nuAtdm, String nbp) {
+		atdmLogDetails.clear();
+		atdmLogType = AtdmLogType.OK;
+		this.nuAtdm = nuAtdm;
+		this.nbp = nbp == null ? "xxxxxx" : nbp;
+	}
+	
+	public void logAtdmError(String message) {
+		Impld impld = new Impld();
+		impld.setImpld_id_implg(implg.getImplg_id());
+		impld.setImpld_nu_atdm(nuAtdm);
+		impld.setImpld_ds(message);
+		atdmLogType = AtdmLogType.ER;
+		atdmLogDetails.add(impld);
+	}
+	
+	public void closeAtdm() throws SQLException {
+        if (nbp == null) { nbp = "-";}
+		if ( nuAtdm == null || nbp.indexOf("-") == 0  ) {} else {
+			for (Impld impld : atdmLogDetails) {
+				impld.save(DatabaseUtils.getConnection());
+			}
+			implgMessages.add(atdmLogType.name() + "-" + nuAtdm + "-" + nbp);
+			if(atdmLogType.equals(AtdmLogType.OK)) {
+				implg.setImplg_qt_ok(implg.getImplg_qt_ok() + 1);
+				//} else if (atdmLogType.equals(AtdmLogType.ER) || atdmLogType.equals(AtdmLogType.BN)) {  
+			} else if (atdmLogType.equals(AtdmLogType.ER) ) {
+				implg.setImplg_qt_er(implg.getImplg_qt_er() + 1);
+			}
+		}
+	}
+
+	public void message(String message) {
+		implgMessages.add(message);
+	}
+	
+	public void end() throws SQLException {
+		implg.setImplg_dh_fim(Calendar.getInstance().getTime());
+        String vvv = StringUtils.join(implgMessages.iterator(), ",");
+		implg.setImplg_ds(StringUtils.join(implgMessages.iterator(), ","));
+		implg.saveOrUpdate(DatabaseUtils.getConnection());
+	}
+
+	public AtdmLogType getAtdmLogType() {
+		return atdmLogType;
+	}
+
+	public void setAtdmLogType(AtdmLogType atdmLogType) {
+		this.atdmLogType = atdmLogType;
+	}
+
+}

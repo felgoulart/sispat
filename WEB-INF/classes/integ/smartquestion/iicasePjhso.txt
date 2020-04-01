@@ -1,0 +1,10 @@
+view=iicasePjhsoengha                                 objt=Pjhsoengha oabv=Pjhsoengha dao=Pjhso-view tabl=Pjhso tggr=Pjaus_Pjhso_Engha tdrc=5 data=fromGen mrob=Pjaus temp=iicase@SpecRecdChldMaint obtp=childMainRecord mdor=none ostp=regularType itop=+nsa itst=strw20,fdsz90,rwpp srce= slfn= schl= list= rfpd=15x20 sfpd=20x20 rel=(iicasePjaus) entt=--- synm=---
+@TT                    endvtt=<@history1-@engineering1> endvta=<@history1-@engineering1> endstt=<@history1-@engineering1>
+pjhso_id_pjaus          ittp=parentKey    synm=hsid srch=tfr-hd entt=<@project>     vald=im fk=pjaus/pjaus_id/pjaus_ds vlwd=20 String VARCHAR(20) NOT NULL key=y fltr=childrecs vlid=file
+pjhso_sq                ittp=autoSequence synm=hssq srch=tfd-dc entt=<@sequence>    vald=im clwd=6 Number INTEGER NOT NULL key=y
+pjhso_tp                ittp=inputText    synm=hstp srch=tfd-hd entt=<@type-tt>     vald=no vlwd=6  String VARCHAR(20) NULL iniv=ENGHA
+pjhso_st                ittp=inputText    synm=hsst srch=tfd    entt=<@status2-tt>  vald=no cf=GENYN   vlwd=5  rfwd=5 String VARCHAR(20) NULL
+pjhso_dt_envio          ittp=selDate      synm=hsev srch=tfd    entt=<@sent-tt>     vald=no vlwd=8  Datetime TIMESTAMP NULL ovtp=Date
+pjhso_ds                ittp=inputText    synm=hsds srch=tfd    entt=<@history-tt>  vald=no vlwd=90 rfwd=30 String VARCHAR(500) NULL expr="same like or this is null"
+pjhso_dt_prazo          ittp=selDate      synm=hspz srch=tfd    entt=<@deadline-tt> vald=no vlwd=8  Datetime TIMESTAMP NULL ovtp=Date
+pjhso_dt_retrn          ittp=selDate      synm=hsrt srch=tfd    entt=<@return-tt>   vald=no vlwd=8  Datetime TIMESTAMP NULL ovtp=Date

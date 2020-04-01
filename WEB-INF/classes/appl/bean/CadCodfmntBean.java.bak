@@ -1,0 +1,1110 @@
+package appl.bean;
+    
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import wins.report.jasperRunner;
+import java.util.List;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.fileupload.FileItem;
+import appl.data.Codf;
+// ---------------------------------------
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import wins.libs.LoginException;
+import appl.libs.IIBeanUtils;
+public class CadCodfmntBean extends CadastroBean {
+        protected static Log log = LogFactory.getLog(CadCodfmntBean.class);
+    public int xtab = 0;
+    // Tabs Validation Status
+    private String idx;
+    private String idxm;
+    private int idxmtot;
+    private boolean idxflag;
+    private String tbakloc;
+    private String alterando;
+    private Boolean assistnovo;
+    private String filter;
+    private String vc;
+    public String role = "";
+    public int imgskk = 0;
+    public int fileskk = 0;
+    public String fileUploaded= "";
+    
+    // Building Fields Validation Map ---------------
+    private static Map<String, Integer> i_fields = new HashMap<String, Integer>(); static {
+        i_fields.put("codf_id", 1);
+        i_fields.put("codf_lg", 2);
+        i_fields.put("codf_ds", 3);
+        i_fields.put("codf_supid", 4);
+    } // 222
+    
+    // Declaring Validation Map -------------------
+    private HashMap<String, StringBuffer> i_divns = new HashMap<String, StringBuffer>();
+    // ii.properties---------------------------------------
+    private String xbutn_id;
+    private String xuserx_id_login;
+    private String tabs_vc;
+    private String tabs_vf;
+    private String tabs_vf_old;
+    private String codf_vf;
+    private String user_cd;
+    private Date recd_ts;
+    private String codf_tp;
+    private String codf_tp_old ;
+    private String codf_tp_desc;
+    private String codf_id;
+    private String codf_id_old ;
+    private String codf_id_vc;
+    private String codf_lg;
+    private String codf_lg_old ;
+    private String codf_lg_vc;
+    private String codf_ds;
+    private String codf_ds_vc;
+    private String codf_supid;
+    private String codf_supid_vc;
+    private String flds_vf_ref;
+    // Filters------------------------------------------
+    private String fil_tabs_vc;
+    private String fil_codf_tp;
+    private String fil_codf_id;
+    private String fil_codf_lg;
+    private String fil_codf_ds;
+    // Orders------------------------------------
+    private Boolean ord_codf_lg;
+    // Constructor--------------------------------------
+    public CadCodfmntBean() { 
+    } // 333
+    
+    // Returns a Reference to the Associared DataObject-
+    protected Class getDataClass() { return Codf.class;}
+    // Working Variables Methods-------------------------
+    public void setAlterando(String alterando) { this.alterando = alterando; }
+    public String getAlterando() { return alterando;} 
+    
+    // Setters -----------------------------------------
+    public void setXbutn_id (String xbutn_id) {
+        this.xbutn_id = xbutn_id;
+    }
+    public void setXuserx_id_login (String xuserx_id_login) {
+        this.xuserx_id_login = xuserx_id_login;
+    }
+    public void setTabs_vc (String tabs_vc) {this.tabs_vc = tabs_vc;}
+    public void setTabs_vf (String tabs_vf) {this.tabs_vf = tabs_vf;}
+    public void setCodf_vf (String codf_vf) {this.codf_vf = codf_vf;}
+    
+    public void setFlds_vfsb (StringBuffer flds_vfsb) {this.flds_vfsb = flds_vfsb;}
+    
+    public void setUser_cd (String user_cd) {this.user_cd = user_cd;}
+    
+    public void setRecd_ts (Date recd_ts) {this.recd_ts = recd_ts;}
+    
+    public void setCodf_tp (String codf_tp) {this.codf_tp = codf_tp;}
+    public void setCodf_tp_desc (String codf_tp_desc) {this.codf_tp_desc = codf_tp_desc;}
+    public void setCodf_id (String codf_id) {this.codf_id = codf_id;}
+    public void setCodf_id_vc (String codf_id_vc) {this.codf_id_vc = codf_id_vc;}
+    public void setCodf_lg (String codf_lg) {this.codf_lg = codf_lg;}
+    public void setCodf_lg_vc (String codf_lg_vc) {this.codf_lg_vc = codf_lg_vc;}
+    public void setCodf_ds (String codf_ds) {this.codf_ds = codf_ds;}
+    public void setCodf_ds_vc (String codf_ds_vc) {this.codf_ds_vc = codf_ds_vc;}
+    public void setCodf_supid (String codf_supid) {this.codf_supid = codf_supid;}
+    public void setCodf_supid_vc (String codf_supid_vc) {this.codf_supid_vc = codf_supid_vc;}
+    // Filter Setters-----------------------------------
+    public void setFil_tabs_vc (String fil_tabs_vc) {this.fil_tabs_vc = fil_tabs_vc;}
+    public void setFil_codf_tp (String fil_codf_tp) {this.fil_codf_tp = fil_codf_tp;}
+    public void setFil_codf_id (String fil_codf_id) {this.fil_codf_id = fil_codf_id;}
+    public void setFil_codf_lg (String fil_codf_lg) {this.fil_codf_lg = fil_codf_lg;}
+    public void setFil_codf_ds (String fil_codf_ds) {this.fil_codf_ds = fil_codf_ds;}
+    // Order Setters---------------------------
+    public void setOrd_codf_lg (boolean ord_codf_lg) {this.ord_codf_lg = ord_codf_lg ; }
+    
+    // Getters -----------------------------------------
+    public String getIdxm() {
+        return idxm; 
+    }
+    public boolean isIdxflag() {
+        return idxflag; 
+    }
+    public String getXbutn_id() {
+        return xbutn_id; 
+    }
+    public String getXuserx_id_login() {
+        return xuserx_id_login; 
+    }
+    public String getTabs_vc() {return tabs_vc; }
+    public String getTabs_vf() {return tabs_vf; }
+    public String getCodf_vf() {return codf_vf; }
+    
+    public StringBuffer getFlds_vfsb() {return flds_vfsb; }
+    
+    public String getUser_cd() {return user_cd; }
+    
+    public Date getRecd_ts() {return recd_ts; }
+    
+    public String getCodf_tp() {return codf_tp; }
+    public String getCodf_tp_old() {return codf_tp_old; }
+    public String getCodf_tp_desc() {return codf_tp_desc; }
+    public String getCodf_id() {return codf_id; }
+    public String getCodf_id_old() {return codf_id_old; }
+    public String getCodf_id_vc() {return codf_id_vc; }
+    public String getCodf_lg() {return codf_lg; }
+    public String getCodf_lg_old() {return codf_lg_old; }
+    public String getCodf_lg_vc() {return codf_lg_vc; }
+    public String getCodf_ds() {return codf_ds; }
+    public String getCodf_ds_vc() {return codf_ds_vc; }
+    public String getCodf_supid() {return codf_supid; }
+    public String getCodf_supid_vc() {return codf_supid_vc; }
+    // Filter Getters-----------------------------------
+    public String getFil_tabs_vc() {return fil_tabs_vc; }
+    public String getFil_codf_tp() {return fil_codf_tp; }
+    public String getFil_codf_id() {return fil_codf_id; }
+    public String getFil_codf_lg() {return fil_codf_lg; }
+    public String getFil_codf_ds() {return fil_codf_ds; }
+    // Order Getters-----------------------------
+    public boolean isOrd_codf_lg() {return ord_codf_lg; }
+    public boolean isOrd_codf_lg_desc() {return !ord_codf_lg; }
+    
+    protected boolean validateParms() { 
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadCodfmntBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+        return result; 
+    }   //  End of Validate 
+    
+    protected boolean validate() { // @save @getrecd  
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadCodfmntBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        codf_id_vc = valCodf_id(codf_id); 
+        codf_lg_vc = valCodf_lg(codf_lg); 
+        codf_ds_vc = valCodf_ds(codf_ds); 
+        codf_supid_vc = valCodf_supid(codf_supid); 
+    
+        validateMax(vfbuffer); addErrorMessageFromErrorList(); 
+        addAttribute("validateOn"+tab, "1");
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+        return result; 
+    }   //  End of Validate 
+    public void updateRecdTs() {
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            if (result) {
+                this.recd_ts = new Date();
+            }
+        } catch (Exception ex) { ex.getMessage(); }
+    }
+    
+    protected void validateInserir() {
+        StringBuffer vfbuffer = new StringBuffer();
+        if (tabs_vf != null) {
+            vfbuffer.append(tabs_vf);
+            vfbuffer.setCharAt(49,'0');
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf;
+        }
+    } 
+    protected void updateMrobOnChldInsert() throws SQLException {
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            PreparedStatement ps_file = con1.prepareStatement("update Transcodf set codf_vx = '1' where transcodf_id like ?");
+            ps_file.setString(1, "%"+codf_id+"%");
+            ResultSet rs_file = ps_file.executeQuery();
+            } catch (Exception ex) {
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    protected void updateMrobOnChldDelete() throws SQLException {
+        if (codfqt > 1) {return;}
+        Connection con1 = DatabaseUtils.getConnection();
+        try {
+            PreparedStatement ps_file = con1.prepareStatement("update Transcodf set codf_vx = '0' where transcodf_id like ?");
+            ps_file.setString(1, "%"+codf_id+"%");
+            ResultSet rs_file = ps_file.executeQuery();
+            } catch (Exception ex) {
+            } finally {
+                DatabaseUtils.releaseConnection(con1);
+            }
+    }
+    
+    public String validateFieldOnChange(String value, String field) {
+        String result = null;
+        vf = 0; int i_field = 0; int valueInteger=0; Date valueDate = null; BigDecimal valueBigDecimal = null;
+    if (i_fields.containsKey(field)) {
+        i_field = i_fields.get(field);
+    }
+        switch (i_field) {
+        // Fields Validation Methods Switch 
+           case 1: result = valCodf_id(value); break;
+           case 2: result = valCodf_lg(value); break;
+           case 3: result = valCodf_ds(value); break;
+           case 4: result = valCodf_supid(value); break;
+        } // 111
+        return result;
+    }
+    public String checkMaxFieldOnChange(String divn) {
+        vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(Integer.parseInt(divn),selMaxVc(divn).charAt(0));
+        vfbuffer.setCharAt(psvc,selMaxVc(divn).charAt(0));
+        tabsvf = vfbuffer.toString();
+        return vfbuffer.toString();
+    }
+    public String checkVFMaxFieldOnChange(String divn) {
+        return retSelBuffer(divn);
+    }
+    public String retSelBuffer(String divn) {
+        String selBuffer = null;
+        selBuffer = flds_vfsb.toString();
+        return selBuffer;
+    }
+    
+    // Main Record (Univalued) Field Validation Methods...
+    
+    public Boolean valRecd_ts(Connection con) throws SQLException {
+        if (codf_id != null) {
+            msgkey = "";
+            Codf Codfx = new Codf(codf_tp, codf_id, codf_lg);
+            Codfx.loadUfmv(this);
+            Codfx.setLoadChilds(true);
+            Codfx.load(con);
+            Date recd_ts_db = Codfx.getRecd_ts();
+            if (recd_ts_db != null && this.recd_ts != null) {
+                String tsdb = recd_ts_db.toString();
+                String ts = this.recd_ts.toString();
+                if (!ts.equals(tsdb) ) {
+                    msgkey = "key:valrecd_ts/";
+                    errorList.add(msgkey);
+                    addErrorMessageFromErrorList();
+                    log.error("Codfmnt lock event: key:"+codf_id+", ts:"+ts+", tsdb:"+tsdb);
+                    return false;
+                 }
+            } else {
+                  recd_ts = new Date();
+            }
+        } else {
+            recd_ts = new Date();
+        }
+        return true;
+    }
+    public String valCodf_id(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.codf_id = null;
+        } else {
+            this.codf_id = value;
+        }
+        codf_id_vc = valEntryString("9", value,"Codfmnt_codf_id");
+        return codf_id_vc;
+    }
+    public String valCodf_lg(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.codf_lg = null;
+        } else {
+            this.codf_lg = value;
+        }
+        codf_lg_vc = valEntryString("9", value,"Codfmnt_codf_lg");
+        return codf_lg_vc;
+    }
+    public String valCodf_ds(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.codf_ds = null;
+        } else {
+            this.codf_ds = value;
+        }
+        codf_ds_vc = valEntryString("9", value,"Codfmnt_codf_ds");
+        return codf_ds_vc;
+    }
+    public String valCodf_supid(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.codf_supid = null;
+        } else {
+            this.codf_supid = value;
+        }
+        codf_supid_vc = valEntryString("0", value,"Codfmnt_codf_supid");
+        return codf_supid_vc;
+    }
+    
+    protected void reset() {  
+     try {
+        super.reset(); 
+        // Set initial ABA Number
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("cadbeanx", "cadCodfmntBean");
+        if (tab_remember == true) {
+            getSession().getAttribute("cadCodfmntBeanx");
+        } else {
+            getSession().setAttribute("cadCodfmntBeanx", "1");
+        } 
+        ufmv = "00000000000000000000000000000000000000000000000000";
+        getSession().setAttribute("ufmv", ufmv);
+        // Tabs Validation Status
+        this.tabs_vf = null;
+        this.tabs_vc = null;
+        vf = 0;
+        xmesg_st = "null";
+        // Reset of Main Record ii.properties-----------------
+        this.flds_vf = "0";
+    //  for childMainRecord
+        this.codf_vf = "0";
+        this.tabs_vc = "0";
+        // Set initial tabsvf
+        tabsvf =    "90000000000000000000000000000000000000000000000909";
+        tabsvf_in = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tr = "90000000000000000000000000000000000000000000000000";
+        tabsvf_tp = "90000000000000000000000000000000000000000000000000";
+        // Load flds_vf & chld_vfs into prop vcs;
+        Connection con = DatabaseUtils.getConnection();
+        // Reset Initial Stub Number--------------------------
+        this.xbutn_id = "1";
+        this.codf_tp_old = null;
+    //  Reset Fks.2. --
+        this.codf_tp = this.fil_codf_tp; // Reset PK that is FK Unconditionally
+        this.codf_tp_desc = null;
+        this.codf_id_old = null;
+        this.codf_id = null; // Reset PK not defined as FK Unconditionally
+        this.codf_lg = "pt_BR"; // simple iniv 
+        this.codf_ds = null; // Reset of any other variable --
+        this.codf_supid = null; // Reset of any other variable --
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        // Orders-Reset------------------------------------
+        this.ord_codf_lg = false;
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo.indexOf("psq") >= 0){
+            mesg_var = getMessageByKey("selectViaFiltersMagGlass");
+            xmesg_rc = 777;
+        } else {
+            mesg_var = "";
+            xmesg_rc = 0;
+        }
+    } catch (Exception ex) { ex.getMessage(); }
+    } // Closing Reset Method
+    // Filters-Reset------------------------------------
+    protected void resetFilters() {  
+        this.fil_tabs_vc = null;
+        this.fil_codf_tp = null;
+        this.fil_codf_id = null;
+        this.fil_codf_lg = null;
+        this.fil_codf_ds = null;
+    }
+    
+    
+    public void loadDesc() throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+    
+        // Load FK Desc ------------------------
+        codf_tp_desc = IIBeanUtils.getTrans_desc(con, codf_tp);
+    
+        } finally { DatabaseUtils.releaseConnection(con); }
+    }  //  End of loadDesc 
+    public String doObterBack() throws SQLException, LoginException { // @getrecd
+        String tbakx = (String) (getSession().getAttribute("tbak"));
+        if (tbakx.contains("cad")) { 
+           loadBean(); // @getrecd
+           String result = super.doObter(); // @getrecd
+        } 
+       return tbakx; // @getrecd
+    } 
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObter() throws SQLException, LoginException { // @getrecd
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+       tipo ="codfmntcad";
+        idx = "";
+       loadBean(); // @getrecd
+    codf_tp_old = codf_tp;
+    codf_id_old = codf_id;
+    codf_lg_old = codf_lg;
+       String result = super.doObter(); // @getrecd
+       result = "codfmntcad"; // @getrecd
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return result; // @getrecd
+       } 
+    } 
+    
+    public Object doObterBean() throws SQLException, LoginException {
+        loadBean();
+        return this;
+    }
+    
+    // Loads bean from dao, based on PK value of Object - @param (valor) from Object PK
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterRefresh() throws SQLException, LoginException { // @getrecd
+       tipo = (String)getSession().getAttribute("tipo");
+       loadBean(); // @getrecd
+    codf_tp_old = codf_tp;
+    codf_id_old = codf_id;
+    codf_lg_old = codf_lg;
+       String result = super.doObter(); // @getrecd
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return result; // @getrecd
+       } 
+    } 
+    
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterNext() throws SQLException, LoginException { // @getrecd
+       tipo = (String)getSession().getAttribute("tipo");
+       loadBeanNext(); // @getrecd
+       codf_tp_old = codf_tp;
+       codf_id_old = codf_id;
+       codf_lg_old = codf_lg;
+       String result = super.doObterNext(); // @getrecd
+       result = "codfmntcad";
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return result; // @getrecd
+       } 
+    } 
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObterPrev() throws SQLException, LoginException { // @getrecd
+       tipo = (String)getSession().getAttribute("tipo");
+       loadBeanPrev(); // @getrecd
+       codf_tp_old = codf_tp;
+       codf_id_old = codf_id;
+       codf_lg_old = codf_lg;
+       String result = super.doObterPrev(); // @getrecd
+       result = "codfmntcad";
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return result; // @getrecd
+       } 
+    } 
+    //  for childMainRecord
+    
+    // Opens a Rec Page with Obj Data from Sel made on Search Screen- @return record page
+    public String doObterParent() throws SQLException, LoginException { // @getparent 
+       reset(); validate(); // @getparent
+       tipo = (String)getSession().getAttribute("tipo");
+            String campo1 = null;
+            if ((Boolean) getSession().getAttribute("cmpSession") != null) {
+                if (getSession().getAttribute("cmpSession").equals(true)) {
+                    campo1 = (String) getSession().getAttribute("campo1");
+                }
+            } else {
+                campo1 = getParameter("campo1");
+            }
+            if (campo1 != null) {
+               if (!campo1.equals("")) {
+                  codf_tp = campo1;
+               }
+            }
+       String result = super.doObter(); // @getparent 
+       setCanInserir(true);
+       return "codfmntcad";
+    } 
+    public DataObject setTableAliasBean(DataObject dao) {
+        dao.setTableAlias("CODFMNT_CODF");
+        return dao;
+    }
+    // loadBean Get Selection Values from Session  ------------------
+    public void loadBean() throws SQLException, LoginException {
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        // Used only if not loadFromGIS - Start 
+        String valor = (String) getSession().getAttribute("codfmntcadvalor");
+        // Used only if not loadFromGIS - End 
+        getSession().setAttribute("tipo", tipox);
+        loadBean(valor);
+    } // end of loadBean
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBean(String valor) throws SQLException, LoginException {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        if (valor == null) { return; }
+        Connection con = DatabaseUtils.getConnection();
+        // Build List of Keys --------------------------------------------------------
+        String[] keys_vl = new String[4];
+        int start_ix = 0; int end_ix = 0;
+        int kkv = 1;
+        while(kkv <= 3) {
+            if (kkv == 1) {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                if (valor.length() > 1) {
+                   keys_vl[1] = valor.substring(start_ix,end_ix);
+                } else { keys_vl[1] = valor; }
+                start_ix = end_ix+1;
+            } else {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                keys_vl[kkv] = valor.substring(start_ix,end_ix);
+                start_ix = end_ix+1;
+            }
+            kkv = kkv + 1;
+        }
+        // Logic 2 - if ( ( ii.pcmd.indexOf('recdFromTabl') >= 0 || ii.daoBeanUtils.length() > 0   )  )   
+        String id1 = keys_vl[1];
+        String id2 = keys_vl[2];
+        String id3 = keys_vl[3];
+        //  next prev navigation - loadBean(valor)
+        if (idx != null && idx.length() > 0) {
+            id2 = idx;
+        }
+        int found = 0;  hasNext = true; int kkx = 0; idxmtot = 0; idxflag = true;
+        while (list_itrx.hasNext()) {
+        	   list_itrx.next();
+            idxmtot++;
+        }
+        if ( idxmtot == 1) {idxflag = false;}
+        found = 0;
+        while (found == 0) {
+            if (!list_itrx.hasPrevious()) {
+            	   found = 1; continue;
+            }
+            list_itrx.previous();
+        }
+        found = 0;
+        while (found == 0) {
+            Codf CodfList = ((Codf)list_itrx.next());
+            codf_id = CodfList.getCodf_id();
+            if (id2.equals(codf_id) ) {
+                found = 1;
+                if (kkx == 0) {
+                    mesg_var = getMessageByKey("firstRecord");
+                    xmesg_rc = 1;
+                }
+                if (! list_itrx.hasNext()) {
+                   mesg_var = getMessageByKey("lastRecord");
+                   xmesg_rc = 1;
+                }
+                if (!idxflag) {
+                   mesg_var = "";
+                   xmesg_rc = 0;
+                }
+            }
+            kkx = kkx + 1;
+        }
+        hasNext = list_itrx.hasNext();
+        hasPrev = list_itrx.hasPrevious();
+        if (kkx == 1 ) { hasPrev = false;}
+        idxm = Integer.toString(kkx)+"/"+Integer.toString(idxmtot);
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Codf Codfx = new Codf(id1 ,id2 ,id3);
+        Codfx.loadUfmv(this);
+        Codfx.setTableAlias("CODFMNT_CODF");
+        Codfx.load(con);
+        
+        Codfx.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        idx = "";
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBeanNext() throws SQLException, LoginException {
+        
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        getSession().setAttribute("tipo", tipox);
+        
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        
+        // Next Prev Mavigation - loadBeanNav - loads message in boundary record 
+        if ( xmesg_rc == 1 && idx.length() == 0) {
+        }
+        boolean ttt = list_itrx.hasNext();
+        if (!ttt) {
+            mesg_var = getMessageByKey("lastRecord");
+            xmesg_rc = 1;
+            return;
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        Codf CodfList = ((Codf)list_itrx.next() );
+        hasNext = list_itrx.hasNext();
+        hasPrev = true;
+        String id1 = CodfList.getCodf_tp();
+        String id2 = CodfList.getCodf_id();
+        String id3 = CodfList.getCodf_lg();
+        if (id2.equals(codf_id) ) {
+            CodfList = ((Codf)list_itrx.next() );
+            hasNext = list_itrx.hasNext();
+            hasPrev = true;
+            id1 = CodfList.getCodf_tp();
+            id2 = CodfList.getCodf_id();
+            id3 = CodfList.getCodf_lg();
+        }
+            idx = id2;
+        idxm = Integer.toString(list_itrx.nextIndex())+"/"+Integer.toString(idxmtot);
+        
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Codf Codfx = new Codf(id1 ,id2 ,id3);
+        Codfx.loadUfmv(this);
+        Codfx.setTableAlias("CODFMNT_CODF");
+        Codfx.load(con);
+        
+        Codfx.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        // Next Prev Mavigation - loadBeanNav  - loads message after next record
+        if ( xmesg_rc == 0 && idx.length() == 0) {
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        ttt = list_itrx.hasNext();
+        if (!ttt) {
+            mesg_var = getMessageByKey("lastRecord");
+            xmesg_rc = 1;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBeanPrev() throws SQLException, LoginException {
+        
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        getSession().setAttribute("tipo", tipox);
+        
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        Connection con = DatabaseUtils.getConnection();
+        
+        // Next Prev Mavigation - loadBeanNav - loads message in boundary record 
+        if ( xmesg_rc == 1 && idx.length() == 0) {
+        	   list_itrx.previous(); idx = "x";
+        }
+        boolean ttt = list_itrx.hasPrevious();
+        if (!ttt) {
+            mesg_var = getMessageByKey("firstRecord");
+            xmesg_rc = 1;
+            return;
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        Codf CodfList = ((Codf)list_itrx.previous() );
+        hasPrev = list_itrx.hasPrevious();
+        hasNext = true;
+        String id1 = CodfList.getCodf_tp();
+        String id2 = CodfList.getCodf_id();
+        String id3 = CodfList.getCodf_lg();
+        if (id2.equals(codf_id) ) {
+            CodfList = ((Codf)list_itrx.previous() );
+            hasPrev = list_itrx.hasPrevious();
+            hasNext = true;
+            id1 = CodfList.getCodf_tp();
+            id2 = CodfList.getCodf_id();
+            id3 = CodfList.getCodf_lg();
+        }
+            idx = id2;
+        idxm = Integer.toString(list_itrx.previousIndex()+ 2)+"/"+Integer.toString(idxmtot);
+        
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Codf Codfx = new Codf(id1 ,id2 ,id3);
+        Codfx.loadUfmv(this);
+        Codfx.setTableAlias("CODFMNT_CODF");
+        Codfx.load(con);
+        
+        Codfx.saveToBean(this);
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        // Next Prev Mavigation - loadBeanNav  - loads message after next record
+        if ( xmesg_rc == 0 && idx.length() == 0) {
+        	   list_itrx.previous();
+        }
+        mesg_var = ""; xmesg_rc = 0;
+        ttt = list_itrx.hasPrevious();
+        if (!ttt) {
+            mesg_var = getMessageByKey("firstRecord");
+            xmesg_rc = 1;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+    }
+    
+    public void loadFieldBean() {
+        codf_id_vc = valCodf_id(codf_id); 
+        codf_lg_vc = valCodf_lg(codf_lg); 
+        codf_ds_vc = valCodf_ds(codf_ds); 
+        codf_supid_vc = valCodf_supid(codf_supid); 
+    } // end of loadFieldBean
+     
+    public String selMaxVc(String divn) {
+        String vc = "0"; String vc5 = "0"; 
+        Integer divni = Integer.parseInt(divn);
+            vc = codf_id_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = codf_lg_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = codf_ds_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = codf_supid_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        if (vc5.equals("5")) {vc = "5";}
+        return vc;
+    } 
+    
+    protected void mountFilter() {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (fil_codf_tp == null) { fil_codf_tp = "";}
+        if (fil_codf_id == null) { fil_codf_id = "";}
+        if (fil_codf_lg == null) { fil_codf_lg = "";}
+        if (fil_codf_ds == null) { fil_codf_ds = "";}
+            String campo1 = null;
+            if ((Boolean) getSession().getAttribute("cmpSession") != null) {
+                if (getSession().getAttribute("cmpSession").equals(true)) {
+                    campo1 = (String) getSession().getAttribute("campo1");
+                }
+            } else {
+                campo1 = getParameter("campo1");
+            }
+            if (campo1 != null) {
+               if (!campo1.equals("")) {
+                  fil_codf_tp = campo1;
+                  codf_tp = campo1;
+               }
+            }
+    // if (ii.prop_fttype[kk].indexOf('subType') >= 0 && ii.proc.length() == 0
+        String campo2 = null;
+        campo2 = getParameter("campo2");
+    // if (ii.prop_fttype[kk].indexOf('subTypeTable') >= 0 && ii.proc.length() == 0
+        if (campo2 != null) {
+           if (!campo2.equals("")) {
+              fil_codf_lg = campo2;
+           }
+        }
+        //if (super.tipo.indexOf("codfmnt") >= 0) {
+            fil_codf_lg = "pt_BR";
+        //}
+        addFieldToFilterPk(Codf.CODF_TP, fil_codf_tp);
+        addFieldToFilterPk(Codf.CODF_ID, fil_codf_id);
+        addFieldToFilter(Codf.CODF_LG, fil_codf_lg);
+        addFieldToFilter(Codf.CODF_DS, fil_codf_ds);
+    } // end of mountFilter
+    
+    // doOrd_codf_lg--------------------------------------------------------
+    public String doOrd_codf_lg() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + Codf.CODF_LG + ")", !ord_codf_lg);
+        ord_codf_lg = !ord_codf_lg;
+        return super.doSelecionar();
+    }
+    
+    public String doRetornaPesquisa() {
+        getSession().setAttribute("novainclusao", false);
+        return super.tipo;
+    }
+    public boolean isCanMenu() throws SQLException, LoginException {
+        tipo1 = "*codfmnt";
+        return super.isCanPesquisar();
+    }
+    public boolean isCanInserir() throws SQLException, LoginException {
+        if (!canInstDone) {
+            canInst = getLoginInfo().canDoAction(fil_codf_tp+".INST",getLoginInfo().getUserx_id_role() );
+            canInstDone = true;
+        }
+        return canInst;
+    }
+    public boolean isCanUpdate() throws SQLException, LoginException {
+        if (!canUpdtDone) {
+            String codf = codf_tp;
+            if (codf == null ) {codf = fil_codf_tp; codf_tp = fil_codf_tp;}
+            if (codf != null && codf.length() == 0 ) {codf = fil_codf_tp; codf_tp = fil_codf_tp; }
+            canUpdt = getLoginInfo().canDoAction(codf_tp+".UPDT",getLoginInfo().getUserx_id_role() );
+            canUpdtDone = true;
+        }
+        return canUpdt;
+    }
+    public boolean isCanExcluir() throws SQLException, LoginException {
+        if (!canDeltDone) {
+            canDelt = getLoginInfo().canDoAction(codf_tp+".DELT",getLoginInfo().getUserx_id_role() );
+            canDeltDone = true;
+        }
+        return canDelt;
+    }
+    
+    // getAssistnovo------------------------------------------------
+    // Verifies whether record selection button is to be rendered right after record insertion
+    public Boolean getAssistnovo() {
+        assistnovo = false;
+        Boolean bb = (Boolean) (getSession().getAttribute(super.tipo));
+        Boolean an = (Boolean) (getSession().getAttribute("novainclusao"));
+        if (bb == null) {bb = false;}
+        if (an == null) {an = false;}
+        if (bb == true && an == true) {assistnovo = true;}
+        return assistnovo;
+    }
+    
+    public String doReturn() throws SQLException, LoginException {
+            tbakcad = tbakloc;
+            return super.doReturn();
+    }
+     
+    public String doSelecionar() throws LoginException, SQLException { // @search
+        setOrder("");
+        getSession().setAttribute("tipo", "codfmntpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        addFieldToOrder("(" + Codf.CODF_SUPID + ")", true);
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "codfmntpsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarOnly() throws LoginException, SQLException { // @search
+        setOrder("");
+        getSession().setAttribute("tipo", "codfmntpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        addFieldToOrder("(" + Codf.CODF_SUPID + ")", true);
+        String ret = "";
+        int filterx = 0;
+        if (fil_codf_tp != null && fil_codf_tp.length()> 0) {filterx = 1;}
+        if (fil_codf_id != null && fil_codf_id.length()> 0) {filterx = 1;}
+        if (fil_codf_lg != null && fil_codf_lg.length()> 0) {filterx = 1;}
+        if (fil_codf_ds != null && fil_codf_ds.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarOnly();
+        }
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "codfmntpsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarBackx() throws LoginException, SQLException { // @search
+        setOrder("");
+        getSession().setAttribute("tipo", "codfmntpsq");
+        pageLength = 999;
+        addFieldToOrder("(" + Codf.CODF_SUPID + ")", true);
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "codfmntpsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarNull() throws LoginException, SQLException { // @search
+        setOrder("");
+        getSession().setAttribute("tipo", "codfmntpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        addFieldToOrder("(" + Codf.CODF_SUPID + ")", true);
+        tipo = "codfmntpsqxxx";
+        String ret = "";
+        int filterx = 0;
+        if (fil_codf_tp != null && fil_codf_tp.length()> 0) {filterx = 1;}
+        if (fil_codf_id != null && fil_codf_id.length()> 0) {filterx = 1;}
+        if (fil_codf_lg != null && fil_codf_lg.length()> 0) {filterx = 1;}
+        if (fil_codf_ds != null && fil_codf_ds.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNull();
+        }
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            mesg_var = getMessageByKey("msg_noRecordsFound");
+        }
+        return "codfmntpsq"; // updbutton != 1 - end
+    }
+    
+    protected void reloadPesqData(Connection con) throws SQLException, LoginException {
+        loadDesc(); boolean res = true;
+        String valor = (String) getSession().getAttribute(tipo+"valor");
+        if (valor == null ) {
+            res = validateParms();
+        }
+        if (res) {
+            super.reloadPesqData(con);
+        // next / prev navigation
+        list_itrx = pesqData.listIterator();
+            if (pesqData.size() == maxResults) {
+                mesg_var = getMessageByKey("maxResultsExceeded");
+            }
+        } else {
+            pesqData = null;
+        }
+    } // tttt
+
+} // End of Code

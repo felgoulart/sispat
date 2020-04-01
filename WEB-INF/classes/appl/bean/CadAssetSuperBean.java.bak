@@ -1,0 +1,2644 @@
+package appl.bean;
+    
+// Libraries 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import wins.report.jasperRunner;
+import java.util.List;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.fileupload.FileItem;
+import appl.data.Asset;
+// ---------------------------------------
+import wins.libs.DatabaseUtils;
+import wins.libs.data.DataObject;
+import wins.libs.utils.HttpHelpers;
+import wins.libs.utils.TipoDeArquivo;
+import wins.libs.LoginException;
+import appl.libs.IIBeanUtils;
+public class CadAssetSuperBean extends CadastroBean {
+        protected static Log log = LogFactory.getLog(CadAssetSuperBean.class);
+    public int xtab = 0;
+    // Tabs Validation Status
+    private String tbakloc;
+    private String alterando;
+    private Boolean assistnovo;
+    private String filter;
+    private String vc;
+    public String role = "";
+    public int imgskk = 0;
+    public int fileskk = 0;
+    public String fileUploaded= "";
+    
+    // Building Fields Validation Map ---------------
+    private static Map<String, Integer> i_fields = new HashMap<String, Integer>(); static {
+        i_fields.put("p_date_start", 1);
+        i_fields.put("p_date_end", 2);
+        i_fields.put("asset_km_range_sqlparm", 3);
+        i_fields.put("asset_km_range_sqlparmx", 4);
+        // Divn - 000 D00_REGISTER_UV
+        i_fields.put("asset_id", 5);
+        i_fields.put("asset_tp_cfasttp", 6);
+        i_fields.put("asset_cd_geourl", 7);
+        i_fields.put("asset_cd_geourl_exp", 8);
+        i_fields.put("asset_nu", 9);
+        i_fields.put("asset_cd_hierarquico", 10);
+        i_fields.put("asset_cd_cfinvty", 11);
+        i_fields.put("asset_st_operacional_cfoperc", 12);
+        i_fields.put("asset_st_operacional_cfoperc_dscl", 13);
+        i_fields.put("asset_st_operacional_veic", 14);
+        i_fields.put("asset_st_operacional_veic_dscl", 15);
+        i_fields.put("asset_st_cfsitbm", 16);
+        i_fields.put("asset_st_cfsitbm_dscl", 17);
+        i_fields.put("asset_tp_vagao_cfwagtp", 18);
+        i_fields.put("asset_tp_vagao_cfwagtp_dscl", 19);
+        i_fields.put("asset_cd_vagao_serie_cfwagse", 20);
+        i_fields.put("asset_cd_vagao_serie_cfwagse_dscl", 21);
+        i_fields.put("asset_nu_vagao", 22);
+        i_fields.put("asset_nu_vagao_placa", 23);
+        i_fields.put("asset_cd_vagao_fabr_cfwagmf", 24);
+        i_fields.put("asset_cd_vagao_fabr_cfwagmf_dscl", 25);
+        i_fields.put("asset_tp_locom_cfengtp", 26);
+        i_fields.put("asset_tp_locom_cfengtp_dscl", 27);
+        i_fields.put("asset_cd_locom_model_cfengmd", 28);
+        i_fields.put("asset_cd_locom_model_cfengmd_dscl", 29);
+        i_fields.put("asset_nu_locomotiva", 30);
+        // Divn - 000 D00_LOCATION_UV
+        i_fields.put("asset_cd_trecho", 31);
+        i_fields.put("asset_cd_trecho_dscl", 32);
+        i_fields.put("asset_cd_subtrecho", 33);
+        i_fields.put("asset_cd_subtrecho_dscl", 34);
+        i_fields.put("asset_cd_cfreslc", 35);
+        i_fields.put("asset_cd_cfreslc_dscl", 36);
+        i_fields.put("asset_km_ini", 37);
+        i_fields.put("asset_km_fim", 38);
+        i_fields.put("asset_cd_cfreslc_prx", 39);
+        i_fields.put("asset_cd_cfreslc_prx_dscl", 40);
+        // Divn - 000 D00_ATTRIBUTES_UV
+        i_fields.put("asset_tp_tipologia", 41);
+        i_fields.put("asset_tp_tipologia_dscl", 42);
+        i_fields.put("asset_tp_utilizacao", 43);
+        i_fields.put("asset_tp_utilizacao_dscl", 44);
+        i_fields.put("asset_st_geral", 45);
+        i_fields.put("asset_st_geral_dscl", 46);
+        // Divn - 000 D00_EVALUATION_UV
+        i_fields.put("asset_ds_laudo_avaliacao", 47);
+        i_fields.put("asset_ds_finalidade_laudo", 48);
+        // Divn - 000 D00_EXPERTS_UV
+        i_fields.put("asset_cd_perito", 49);
+        i_fields.put("asset_cd_auxiliar", 50);
+        i_fields.put("asset_dt_vistoria", 51);
+        i_fields.put("asset_nu_doc_inspecao", 52);
+    } // 222
+    
+    // Declaring Validation Map -------------------
+    private HashMap<String, StringBuffer> i_divns = new HashMap<String, StringBuffer>();
+    // ii.properties---------------------------------------
+    private String xbutn_id;
+    private String xuserx_id_login;
+    
+    // Divn - 111 
+    private String tabs_vc;
+    private String tabs_vf;
+    private String tabs_vf_old;
+    private String flds_vf;
+    private String user_cd;
+    private Date recd_ts;
+    private String p_date_start;
+    private String p_date_start_desc;
+    private String p_date_start_vc;
+    private String p_date_end;
+    private String p_date_end_desc;
+    private String p_date_end_vc;
+    private BigDecimal asset_km_range_sqlparm;
+    private String asset_km_range_sqlparm_str;
+    private String asset_km_range_sqlparm_vc;
+    private BigDecimal asset_km_range_sqlparmx;
+    private String asset_km_range_sqlparmx_str;
+    private String asset_km_range_sqlparmx_vc;
+    private String imag_vx;
+    private String file_vx;
+    private String geo_vx;
+    
+    // Divn - 111 D00_REGISTER_UV
+    private String asset_id;
+    private String asset_id_desc;
+    private String asset_id_vc;
+    private String asset_tp_cfasttp;
+    private String asset_tp_cfasttp_desc;
+    private String asset_tp_cfasttp_vc;
+    private String asset_cd_geourl;
+    private String asset_cd_geourl_vc;
+    private String asset_cd_geourl_exp;
+    private String asset_cd_geourl_exp_vc;
+    private String asset_nu;
+    private String asset_nu_vc;
+    private String asset_cd_hierarquico;
+    private String asset_cd_hierarquico_vc;
+    private String asset_cd_cfinvty;
+    private String asset_cd_cfinvty_sav;
+    private String p_date_end_sav;
+    private String asset_cd_cfinvty_desc;
+    private String asset_cd_cfinvty_vc;
+    private String asset_st_operacional_cfoperc;
+    private String asset_st_operacional_cfoperc_desc;
+    private String asset_st_operacional_cfoperc_vc;
+    private String asset_st_operacional_cfoperc_dscl;
+    private String asset_st_operacional_cfoperc_dscl_vc;
+    private String asset_st_operacional_veic;
+    private String asset_st_operacional_veic_desc;
+    private String asset_st_operacional_veic_vc;
+    private String asset_st_operacional_veic_dscl;
+    private String asset_st_operacional_veic_dscl_vc;
+    private String asset_st_cfsitbm;
+    private String asset_st_cfsitbm_desc;
+    private String asset_st_cfsitbm_vc;
+    private String asset_st_cfsitbm_dscl;
+    private String asset_st_cfsitbm_dscl_vc;
+    private String asset_tp_vagao_cfwagtp;
+    private String asset_tp_vagao_cfwagtp_desc;
+    private String asset_tp_vagao_cfwagtp_vc;
+    private String asset_tp_vagao_cfwagtp_dscl;
+    private String asset_tp_vagao_cfwagtp_dscl_vc;
+    private String asset_cd_vagao_serie_cfwagse;
+    private String asset_cd_vagao_serie_cfwagse_desc;
+    private String asset_cd_vagao_serie_cfwagse_vc;
+    private String asset_cd_vagao_serie_cfwagse_dscl;
+    private String asset_cd_vagao_serie_cfwagse_dscl_vc;
+    private Integer asset_nu_vagao;
+    private String asset_nu_vagao_vc;
+    private String asset_nu_vagao_placa;
+    private String asset_nu_vagao_placa_vc;
+    private String asset_cd_vagao_fabr_cfwagmf;
+    private String asset_cd_vagao_fabr_cfwagmf_desc;
+    private String asset_cd_vagao_fabr_cfwagmf_vc;
+    private String asset_cd_vagao_fabr_cfwagmf_dscl;
+    private String asset_cd_vagao_fabr_cfwagmf_dscl_vc;
+    private String asset_tp_locom_cfengtp;
+    private String asset_tp_locom_cfengtp_desc;
+    private String asset_tp_locom_cfengtp_vc;
+    private String asset_tp_locom_cfengtp_dscl;
+    private String asset_tp_locom_cfengtp_dscl_vc;
+    private String asset_cd_locom_model_cfengmd;
+    private String asset_cd_locom_model_cfengmd_desc;
+    private String asset_cd_locom_model_cfengmd_vc;
+    private String asset_cd_locom_model_cfengmd_dscl;
+    private String asset_cd_locom_model_cfengmd_dscl_vc;
+    private String asset_nu_locomotiva;
+    private String asset_nu_locomotiva_vc;
+    
+    // Divn - 111 D00_LOCATION_UV
+    private String asset_cd_trecho;
+    private String asset_cd_trecho_desc;
+    private String asset_cd_trecho_vc;
+    private String asset_cd_trecho_dscl;
+    private String asset_cd_trecho_dscl_vc;
+    private String asset_cd_subtrecho;
+    private String asset_cd_subtrecho_desc;
+    private String asset_cd_subtrecho_vc;
+    private String asset_cd_subtrecho_dscl;
+    private String asset_cd_subtrecho_dscl_vc;
+    private String asset_cd_cfreslc;
+    private String asset_cd_cfreslc_desc;
+    private String asset_cd_cfreslc_vc;
+    private String asset_cd_cfreslc_dscl;
+    private String asset_cd_cfreslc_dscl_vc;
+    private BigDecimal asset_km_ini;
+    private String asset_km_ini_str;
+    private String asset_km_ini_vc;
+    private BigDecimal asset_km_fim;
+    private String asset_km_fim_str;
+    private String asset_km_fim_vc;
+    private String asset_cd_cfreslc_prx;
+    private String asset_cd_cfreslc_prx_desc;
+    private String asset_cd_cfreslc_prx_vc;
+    private String asset_cd_cfreslc_prx_dscl;
+    private String asset_cd_cfreslc_prx_dscl_vc;
+    
+    // Divn - 111 D00_ATTRIBUTES_UV
+    private String asset_tp_tipologia;
+    private String asset_tp_tipologia_desc;
+    private String asset_tp_tipologia_vc;
+    private String asset_tp_tipologia_dscl;
+    private String asset_tp_tipologia_dscl_vc;
+    private String asset_tp_utilizacao;
+    private String asset_tp_utilizacao_desc;
+    private String asset_tp_utilizacao_vc;
+    private String asset_tp_utilizacao_dscl;
+    private String asset_tp_utilizacao_dscl_vc;
+    private String asset_st_geral;
+    private String asset_st_geral_desc;
+    private String asset_st_geral_vc;
+    private String asset_st_geral_dscl;
+    private String asset_st_geral_dscl_vc;
+    
+    // Divn - 111 D00_SERVICES_UV
+    
+    // Divn - 111 D00_OCCUPDOC_UV
+    
+    // Divn - 111 D00_EVALUATION_UV
+    private String asset_ds_laudo_avaliacao;
+    private String asset_ds_laudo_avaliacao_vc;
+    private String asset_ds_finalidade_laudo;
+    private String asset_ds_finalidade_laudo_vc;
+    
+    // Divn - 111 D00_SURVEY_UV
+    
+    // Divn - 111 D00_EXPERTS_UV
+    private String asset_cd_perito;
+    private String asset_cd_perito_vc;
+    private String asset_cd_auxiliar;
+    private String asset_cd_auxiliar_vc;
+    private Date asset_dt_vistoria;
+    private String asset_dt_vistoria_dt;
+    private String asset_dt_vistoria_vc;
+    private String asset_nu_doc_inspecao;
+    private String asset_nu_doc_inspecao_vc;
+    private String flds_vf_ref;
+    // Filters------------------------------------------
+    private String fil_tabs_vc;
+    private String fil_asset_id;
+    private String fil_asset_tp_cfasttp;
+    private String fil_asset_cd_cfinvty;
+    private String fil_asset_st_operacional_cfoperc;
+    private String fil_asset_st_operacional_veic;
+    private String fil_asset_st_cfsitbm;
+    private String fil_asset_tp_vagao_cfwagtp;
+    private String fil_asset_cd_vagao_serie_cfwagse;
+    private String fil_asset_nu_vagao_placa;
+    private String fil_asset_tp_locom_cfengtp;
+    private String fil_asset_cd_locom_model_cfengmd;
+    private String fil_asset_nu_locomotiva;
+    private String fil_asset_cd_cfreslc;
+    private String fil_asset_km_ini;
+    private String fil_asset_tp_tipologia;
+    private String fil_asset_tp_utilizacao;
+    // Orders------------------------------------
+    private Boolean ord_asset_tp_cfasttp;
+    // Constructor--------------------------------------
+    public CadAssetSuperBean() { 
+    } // 333
+    
+    // Returns a Reference to the Associared DataObject-
+    protected Class getDataClass() { return Asset.class;}
+    // Working Variables Methods-------------------------
+    public void setAlterando(String alterando) { this.alterando = alterando; }
+    public String getAlterando() { return alterando;} 
+    
+    // Setters -----------------------------------------
+    public void setXbutn_id (String xbutn_id) {
+        this.xbutn_id = xbutn_id;
+    }
+    public void setXuserx_id_login (String xuserx_id_login) {
+        this.xuserx_id_login = xuserx_id_login;
+    }
+    public void setTabs_vc (String tabs_vc) {this.tabs_vc = tabs_vc;}
+    public void setTabs_vf (String tabs_vf) {this.tabs_vf = tabs_vf;}
+    public void setFlds_vf (String flds_vf) {this.flds_vf = flds_vf;}
+    
+    public void setFlds_vfsb (StringBuffer flds_vfsb) {this.flds_vfsb = flds_vfsb;}
+    
+    public void setUser_cd (String user_cd) {this.user_cd = user_cd;}
+    
+    public void setRecd_ts (Date recd_ts) {this.recd_ts = recd_ts;}
+    
+    // Divn - hhh  - Field Setters
+    public void setP_date_start (String p_date_start) {this.p_date_start = p_date_start;}
+    public void setP_date_start_desc (String p_date_start_desc) {this.p_date_start_desc = p_date_start_desc;}
+    public void setP_date_start_vc (String p_date_start_vc) {this.p_date_start_vc = p_date_start_vc;}
+    public void setP_date_end (String p_date_end) {this.p_date_end = p_date_end;}
+    public void setP_date_end_desc (String p_date_end_desc) {this.p_date_end_desc = p_date_end_desc;}
+    public void setP_date_end_vc (String p_date_end_vc) {this.p_date_end_vc = p_date_end_vc;}
+    
+    public void setAsset_km_range_sqlparm (BigDecimal asset_km_range_sqlparm) {this.asset_km_range_sqlparm = asset_km_range_sqlparm;}
+    public void setAsset_km_range_sqlparm_str (String asset_km_range_sqlparm_str) {
+        this.asset_km_range_sqlparm = convertDecimal(asset_km_range_sqlparm_str); }
+    public void setAsset_km_range_sqlparm_vc (String asset_km_range_sqlparm_vc) {this.asset_km_range_sqlparm_vc = asset_km_range_sqlparm_vc;}
+    public void setAsset_km_range_sqlparmx (BigDecimal asset_km_range_sqlparmx) {this.asset_km_range_sqlparmx = asset_km_range_sqlparmx;}
+    public void setAsset_km_range_sqlparmx_str (String asset_km_range_sqlparmx_str) {
+        this.asset_km_range_sqlparmx = convertDecimal(asset_km_range_sqlparmx_str); }
+    public void setAsset_km_range_sqlparmx_vc (String asset_km_range_sqlparmx_vc) {this.asset_km_range_sqlparmx_vc = asset_km_range_sqlparmx_vc;}
+    public void setImag_vx (String imag_vx) {this.imag_vx = imag_vx;}
+    public void setFile_vx (String file_vx) {this.file_vx = file_vx;}
+    public void setGeo_vx (String geo_vx) {this.geo_vx = geo_vx;}
+    
+    // Divn - hhh D00_REGISTER_UV - Field Setters
+    public void setAsset_id (String asset_id) {this.asset_id = asset_id;}
+    public void setAsset_id_desc (String asset_id_desc) {this.asset_id_desc = asset_id_desc;}
+    public void setAsset_id_vc (String asset_id_vc) {this.asset_id_vc = asset_id_vc;}
+    public void setAsset_tp_cfasttp (String asset_tp_cfasttp) {this.asset_tp_cfasttp = asset_tp_cfasttp;}
+    public void setAsset_tp_cfasttp_desc (String asset_tp_cfasttp_desc) {this.asset_tp_cfasttp_desc = asset_tp_cfasttp_desc;}
+    public void setAsset_tp_cfasttp_vc (String asset_tp_cfasttp_vc) {this.asset_tp_cfasttp_vc = asset_tp_cfasttp_vc;}
+    public void setAsset_cd_geourl (String asset_cd_geourl) {this.asset_cd_geourl = asset_cd_geourl;}
+    public void setAsset_cd_geourl_vc (String asset_cd_geourl_vc) {this.asset_cd_geourl_vc = asset_cd_geourl_vc;}
+    public void setAsset_cd_geourl_exp (String asset_cd_geourl_exp) {this.asset_cd_geourl_exp = asset_cd_geourl_exp;}
+    public void setAsset_cd_geourl_exp_vc (String asset_cd_geourl_exp_vc) {this.asset_cd_geourl_exp_vc = asset_cd_geourl_exp_vc;}
+    public void setAsset_nu (String asset_nu) {this.asset_nu = asset_nu;}
+    public void setAsset_nu_vc (String asset_nu_vc) {this.asset_nu_vc = asset_nu_vc;}
+    public void setAsset_cd_hierarquico (String asset_cd_hierarquico) {this.asset_cd_hierarquico = asset_cd_hierarquico;}
+    public void setAsset_cd_hierarquico_vc (String asset_cd_hierarquico_vc) {this.asset_cd_hierarquico_vc = asset_cd_hierarquico_vc;}
+    public void setAsset_cd_cfinvty (String asset_cd_cfinvty) {this.asset_cd_cfinvty = asset_cd_cfinvty;}
+    public void setAsset_cd_cfinvty_desc (String asset_cd_cfinvty_desc) {this.asset_cd_cfinvty_desc = asset_cd_cfinvty_desc;}
+    public void setAsset_cd_cfinvty_vc (String asset_cd_cfinvty_vc) {this.asset_cd_cfinvty_vc = asset_cd_cfinvty_vc;}
+    public void setAsset_st_operacional_cfoperc (String asset_st_operacional_cfoperc) {this.asset_st_operacional_cfoperc = asset_st_operacional_cfoperc;}
+    public void setAsset_st_operacional_cfoperc_desc (String asset_st_operacional_cfoperc_desc) {this.asset_st_operacional_cfoperc_desc = asset_st_operacional_cfoperc_desc;}
+    public void setAsset_st_operacional_cfoperc_vc (String asset_st_operacional_cfoperc_vc) {this.asset_st_operacional_cfoperc_vc = asset_st_operacional_cfoperc_vc;}
+    public void setAsset_st_operacional_cfoperc_dscl (String asset_st_operacional_cfoperc_dscl) {this.asset_st_operacional_cfoperc_dscl = asset_st_operacional_cfoperc_dscl;}
+    public void setAsset_st_operacional_cfoperc_dscl_vc (String asset_st_operacional_cfoperc_dscl_vc) {this.asset_st_operacional_cfoperc_dscl_vc = asset_st_operacional_cfoperc_dscl_vc;}
+    public void setAsset_st_operacional_veic (String asset_st_operacional_veic) {this.asset_st_operacional_veic = asset_st_operacional_veic;}
+    public void setAsset_st_operacional_veic_desc (String asset_st_operacional_veic_desc) {this.asset_st_operacional_veic_desc = asset_st_operacional_veic_desc;}
+    public void setAsset_st_operacional_veic_vc (String asset_st_operacional_veic_vc) {this.asset_st_operacional_veic_vc = asset_st_operacional_veic_vc;}
+    public void setAsset_st_operacional_veic_dscl (String asset_st_operacional_veic_dscl) {this.asset_st_operacional_veic_dscl = asset_st_operacional_veic_dscl;}
+    public void setAsset_st_operacional_veic_dscl_vc (String asset_st_operacional_veic_dscl_vc) {this.asset_st_operacional_veic_dscl_vc = asset_st_operacional_veic_dscl_vc;}
+    public void setAsset_st_cfsitbm (String asset_st_cfsitbm) {this.asset_st_cfsitbm = asset_st_cfsitbm;}
+    public void setAsset_st_cfsitbm_desc (String asset_st_cfsitbm_desc) {this.asset_st_cfsitbm_desc = asset_st_cfsitbm_desc;}
+    public void setAsset_st_cfsitbm_vc (String asset_st_cfsitbm_vc) {this.asset_st_cfsitbm_vc = asset_st_cfsitbm_vc;}
+    public void setAsset_st_cfsitbm_dscl (String asset_st_cfsitbm_dscl) {this.asset_st_cfsitbm_dscl = asset_st_cfsitbm_dscl;}
+    public void setAsset_st_cfsitbm_dscl_vc (String asset_st_cfsitbm_dscl_vc) {this.asset_st_cfsitbm_dscl_vc = asset_st_cfsitbm_dscl_vc;}
+    public void setAsset_tp_vagao_cfwagtp (String asset_tp_vagao_cfwagtp) {this.asset_tp_vagao_cfwagtp = asset_tp_vagao_cfwagtp;}
+    public void setAsset_tp_vagao_cfwagtp_desc (String asset_tp_vagao_cfwagtp_desc) {this.asset_tp_vagao_cfwagtp_desc = asset_tp_vagao_cfwagtp_desc;}
+    public void setAsset_tp_vagao_cfwagtp_vc (String asset_tp_vagao_cfwagtp_vc) {this.asset_tp_vagao_cfwagtp_vc = asset_tp_vagao_cfwagtp_vc;}
+    public void setAsset_tp_vagao_cfwagtp_dscl (String asset_tp_vagao_cfwagtp_dscl) {this.asset_tp_vagao_cfwagtp_dscl = asset_tp_vagao_cfwagtp_dscl;}
+    public void setAsset_tp_vagao_cfwagtp_dscl_vc (String asset_tp_vagao_cfwagtp_dscl_vc) {this.asset_tp_vagao_cfwagtp_dscl_vc = asset_tp_vagao_cfwagtp_dscl_vc;}
+    public void setAsset_cd_vagao_serie_cfwagse (String asset_cd_vagao_serie_cfwagse) {this.asset_cd_vagao_serie_cfwagse = asset_cd_vagao_serie_cfwagse;}
+    public void setAsset_cd_vagao_serie_cfwagse_desc (String asset_cd_vagao_serie_cfwagse_desc) {this.asset_cd_vagao_serie_cfwagse_desc = asset_cd_vagao_serie_cfwagse_desc;}
+    public void setAsset_cd_vagao_serie_cfwagse_vc (String asset_cd_vagao_serie_cfwagse_vc) {this.asset_cd_vagao_serie_cfwagse_vc = asset_cd_vagao_serie_cfwagse_vc;}
+    public void setAsset_cd_vagao_serie_cfwagse_dscl (String asset_cd_vagao_serie_cfwagse_dscl) {this.asset_cd_vagao_serie_cfwagse_dscl = asset_cd_vagao_serie_cfwagse_dscl;}
+    public void setAsset_cd_vagao_serie_cfwagse_dscl_vc (String asset_cd_vagao_serie_cfwagse_dscl_vc) {this.asset_cd_vagao_serie_cfwagse_dscl_vc = asset_cd_vagao_serie_cfwagse_dscl_vc;}
+    
+    public void setAsset_nu_vagao (Integer asset_nu_vagao) {this.asset_nu_vagao = asset_nu_vagao;}
+    public void setAsset_nu_vagao_vc (String asset_nu_vagao_vc) {this.asset_nu_vagao_vc = asset_nu_vagao_vc;}
+    
+    public void setAsset_nu_vagao_placa (String asset_nu_vagao_placa) {this.asset_nu_vagao_placa = asset_nu_vagao_placa;}
+    public void setAsset_nu_vagao_placa_vc (String asset_nu_vagao_placa_vc) {this.asset_nu_vagao_placa_vc = asset_nu_vagao_placa_vc;}
+    public void setAsset_cd_vagao_fabr_cfwagmf (String asset_cd_vagao_fabr_cfwagmf) {this.asset_cd_vagao_fabr_cfwagmf = asset_cd_vagao_fabr_cfwagmf;}
+    public void setAsset_cd_vagao_fabr_cfwagmf_desc (String asset_cd_vagao_fabr_cfwagmf_desc) {this.asset_cd_vagao_fabr_cfwagmf_desc = asset_cd_vagao_fabr_cfwagmf_desc;}
+    public void setAsset_cd_vagao_fabr_cfwagmf_vc (String asset_cd_vagao_fabr_cfwagmf_vc) {this.asset_cd_vagao_fabr_cfwagmf_vc = asset_cd_vagao_fabr_cfwagmf_vc;}
+    public void setAsset_cd_vagao_fabr_cfwagmf_dscl (String asset_cd_vagao_fabr_cfwagmf_dscl) {this.asset_cd_vagao_fabr_cfwagmf_dscl = asset_cd_vagao_fabr_cfwagmf_dscl;}
+    public void setAsset_cd_vagao_fabr_cfwagmf_dscl_vc (String asset_cd_vagao_fabr_cfwagmf_dscl_vc) {this.asset_cd_vagao_fabr_cfwagmf_dscl_vc = asset_cd_vagao_fabr_cfwagmf_dscl_vc;}
+    public void setAsset_tp_locom_cfengtp (String asset_tp_locom_cfengtp) {this.asset_tp_locom_cfengtp = asset_tp_locom_cfengtp;}
+    public void setAsset_tp_locom_cfengtp_desc (String asset_tp_locom_cfengtp_desc) {this.asset_tp_locom_cfengtp_desc = asset_tp_locom_cfengtp_desc;}
+    public void setAsset_tp_locom_cfengtp_vc (String asset_tp_locom_cfengtp_vc) {this.asset_tp_locom_cfengtp_vc = asset_tp_locom_cfengtp_vc;}
+    public void setAsset_tp_locom_cfengtp_dscl (String asset_tp_locom_cfengtp_dscl) {this.asset_tp_locom_cfengtp_dscl = asset_tp_locom_cfengtp_dscl;}
+    public void setAsset_tp_locom_cfengtp_dscl_vc (String asset_tp_locom_cfengtp_dscl_vc) {this.asset_tp_locom_cfengtp_dscl_vc = asset_tp_locom_cfengtp_dscl_vc;}
+    public void setAsset_cd_locom_model_cfengmd (String asset_cd_locom_model_cfengmd) {this.asset_cd_locom_model_cfengmd = asset_cd_locom_model_cfengmd;}
+    public void setAsset_cd_locom_model_cfengmd_desc (String asset_cd_locom_model_cfengmd_desc) {this.asset_cd_locom_model_cfengmd_desc = asset_cd_locom_model_cfengmd_desc;}
+    public void setAsset_cd_locom_model_cfengmd_vc (String asset_cd_locom_model_cfengmd_vc) {this.asset_cd_locom_model_cfengmd_vc = asset_cd_locom_model_cfengmd_vc;}
+    public void setAsset_cd_locom_model_cfengmd_dscl (String asset_cd_locom_model_cfengmd_dscl) {this.asset_cd_locom_model_cfengmd_dscl = asset_cd_locom_model_cfengmd_dscl;}
+    public void setAsset_cd_locom_model_cfengmd_dscl_vc (String asset_cd_locom_model_cfengmd_dscl_vc) {this.asset_cd_locom_model_cfengmd_dscl_vc = asset_cd_locom_model_cfengmd_dscl_vc;}
+    public void setAsset_nu_locomotiva (String asset_nu_locomotiva) {this.asset_nu_locomotiva = asset_nu_locomotiva;}
+    public void setAsset_nu_locomotiva_vc (String asset_nu_locomotiva_vc) {this.asset_nu_locomotiva_vc = asset_nu_locomotiva_vc;}
+    
+    // Divn - hhh D00_LOCATION_UV - Field Setters
+    public void setAsset_cd_trecho (String asset_cd_trecho) {this.asset_cd_trecho = asset_cd_trecho;}
+    public void setAsset_cd_trecho_desc (String asset_cd_trecho_desc) {this.asset_cd_trecho_desc = asset_cd_trecho_desc;}
+    public void setAsset_cd_trecho_vc (String asset_cd_trecho_vc) {this.asset_cd_trecho_vc = asset_cd_trecho_vc;}
+    public void setAsset_cd_trecho_dscl (String asset_cd_trecho_dscl) {this.asset_cd_trecho_dscl = asset_cd_trecho_dscl;}
+    public void setAsset_cd_trecho_dscl_vc (String asset_cd_trecho_dscl_vc) {this.asset_cd_trecho_dscl_vc = asset_cd_trecho_dscl_vc;}
+    public void setAsset_cd_subtrecho (String asset_cd_subtrecho) {this.asset_cd_subtrecho = asset_cd_subtrecho;}
+    public void setAsset_cd_subtrecho_desc (String asset_cd_subtrecho_desc) {this.asset_cd_subtrecho_desc = asset_cd_subtrecho_desc;}
+    public void setAsset_cd_subtrecho_vc (String asset_cd_subtrecho_vc) {this.asset_cd_subtrecho_vc = asset_cd_subtrecho_vc;}
+    public void setAsset_cd_subtrecho_dscl (String asset_cd_subtrecho_dscl) {this.asset_cd_subtrecho_dscl = asset_cd_subtrecho_dscl;}
+    public void setAsset_cd_subtrecho_dscl_vc (String asset_cd_subtrecho_dscl_vc) {this.asset_cd_subtrecho_dscl_vc = asset_cd_subtrecho_dscl_vc;}
+    public void setAsset_cd_cfreslc (String asset_cd_cfreslc) {this.asset_cd_cfreslc = asset_cd_cfreslc;}
+    public void setAsset_cd_cfreslc_desc (String asset_cd_cfreslc_desc) {this.asset_cd_cfreslc_desc = asset_cd_cfreslc_desc;}
+    public void setAsset_cd_cfreslc_vc (String asset_cd_cfreslc_vc) {this.asset_cd_cfreslc_vc = asset_cd_cfreslc_vc;}
+    public void setAsset_cd_cfreslc_dscl (String asset_cd_cfreslc_dscl) {this.asset_cd_cfreslc_dscl = asset_cd_cfreslc_dscl;}
+    public void setAsset_cd_cfreslc_dscl_vc (String asset_cd_cfreslc_dscl_vc) {this.asset_cd_cfreslc_dscl_vc = asset_cd_cfreslc_dscl_vc;}
+    
+    public void setAsset_km_ini (BigDecimal asset_km_ini) {this.asset_km_ini = asset_km_ini;}
+    public void setAsset_km_ini_str (String asset_km_ini_str) {
+        this.asset_km_ini = convertDecimal(asset_km_ini_str); }
+    public void setAsset_km_ini_vc (String asset_km_ini_vc) {this.asset_km_ini_vc = asset_km_ini_vc;}
+    public void setAsset_km_fim (BigDecimal asset_km_fim) {this.asset_km_fim = asset_km_fim;}
+    public void setAsset_km_fim_str (String asset_km_fim_str) {
+        this.asset_km_fim = convertDecimal(asset_km_fim_str); }
+    public void setAsset_km_fim_vc (String asset_km_fim_vc) {this.asset_km_fim_vc = asset_km_fim_vc;}
+    
+    public void setAsset_cd_cfreslc_prx (String asset_cd_cfreslc_prx) {this.asset_cd_cfreslc_prx = asset_cd_cfreslc_prx;}
+    public void setAsset_cd_cfreslc_prx_desc (String asset_cd_cfreslc_prx_desc) {this.asset_cd_cfreslc_prx_desc = asset_cd_cfreslc_prx_desc;}
+    public void setAsset_cd_cfreslc_prx_vc (String asset_cd_cfreslc_prx_vc) {this.asset_cd_cfreslc_prx_vc = asset_cd_cfreslc_prx_vc;}
+    public void setAsset_cd_cfreslc_prx_dscl (String asset_cd_cfreslc_prx_dscl) {this.asset_cd_cfreslc_prx_dscl = asset_cd_cfreslc_prx_dscl;}
+    public void setAsset_cd_cfreslc_prx_dscl_vc (String asset_cd_cfreslc_prx_dscl_vc) {this.asset_cd_cfreslc_prx_dscl_vc = asset_cd_cfreslc_prx_dscl_vc;}
+    
+    // Divn - hhh D00_ATTRIBUTES_UV - Field Setters
+    public void setAsset_tp_tipologia (String asset_tp_tipologia) {this.asset_tp_tipologia = asset_tp_tipologia;}
+    public void setAsset_tp_tipologia_desc (String asset_tp_tipologia_desc) {this.asset_tp_tipologia_desc = asset_tp_tipologia_desc;}
+    public void setAsset_tp_tipologia_vc (String asset_tp_tipologia_vc) {this.asset_tp_tipologia_vc = asset_tp_tipologia_vc;}
+    public void setAsset_tp_tipologia_dscl (String asset_tp_tipologia_dscl) {this.asset_tp_tipologia_dscl = asset_tp_tipologia_dscl;}
+    public void setAsset_tp_tipologia_dscl_vc (String asset_tp_tipologia_dscl_vc) {this.asset_tp_tipologia_dscl_vc = asset_tp_tipologia_dscl_vc;}
+    public void setAsset_tp_utilizacao (String asset_tp_utilizacao) {this.asset_tp_utilizacao = asset_tp_utilizacao;}
+    public void setAsset_tp_utilizacao_desc (String asset_tp_utilizacao_desc) {this.asset_tp_utilizacao_desc = asset_tp_utilizacao_desc;}
+    public void setAsset_tp_utilizacao_vc (String asset_tp_utilizacao_vc) {this.asset_tp_utilizacao_vc = asset_tp_utilizacao_vc;}
+    public void setAsset_tp_utilizacao_dscl (String asset_tp_utilizacao_dscl) {this.asset_tp_utilizacao_dscl = asset_tp_utilizacao_dscl;}
+    public void setAsset_tp_utilizacao_dscl_vc (String asset_tp_utilizacao_dscl_vc) {this.asset_tp_utilizacao_dscl_vc = asset_tp_utilizacao_dscl_vc;}
+    public void setAsset_st_geral (String asset_st_geral) {this.asset_st_geral = asset_st_geral;}
+    public void setAsset_st_geral_desc (String asset_st_geral_desc) {this.asset_st_geral_desc = asset_st_geral_desc;}
+    public void setAsset_st_geral_vc (String asset_st_geral_vc) {this.asset_st_geral_vc = asset_st_geral_vc;}
+    public void setAsset_st_geral_dscl (String asset_st_geral_dscl) {this.asset_st_geral_dscl = asset_st_geral_dscl;}
+    public void setAsset_st_geral_dscl_vc (String asset_st_geral_dscl_vc) {this.asset_st_geral_dscl_vc = asset_st_geral_dscl_vc;}
+    
+    // Divn - hhh D00_EVALUATION_UV - Field Setters
+    public void setAsset_ds_laudo_avaliacao (String asset_ds_laudo_avaliacao) {this.asset_ds_laudo_avaliacao = asset_ds_laudo_avaliacao;}
+    public void setAsset_ds_laudo_avaliacao_vc (String asset_ds_laudo_avaliacao_vc) {this.asset_ds_laudo_avaliacao_vc = asset_ds_laudo_avaliacao_vc;}
+    public void setAsset_ds_finalidade_laudo (String asset_ds_finalidade_laudo) {this.asset_ds_finalidade_laudo = asset_ds_finalidade_laudo;}
+    public void setAsset_ds_finalidade_laudo_vc (String asset_ds_finalidade_laudo_vc) {this.asset_ds_finalidade_laudo_vc = asset_ds_finalidade_laudo_vc;}
+    
+    // Divn - hhh D00_EXPERTS_UV - Field Setters
+    public void setAsset_cd_perito (String asset_cd_perito) {this.asset_cd_perito = asset_cd_perito;}
+    public void setAsset_cd_perito_vc (String asset_cd_perito_vc) {this.asset_cd_perito_vc = asset_cd_perito_vc;}
+    public void setAsset_cd_auxiliar (String asset_cd_auxiliar) {this.asset_cd_auxiliar = asset_cd_auxiliar;}
+    public void setAsset_cd_auxiliar_vc (String asset_cd_auxiliar_vc) {this.asset_cd_auxiliar_vc = asset_cd_auxiliar_vc;}
+    
+    public void setAsset_dt_vistoria (Date asset_dt_vistoria) {this.asset_dt_vistoria = asset_dt_vistoria;}
+    public void setAsset_dt_vistoria_str (String asset_dt_vistoria_str) {
+       asset_dt_vistoria = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, asset_dt_vistoria_str) ; }
+    public void setAsset_dt_vistoria_vc (String asset_dt_vistoria_vc) {this.asset_dt_vistoria_vc = asset_dt_vistoria_vc;}
+    
+    public void setAsset_nu_doc_inspecao (String asset_nu_doc_inspecao) {this.asset_nu_doc_inspecao = asset_nu_doc_inspecao;}
+    public void setAsset_nu_doc_inspecao_vc (String asset_nu_doc_inspecao_vc) {this.asset_nu_doc_inspecao_vc = asset_nu_doc_inspecao_vc;}
+    // Filter Setters-----------------------------------
+    public void setFil_tabs_vc (String fil_tabs_vc) {this.fil_tabs_vc = fil_tabs_vc;}
+    public void setFil_asset_id (String fil_asset_id) {this.fil_asset_id = fil_asset_id;}
+    public void setFil_asset_tp_cfasttp (String fil_asset_tp_cfasttp) {this.fil_asset_tp_cfasttp = fil_asset_tp_cfasttp;}
+    public void setFil_asset_cd_cfinvty (String fil_asset_cd_cfinvty) {this.fil_asset_cd_cfinvty = fil_asset_cd_cfinvty;}
+    public void setFil_asset_st_operacional_cfoperc (String fil_asset_st_operacional_cfoperc) {this.fil_asset_st_operacional_cfoperc = fil_asset_st_operacional_cfoperc;}
+    public void setFil_asset_st_operacional_veic (String fil_asset_st_operacional_veic) {this.fil_asset_st_operacional_veic = fil_asset_st_operacional_veic;}
+    public void setFil_asset_st_cfsitbm (String fil_asset_st_cfsitbm) {this.fil_asset_st_cfsitbm = fil_asset_st_cfsitbm;}
+    public void setFil_asset_tp_vagao_cfwagtp (String fil_asset_tp_vagao_cfwagtp) {this.fil_asset_tp_vagao_cfwagtp = fil_asset_tp_vagao_cfwagtp;}
+    public void setFil_asset_cd_vagao_serie_cfwagse (String fil_asset_cd_vagao_serie_cfwagse) {this.fil_asset_cd_vagao_serie_cfwagse = fil_asset_cd_vagao_serie_cfwagse;}
+    public void setFil_asset_nu_vagao_placa (String fil_asset_nu_vagao_placa) {this.fil_asset_nu_vagao_placa = fil_asset_nu_vagao_placa;}
+    public void setFil_asset_tp_locom_cfengtp (String fil_asset_tp_locom_cfengtp) {this.fil_asset_tp_locom_cfengtp = fil_asset_tp_locom_cfengtp;}
+    public void setFil_asset_cd_locom_model_cfengmd (String fil_asset_cd_locom_model_cfengmd) {this.fil_asset_cd_locom_model_cfengmd = fil_asset_cd_locom_model_cfengmd;}
+    public void setFil_asset_nu_locomotiva (String fil_asset_nu_locomotiva) {this.fil_asset_nu_locomotiva = fil_asset_nu_locomotiva;}
+    public void setFil_asset_cd_cfreslc (String fil_asset_cd_cfreslc) {this.fil_asset_cd_cfreslc = fil_asset_cd_cfreslc;}
+    public void setFil_asset_km_ini (String fil_asset_km_ini) {this.fil_asset_km_ini = fil_asset_km_ini;}
+    public void setFil_asset_tp_tipologia (String fil_asset_tp_tipologia) {this.fil_asset_tp_tipologia = fil_asset_tp_tipologia;}
+    public void setFil_asset_tp_utilizacao (String fil_asset_tp_utilizacao) {this.fil_asset_tp_utilizacao = fil_asset_tp_utilizacao;}
+    // Order Setters---------------------------
+    public void setOrd_asset_tp_cfasttp (boolean ord_asset_tp_cfasttp) {this.ord_asset_tp_cfasttp = ord_asset_tp_cfasttp ; }
+    
+    // Getters -----------------------------------------
+    public String getXbutn_id() {
+        return xbutn_id; 
+    }
+    public String getXuserx_id_login() {
+        return xuserx_id_login; 
+    }
+    public String getTabs_vc() {return tabs_vc; }
+    public String getTabs_vf() {return tabs_vf; }
+    public String getFlds_vf() {return flds_vf; }
+    
+    public StringBuffer getFlds_vfsb() {return flds_vfsb; }
+    
+    public String getUser_cd() {return user_cd; }
+    
+    public Date getRecd_ts() {return recd_ts; }
+    
+    // Divn - ggg  - Field Getters
+    public String getP_date_start() {return p_date_start; }
+    public String getP_date_start_desc() {return p_date_start_desc; }
+    public String getP_date_start_vc() {return p_date_start_vc; }
+    public String getP_date_end() {return p_date_end; }
+    public String getP_date_end_desc() {return p_date_end_desc; }
+    public String getP_date_end_vc() {return p_date_end_vc; }
+    
+    public BigDecimal getAsset_km_range_sqlparm() {return asset_km_range_sqlparm; }
+    public String getAsset_km_range_sqlparm_str() {
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(3);
+        nf.setMinimumFractionDigits(3);
+        String xx = ""; String xxrt = "";
+        if (getAsset_km_range_sqlparm() != null) {
+            xx = nf.format(getAsset_km_range_sqlparm());
+        }
+        if (xx != null && xx.length() > 0 ) {
+            int ll = xx.length() - 3;
+            String dec = xx.substring(ll,xx.length());
+            String hol = xx.substring(0,(ll-1));
+            hol = hol.replace(",","");
+            hol = hol.replace(".","");
+            xxrt = hol+","+dec;
+        }
+        return xxrt;
+    }
+    public String getAsset_km_range_sqlparm_vc() {return asset_km_range_sqlparm_vc; }
+    public BigDecimal getAsset_km_range_sqlparmx() {return asset_km_range_sqlparmx; }
+    public String getAsset_km_range_sqlparmx_str() {
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(3);
+        nf.setMinimumFractionDigits(3);
+        String xx = ""; String xxrt = "";
+        if (getAsset_km_range_sqlparmx() != null) {
+            xx = nf.format(getAsset_km_range_sqlparmx());
+        }
+        if (xx != null && xx.length() > 0 ) {
+            int ll = xx.length() - 3;
+            String dec = xx.substring(ll,xx.length());
+            String hol = xx.substring(0,(ll-1));
+            hol = hol.replace(",","");
+            hol = hol.replace(".","");
+            xxrt = hol+","+dec;
+        }
+        return xxrt;
+    }
+    public String getAsset_km_range_sqlparmx_vc() {return asset_km_range_sqlparmx_vc; }
+    public String getImag_vx() {return imag_vx; }
+    public String getImag_im() {
+        return chldImgImage(imag_vx);
+    }
+    public String getFile_vx() {return file_vx; }
+    public String getFile_im() {
+        return chldImage(file_vx);
+    }
+    public String getGeo_vx() {return geo_vx; }
+    public String getGeo_im() {
+        return chldImage(geo_vx);
+    }
+    
+    // Divn - ggg D00_REGISTER_UV - Field Getters
+    public String getAsset_id() {return asset_id; }
+    public String getAsset_id_desc() {return asset_id_desc; }
+    public String getAsset_id_vc() {return asset_id_vc; }
+    public String getAsset_tp_cfasttp() {return asset_tp_cfasttp; }
+    public String getAsset_tp_cfasttp_desc() {return asset_tp_cfasttp_desc; }
+    public String getAsset_tp_cfasttp_vc() {return asset_tp_cfasttp_vc; }
+    public String getAsset_cd_geourl() {return asset_cd_geourl; }
+    public String getAsset_cd_geourl_vc() {return asset_cd_geourl_vc; }
+    public String getAsset_cd_geourl_exp() {return asset_cd_geourl_exp; }
+    public String getAsset_cd_geourl_exp_vc() {return asset_cd_geourl_exp_vc; }
+    public String getAsset_nu() {return asset_nu; }
+    public String getAsset_nu_vc() {return asset_nu_vc; }
+    public String getAsset_cd_hierarquico() {return asset_cd_hierarquico; }
+    public String getAsset_cd_hierarquico_vc() {return asset_cd_hierarquico_vc; }
+    public String getAsset_cd_cfinvty() {return asset_cd_cfinvty; }
+    public String getAsset_cd_cfinvty_desc() {return asset_cd_cfinvty_desc; }
+    public String getAsset_cd_cfinvty_vc() {return asset_cd_cfinvty_vc; }
+    public String getAsset_st_operacional_cfoperc() {return asset_st_operacional_cfoperc; }
+    public String getAsset_st_operacional_cfoperc_desc() {return asset_st_operacional_cfoperc_desc; }
+    public String getAsset_st_operacional_cfoperc_vc() {return asset_st_operacional_cfoperc_vc; }
+    public String getAsset_st_operacional_cfoperc_dscl() {return asset_st_operacional_cfoperc_dscl; }
+    public String getAsset_st_operacional_cfoperc_dscl_vc() {return asset_st_operacional_cfoperc_dscl_vc; }
+    public String getAsset_st_operacional_veic() {return asset_st_operacional_veic; }
+    public String getAsset_st_operacional_veic_desc() {return asset_st_operacional_veic_desc; }
+    public String getAsset_st_operacional_veic_vc() {return asset_st_operacional_veic_vc; }
+    public String getAsset_st_operacional_veic_dscl() {return asset_st_operacional_veic_dscl; }
+    public String getAsset_st_operacional_veic_dscl_vc() {return asset_st_operacional_veic_dscl_vc; }
+    public String getAsset_st_cfsitbm() {return asset_st_cfsitbm; }
+    public String getAsset_st_cfsitbm_desc() {return asset_st_cfsitbm_desc; }
+    public String getAsset_st_cfsitbm_vc() {return asset_st_cfsitbm_vc; }
+    public String getAsset_st_cfsitbm_dscl() {return asset_st_cfsitbm_dscl; }
+    public String getAsset_st_cfsitbm_dscl_vc() {return asset_st_cfsitbm_dscl_vc; }
+    public String getAsset_tp_vagao_cfwagtp() {return asset_tp_vagao_cfwagtp; }
+    public String getAsset_tp_vagao_cfwagtp_desc() {return asset_tp_vagao_cfwagtp_desc; }
+    public String getAsset_tp_vagao_cfwagtp_vc() {return asset_tp_vagao_cfwagtp_vc; }
+    public String getAsset_tp_vagao_cfwagtp_dscl() {return asset_tp_vagao_cfwagtp_dscl; }
+    public String getAsset_tp_vagao_cfwagtp_dscl_vc() {return asset_tp_vagao_cfwagtp_dscl_vc; }
+    public String getAsset_cd_vagao_serie_cfwagse() {return asset_cd_vagao_serie_cfwagse; }
+    public String getAsset_cd_vagao_serie_cfwagse_desc() {return asset_cd_vagao_serie_cfwagse_desc; }
+    public String getAsset_cd_vagao_serie_cfwagse_vc() {return asset_cd_vagao_serie_cfwagse_vc; }
+    public String getAsset_cd_vagao_serie_cfwagse_dscl() {return asset_cd_vagao_serie_cfwagse_dscl; }
+    public String getAsset_cd_vagao_serie_cfwagse_dscl_vc() {return asset_cd_vagao_serie_cfwagse_dscl_vc; }
+    
+    public Integer getAsset_nu_vagao() {return asset_nu_vagao; }
+    public String getAsset_nu_vagao_vc() {return asset_nu_vagao_vc; }
+    
+    public String getAsset_nu_vagao_placa() {return asset_nu_vagao_placa; }
+    public String getAsset_nu_vagao_placa_vc() {return asset_nu_vagao_placa_vc; }
+    public String getAsset_cd_vagao_fabr_cfwagmf() {return asset_cd_vagao_fabr_cfwagmf; }
+    public String getAsset_cd_vagao_fabr_cfwagmf_desc() {return asset_cd_vagao_fabr_cfwagmf_desc; }
+    public String getAsset_cd_vagao_fabr_cfwagmf_vc() {return asset_cd_vagao_fabr_cfwagmf_vc; }
+    public String getAsset_cd_vagao_fabr_cfwagmf_dscl() {return asset_cd_vagao_fabr_cfwagmf_dscl; }
+    public String getAsset_cd_vagao_fabr_cfwagmf_dscl_vc() {return asset_cd_vagao_fabr_cfwagmf_dscl_vc; }
+    public String getAsset_tp_locom_cfengtp() {return asset_tp_locom_cfengtp; }
+    public String getAsset_tp_locom_cfengtp_desc() {return asset_tp_locom_cfengtp_desc; }
+    public String getAsset_tp_locom_cfengtp_vc() {return asset_tp_locom_cfengtp_vc; }
+    public String getAsset_tp_locom_cfengtp_dscl() {return asset_tp_locom_cfengtp_dscl; }
+    public String getAsset_tp_locom_cfengtp_dscl_vc() {return asset_tp_locom_cfengtp_dscl_vc; }
+    public String getAsset_cd_locom_model_cfengmd() {return asset_cd_locom_model_cfengmd; }
+    public String getAsset_cd_locom_model_cfengmd_desc() {return asset_cd_locom_model_cfengmd_desc; }
+    public String getAsset_cd_locom_model_cfengmd_vc() {return asset_cd_locom_model_cfengmd_vc; }
+    public String getAsset_cd_locom_model_cfengmd_dscl() {return asset_cd_locom_model_cfengmd_dscl; }
+    public String getAsset_cd_locom_model_cfengmd_dscl_vc() {return asset_cd_locom_model_cfengmd_dscl_vc; }
+    public String getAsset_nu_locomotiva() {return asset_nu_locomotiva; }
+    public String getAsset_nu_locomotiva_vc() {return asset_nu_locomotiva_vc; }
+    
+    // Divn - ggg D00_LOCATION_UV - Field Getters
+    public String getAsset_cd_trecho() {return asset_cd_trecho; }
+    public String getAsset_cd_trecho_desc() {return asset_cd_trecho_desc; }
+    public String getAsset_cd_trecho_vc() {return asset_cd_trecho_vc; }
+    public String getAsset_cd_trecho_dscl() {return asset_cd_trecho_dscl; }
+    public String getAsset_cd_trecho_dscl_vc() {return asset_cd_trecho_dscl_vc; }
+    public String getAsset_cd_subtrecho() {return asset_cd_subtrecho; }
+    public String getAsset_cd_subtrecho_desc() {return asset_cd_subtrecho_desc; }
+    public String getAsset_cd_subtrecho_vc() {return asset_cd_subtrecho_vc; }
+    public String getAsset_cd_subtrecho_dscl() {return asset_cd_subtrecho_dscl; }
+    public String getAsset_cd_subtrecho_dscl_vc() {return asset_cd_subtrecho_dscl_vc; }
+    public String getAsset_cd_cfreslc() {return asset_cd_cfreslc; }
+    public String getAsset_cd_cfreslc_desc() {return asset_cd_cfreslc_desc; }
+    public String getAsset_cd_cfreslc_vc() {return asset_cd_cfreslc_vc; }
+    public String getAsset_cd_cfreslc_dscl() {return asset_cd_cfreslc_dscl; }
+    public String getAsset_cd_cfreslc_dscl_vc() {return asset_cd_cfreslc_dscl_vc; }
+    
+    public BigDecimal getAsset_km_ini() {return asset_km_ini; }
+    public String getAsset_km_ini_str() {
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(3);
+        nf.setMinimumFractionDigits(3);
+        String xx = ""; String xxrt = "";
+        if (getAsset_km_ini() != null) {
+            xx = nf.format(getAsset_km_ini());
+        }
+        if (xx != null && xx.length() > 0 ) {
+            int ll = xx.length() - 3;
+            String dec = xx.substring(ll,xx.length());
+            String hol = xx.substring(0,(ll-1));
+            hol = hol.replace(",","");
+            hol = hol.replace(".","");
+            xxrt = hol+","+dec;
+        }
+        return xxrt;
+    }
+    public String getAsset_km_ini_vc() {return asset_km_ini_vc; }
+    public BigDecimal getAsset_km_fim() {return asset_km_fim; }
+    public String getAsset_km_fim_str() {
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(3);
+        nf.setMinimumFractionDigits(3);
+        String xx = ""; String xxrt = "";
+        if (getAsset_km_fim() != null) {
+            xx = nf.format(getAsset_km_fim());
+        }
+        if (xx != null && xx.length() > 0 ) {
+            int ll = xx.length() - 3;
+            String dec = xx.substring(ll,xx.length());
+            String hol = xx.substring(0,(ll-1));
+            hol = hol.replace(",","");
+            hol = hol.replace(".","");
+            xxrt = hol+","+dec;
+        }
+        return xxrt;
+    }
+    public String getAsset_km_fim_vc() {return asset_km_fim_vc; }
+    
+    public String getAsset_cd_cfreslc_prx() {return asset_cd_cfreslc_prx; }
+    public String getAsset_cd_cfreslc_prx_desc() {return asset_cd_cfreslc_prx_desc; }
+    public String getAsset_cd_cfreslc_prx_vc() {return asset_cd_cfreslc_prx_vc; }
+    public String getAsset_cd_cfreslc_prx_dscl() {return asset_cd_cfreslc_prx_dscl; }
+    public String getAsset_cd_cfreslc_prx_dscl_vc() {return asset_cd_cfreslc_prx_dscl_vc; }
+    
+    // Divn - ggg D00_ATTRIBUTES_UV - Field Getters
+    public String getAsset_tp_tipologia() {return asset_tp_tipologia; }
+    public String getAsset_tp_tipologia_desc() {return asset_tp_tipologia_desc; }
+    public String getAsset_tp_tipologia_vc() {return asset_tp_tipologia_vc; }
+    public String getAsset_tp_tipologia_dscl() {return asset_tp_tipologia_dscl; }
+    public String getAsset_tp_tipologia_dscl_vc() {return asset_tp_tipologia_dscl_vc; }
+    public String getAsset_tp_utilizacao() {return asset_tp_utilizacao; }
+    public String getAsset_tp_utilizacao_desc() {return asset_tp_utilizacao_desc; }
+    public String getAsset_tp_utilizacao_vc() {return asset_tp_utilizacao_vc; }
+    public String getAsset_tp_utilizacao_dscl() {return asset_tp_utilizacao_dscl; }
+    public String getAsset_tp_utilizacao_dscl_vc() {return asset_tp_utilizacao_dscl_vc; }
+    public String getAsset_st_geral() {return asset_st_geral; }
+    public String getAsset_st_geral_desc() {return asset_st_geral_desc; }
+    public String getAsset_st_geral_vc() {return asset_st_geral_vc; }
+    public String getAsset_st_geral_dscl() {return asset_st_geral_dscl; }
+    public String getAsset_st_geral_dscl_vc() {return asset_st_geral_dscl_vc; }
+    
+    // Divn - ggg D00_EVALUATION_UV - Field Getters
+    public String getAsset_ds_laudo_avaliacao() {return asset_ds_laudo_avaliacao; }
+    public String getAsset_ds_laudo_avaliacao_vc() {return asset_ds_laudo_avaliacao_vc; }
+    public String getAsset_ds_finalidade_laudo() {return asset_ds_finalidade_laudo; }
+    public String getAsset_ds_finalidade_laudo_vc() {return asset_ds_finalidade_laudo_vc; }
+    
+    // Divn - ggg D00_EXPERTS_UV - Field Getters
+    public String getAsset_cd_perito() {return asset_cd_perito; }
+    public String getAsset_cd_perito_vc() {return asset_cd_perito_vc; }
+    public String getAsset_cd_auxiliar() {return asset_cd_auxiliar; }
+    public String getAsset_cd_auxiliar_vc() {return asset_cd_auxiliar_vc; }
+    
+    public Date getAsset_dt_vistoria() {return asset_dt_vistoria; }
+    public String getAsset_dt_vistoria_str() {
+        return (String) ConvertUtils.lookup(String.class).convert(Date.class, asset_dt_vistoria) ; } // xx
+    public String getAsset_dt_vistoria_vc() {return asset_dt_vistoria_vc; }
+    
+    public String getAsset_nu_doc_inspecao() {return asset_nu_doc_inspecao; }
+    public String getAsset_nu_doc_inspecao_vc() {return asset_nu_doc_inspecao_vc; }
+    // Filter Getters-----------------------------------
+    public String getFil_tabs_vc() {return fil_tabs_vc; }
+    public String getFil_asset_id() {return fil_asset_id; }
+    public String getFil_asset_tp_cfasttp() {return fil_asset_tp_cfasttp; }
+    public String getFil_asset_cd_cfinvty() {return fil_asset_cd_cfinvty; }
+    public String getFil_asset_st_operacional_cfoperc() {return fil_asset_st_operacional_cfoperc; }
+    public String getFil_asset_st_operacional_veic() {return fil_asset_st_operacional_veic; }
+    public String getFil_asset_st_cfsitbm() {return fil_asset_st_cfsitbm; }
+    public String getFil_asset_tp_vagao_cfwagtp() {return fil_asset_tp_vagao_cfwagtp; }
+    public String getFil_asset_cd_vagao_serie_cfwagse() {return fil_asset_cd_vagao_serie_cfwagse; }
+    public String getFil_asset_nu_vagao_placa() {return fil_asset_nu_vagao_placa; }
+    public String getFil_asset_tp_locom_cfengtp() {return fil_asset_tp_locom_cfengtp; }
+    public String getFil_asset_cd_locom_model_cfengmd() {return fil_asset_cd_locom_model_cfengmd; }
+    public String getFil_asset_nu_locomotiva() {return fil_asset_nu_locomotiva; }
+    public String getFil_asset_cd_cfreslc() {return fil_asset_cd_cfreslc; }
+    public String getFil_asset_km_ini() {return fil_asset_km_ini; }
+    public String getFil_asset_tp_tipologia() {return fil_asset_tp_tipologia; }
+    public String getFil_asset_tp_utilizacao() {return fil_asset_tp_utilizacao; }
+    // Order Getters-----------------------------
+    public boolean isOrd_asset_tp_cfasttp() {return ord_asset_tp_cfasttp; }
+    public boolean isOrd_asset_tp_cfasttp_desc() {return !ord_asset_tp_cfasttp; }
+    
+    protected boolean validateParms() { 
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadAssetSuperBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        addAttribute("validateOn1", "0");
+        addAttribute("validateOn2", "0");
+        addAttribute("validateOn3", "0");
+        addAttribute("validateOn4", "0");
+        addAttribute("validateOn5", "0");
+        addAttribute("validateOn6", "0");
+        addAttribute("validateOn7", "0");
+        addAttribute("validateOn8", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        if ( ufbuffer.charAt(1) == '0' ) { flag = 1; xmesg_st = "astrg";}
+        if ( ufbuffer.charAt(2) == '0' ) { flag = 1; xmesg_st = "astlc";}
+        if ( ufbuffer.charAt(3) == '0' ) { flag = 1; xmesg_st = "astat";}
+        if ( ufbuffer.charAt(4) == '0' ) { flag = 1; xmesg_st = "astsr";}
+        if ( ufbuffer.charAt(5) == '0' ) { flag = 1; xmesg_st = "astoc";}
+        if ( ufbuffer.charAt(6) == '0' ) { flag = 1; xmesg_st = "astev";}
+        if ( ufbuffer.charAt(7) == '0' ) { flag = 1; xmesg_st = "astsv";}
+        if ( ufbuffer.charAt(8) == '0' ) { flag = 1; xmesg_st = "astex";}
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+        p_date_start_vc = valP_date_start(p_date_start); 
+        p_date_end_vc = valP_date_end(p_date_end); 
+        asset_km_range_sqlparm_vc = valAsset_km_range_sqlparm(asset_km_range_sqlparm); 
+        asset_km_range_sqlparmx_vc = valAsset_km_range_sqlparmx(asset_km_range_sqlparmx); 
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+        return result; 
+    }   //  End of Validate 
+    
+    protected boolean validate() { // @save @getrecd  
+        result = false; // Initializes validation Flag with NOK (Boolean version of vdflag)
+        getSession().setAttribute("cadbeanx", "cadAssetSuperBean");
+        ufmv = (String) getSession().getAttribute("ufmv");
+    
+        addAttribute("validateOn", "0");
+        addAttribute("validateOn1", "0");
+        addAttribute("validateOn2", "0");
+        addAttribute("validateOn3", "0");
+        addAttribute("validateOn4", "0");
+        addAttribute("validateOn5", "0");
+        addAttribute("validateOn6", "0");
+        addAttribute("validateOn7", "0");
+        addAttribute("validateOn8", "0");
+        tab = 0; vfmax=0; setAba(tab); vf = 0;
+        StringBuffer vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf); String upflagVf = vfbuffer.substring(0,1); vfbuffer.setCharAt(0,'0');
+        StringBuffer ufbuffer = new StringBuffer(ufmv);
+        int flag = 0;  xmesg_st = "";
+        if ( ufbuffer.charAt(1) == '0' ) { flag = 1; xmesg_st = "astrg";}
+        if ( ufbuffer.charAt(2) == '0' ) { flag = 1; xmesg_st = "astlc";}
+        if ( ufbuffer.charAt(3) == '0' ) { flag = 1; xmesg_st = "astat";}
+        if ( ufbuffer.charAt(4) == '0' ) { flag = 1; xmesg_st = "astsr";}
+        if ( ufbuffer.charAt(5) == '0' ) { flag = 1; xmesg_st = "astoc";}
+        if ( ufbuffer.charAt(6) == '0' ) { flag = 1; xmesg_st = "astev";}
+        if ( ufbuffer.charAt(7) == '0' ) { flag = 1; xmesg_st = "astsv";}
+        if ( ufbuffer.charAt(8) == '0' ) { flag = 1; xmesg_st = "astex";}
+        if (flag == 1) { 
+            String tabsvf_st = vfbuffer.substring(49,50);
+            StringBuffer tabsvf_buffer;
+            StringBuffer tabsvf_tp_buffer = new StringBuffer(tabsvf_tp);
+            if (tabsvf_st.equals("9")) {
+                tabsvf_buffer = new StringBuffer(tabsvf_in);
+            } else {
+                tabsvf_buffer = new StringBuffer(tabsvf_tr);
+            } 
+            for (int i = 1; i < tabsvf_buffer.length(); i++) {
+                if (tabsvf_buffer.charAt(i) == '1' && tabsvf_tp_buffer.charAt(i) == 'u') {
+                    ufbuffer.setCharAt(i, '0');
+                }
+            } 
+            ufmv = ufbuffer.toString();
+        } 
+    
+        // Divn a - D00_REGISTER_UV - Stub List Number: 1
+        tab = 1;
+        if (ufmv.substring(tab,tab+1).contains("0")) {setAba(tab); vf = 0;
+           errorList.add("cadAssetSuperBean"+tab); 
+    
+        asset_id_vc = valAsset_id(asset_id); 
+        asset_tp_cfasttp_vc = valAsset_tp_cfasttp(asset_tp_cfasttp); 
+        asset_cd_geourl_vc = valAsset_cd_geourl(asset_cd_geourl); 
+        asset_cd_geourl_exp_vc = valAsset_cd_geourl_exp(asset_cd_geourl_exp); 
+        asset_nu_vc = valAsset_nu(asset_nu); 
+        asset_cd_hierarquico_vc = valAsset_cd_hierarquico(asset_cd_hierarquico); 
+        asset_cd_cfinvty_vc = valAsset_cd_cfinvty(asset_cd_cfinvty); 
+        asset_st_operacional_cfoperc_vc = valAsset_st_operacional_cfoperc(asset_st_operacional_cfoperc); 
+        asset_st_operacional_veic_vc = valAsset_st_operacional_veic(asset_st_operacional_veic); 
+        asset_st_cfsitbm_vc = valAsset_st_cfsitbm(asset_st_cfsitbm); 
+        asset_tp_vagao_cfwagtp_vc = valAsset_tp_vagao_cfwagtp(asset_tp_vagao_cfwagtp); 
+        asset_cd_vagao_serie_cfwagse_vc = valAsset_cd_vagao_serie_cfwagse(asset_cd_vagao_serie_cfwagse); 
+        asset_nu_vagao_vc = valAsset_nu_vagao(asset_nu_vagao); 
+        asset_nu_vagao_placa_vc = valAsset_nu_vagao_placa(asset_nu_vagao_placa); 
+        asset_cd_vagao_fabr_cfwagmf_vc = valAsset_cd_vagao_fabr_cfwagmf(asset_cd_vagao_fabr_cfwagmf); 
+        asset_tp_locom_cfengtp_vc = valAsset_tp_locom_cfengtp(asset_tp_locom_cfengtp); 
+        asset_cd_locom_model_cfengmd_vc = valAsset_cd_locom_model_cfengmd(asset_cd_locom_model_cfengmd); 
+        asset_nu_locomotiva_vc = valAsset_nu_locomotiva(asset_nu_locomotiva); 
+        validateMax(vfbuffer); // @save @getrecd 
+        if (validateAll < 2 ) { 
+            addErrorMessageFromErrorList(); 
+        }
+        addAttribute("validateOn"+tab, "1");
+        } //yy
+    
+        // Divn a - D00_LOCATION_UV - Stub List Number: 2
+        tab = 2;
+        if (ufmv.substring(tab,tab+1).contains("0")) {setAba(tab); vf = 0;
+           errorList.add("cadAssetSuperBean"+tab); 
+    
+        asset_cd_trecho_vc = valAsset_cd_trecho(asset_cd_trecho); 
+        asset_cd_subtrecho_vc = valAsset_cd_subtrecho(asset_cd_subtrecho); 
+        asset_cd_cfreslc_vc = valAsset_cd_cfreslc(asset_cd_cfreslc); 
+        asset_km_ini_vc = valAsset_km_ini(asset_km_ini); 
+        asset_km_fim_vc = valAsset_km_fim(asset_km_fim); 
+        asset_cd_cfreslc_prx_vc = valAsset_cd_cfreslc_prx(asset_cd_cfreslc_prx); 
+        validateMax(vfbuffer); // @save @getrecd 
+        if (validateAll < 2 ) { 
+            addErrorMessageFromErrorList(); 
+        }
+        addAttribute("validateOn"+tab, "1");
+        } //yy
+    
+        // Divn a - D00_ATTRIBUTES_UV - Stub List Number: 3
+        tab = 3;
+        if (ufmv.substring(tab,tab+1).contains("0")) {setAba(tab); vf = 0;
+           errorList.add("cadAssetSuperBean"+tab); 
+    
+        asset_tp_tipologia_vc = valAsset_tp_tipologia(asset_tp_tipologia); 
+        asset_tp_utilizacao_vc = valAsset_tp_utilizacao(asset_tp_utilizacao); 
+        asset_st_geral_vc = valAsset_st_geral(asset_st_geral); 
+        validateMax(vfbuffer); // @save @getrecd 
+        if (validateAll < 2 ) { 
+            addErrorMessageFromErrorList(); 
+        }
+        addAttribute("validateOn"+tab, "1");
+        } //yy
+    
+        // Divn a - D00_EVALUATION_UV - Stub List Number: 6
+        tab = 6;
+        if (ufmv.substring(tab,tab+1).contains("0")) {setAba(tab); vf = 0;
+           errorList.add("cadAssetSuperBean"+tab); 
+    
+        asset_ds_laudo_avaliacao_vc = valAsset_ds_laudo_avaliacao(asset_ds_laudo_avaliacao); 
+        asset_ds_finalidade_laudo_vc = valAsset_ds_finalidade_laudo(asset_ds_finalidade_laudo); 
+        validateMax(vfbuffer); // @save @getrecd 
+        if (validateAll < 2 ) { 
+            addErrorMessageFromErrorList(); 
+        }
+        addAttribute("validateOn"+tab, "1");
+        } //yy
+    
+        // Divn a - D00_EXPERTS_UV - Stub List Number: 8
+        tab = 8;
+        if (ufmv.substring(tab,tab+1).contains("0")) {setAba(tab); vf = 0;
+           errorList.add("cadAssetSuperBean"+tab); 
+    
+        asset_cd_perito_vc = valAsset_cd_perito(asset_cd_perito); 
+        asset_cd_auxiliar_vc = valAsset_cd_auxiliar(asset_cd_auxiliar); 
+        asset_dt_vistoria_vc = valAsset_dt_vistoria(asset_dt_vistoria); 
+        asset_nu_doc_inspecao_vc = valAsset_nu_doc_inspecao(asset_nu_doc_inspecao); 
+    
+        validateMax(vfbuffer); addErrorMessageFromErrorList(); 
+        addAttribute("validateOn"+tab, "1");
+        } // tttt
+        validateAll = 0;
+    
+        getSession().setAttribute("focus", 0); setAba(0);
+        tabs_vc = selDivMaxVc(vfbuffer.substring(0,27)); // @save @getrecd 
+        if (vfmax < 9) {
+            result = true; upflag = "0";
+            addAttribute("validateOn", "1");
+            addAttribute("validateOn", "1");
+            vfbuffer.setCharAt(psvc,tabs_vc.toString().charAt(0)); 
+        } else {
+            vfbuffer.setCharAt(0,'1');
+        } // Same like setting Set upflag = 1
+        if (upflagVf.equals("2")) { result = false; }
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf; 
+        return result; 
+    }   //  End of Validate 
+    public void updateRecdTs() {
+        try {
+            this.user_cd = getLoginInfo().getUserx_id_login();
+            if (result) {
+                this.recd_ts = new Date();
+            }
+        } catch (Exception ex) { ex.getMessage(); }
+    }
+    
+    protected void validateInserir() {
+        StringBuffer vfbuffer = new StringBuffer();
+        if (tabs_vf != null) {
+            vfbuffer.append(tabs_vf);
+            vfbuffer.setCharAt(49,'0');
+            tabsvf = vfbuffer.toString();
+            tabs_vf = tabsvf;
+        }
+    } 
+    
+    public String validateFieldOnChange(String value, String field) {
+        String result = null;
+        vf = 0; int i_field = 0; int valueInteger=0; Date valueDate = null; BigDecimal valueBigDecimal = null;
+    if (i_fields.containsKey(field)) {
+        i_field = i_fields.get(field);
+    }
+        switch (i_field) {
+        // Fields Validation Methods Switch 
+           case 1: result = valP_date_start(value); break;
+           case 2: result = valP_date_end(value); break;
+           case 3: valueBigDecimal = convertDecimal(value); result = valAsset_km_range_sqlparm(valueBigDecimal); break;
+           case 4: valueBigDecimal = convertDecimal(value); result = valAsset_km_range_sqlparmx(valueBigDecimal); break;
+           case 5: result = valAsset_id(value); break;
+           case 6: result = valAsset_tp_cfasttp(value); break;
+           case 7: result = valAsset_cd_geourl(value); break;
+           case 8: result = valAsset_cd_geourl_exp(value); break;
+           case 9: result = valAsset_nu(value); break;
+           case 10: result = valAsset_cd_hierarquico(value); break;
+           case 11: result = valAsset_cd_cfinvty(value); break;
+           case 12: result = valAsset_st_operacional_cfoperc(value); break;
+           case 13: result = valAsset_st_operacional_cfoperc_dscl(value); break;
+           case 14: result = valAsset_st_operacional_veic(value); break;
+           case 15: result = valAsset_st_operacional_veic_dscl(value); break;
+           case 16: result = valAsset_st_cfsitbm(value); break;
+           case 17: result = valAsset_st_cfsitbm_dscl(value); break;
+           case 18: result = valAsset_tp_vagao_cfwagtp(value); break;
+           case 19: result = valAsset_tp_vagao_cfwagtp_dscl(value); break;
+           case 20: result = valAsset_cd_vagao_serie_cfwagse(value); break;
+           case 21: result = valAsset_cd_vagao_serie_cfwagse_dscl(value); break;
+           case 22: result = valAsset_nu_vagao(toInteger(value)); break;
+           case 23: result = valAsset_nu_vagao_placa(value); break;
+           case 24: result = valAsset_cd_vagao_fabr_cfwagmf(value); break;
+           case 25: result = valAsset_cd_vagao_fabr_cfwagmf_dscl(value); break;
+           case 26: result = valAsset_tp_locom_cfengtp(value); break;
+           case 27: result = valAsset_tp_locom_cfengtp_dscl(value); break;
+           case 28: result = valAsset_cd_locom_model_cfengmd(value); break;
+           case 29: result = valAsset_cd_locom_model_cfengmd_dscl(value); break;
+           case 30: result = valAsset_nu_locomotiva(value); break;
+           case 31: result = valAsset_cd_trecho(value); break;
+           case 32: result = valAsset_cd_trecho_dscl(value); break;
+           case 33: result = valAsset_cd_subtrecho(value); break;
+           case 34: result = valAsset_cd_subtrecho_dscl(value); break;
+           case 35: result = valAsset_cd_cfreslc(value); break;
+           case 36: result = valAsset_cd_cfreslc_dscl(value); break;
+           case 37: valueBigDecimal = convertDecimal(value); result = valAsset_km_ini(valueBigDecimal); break;
+           case 38: valueBigDecimal = convertDecimal(value); result = valAsset_km_fim(valueBigDecimal); break;
+           case 39: result = valAsset_cd_cfreslc_prx(value); break;
+           case 40: result = valAsset_cd_cfreslc_prx_dscl(value); break;
+           case 41: result = valAsset_tp_tipologia(value); break;
+           case 42: result = valAsset_tp_tipologia_dscl(value); break;
+           case 43: result = valAsset_tp_utilizacao(value); break;
+           case 44: result = valAsset_tp_utilizacao_dscl(value); break;
+           case 45: result = valAsset_st_geral(value); break;
+           case 46: result = valAsset_st_geral_dscl(value); break;
+           case 47: result = valAsset_ds_laudo_avaliacao(value); break;
+           case 48: result = valAsset_ds_finalidade_laudo(value); break;
+           case 49: result = valAsset_cd_perito(value); break;
+           case 50: result = valAsset_cd_auxiliar(value); break;
+           case 51: valueDate = (Date) ConvertUtils.lookup(Date.class).convert(Date.class, value ); result = valAsset_dt_vistoria(valueDate); break;
+           case 52: result = valAsset_nu_doc_inspecao(value); break;
+        } // 111
+        return result;
+    }
+    public String checkMaxFieldOnChange(String divn) {
+        vfbuffer = new StringBuffer();
+        vfbuffer.append(tabsvf);
+        vfbuffer.setCharAt(Integer.parseInt(divn),selMaxVc(divn).charAt(0));
+        vfbuffer.setCharAt(psvc,selMaxVc(divn).charAt(0));
+        tabsvf = vfbuffer.toString();
+        return vfbuffer.toString();
+    }
+    public String checkVFMaxFieldOnChange(String divn) {
+        return retSelBuffer(divn);
+    }
+    public String retSelBuffer(String divn) {
+        String selBuffer = null;
+        return selBuffer;
+    }
+    
+    // Main Record (Univalued) Field Validation Methods...
+    
+    public String valP_date_start(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.p_date_start = "";
+            this.p_date_start_desc = "";
+        } else {
+            this.p_date_start = value;
+        }
+        p_date_start_vc = valEntryString("0", value,"AssetSuper_p_date_start");
+        return p_date_start_vc;
+    }
+    public String valP_date_end(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.p_date_end = "";
+            this.p_date_end_desc = "";
+        } else {
+            this.p_date_end = value;
+        }
+        p_date_end_vc = valEntryString("0", value,"AssetSuper_p_date_end");
+        return p_date_end_vc;
+    }
+    public String valAsset_km_range_sqlparm(BigDecimal value) {
+        this.asset_km_range_sqlparm = value;
+        asset_km_range_sqlparm_vc = valEntryBigDecimal("0", asset_km_range_sqlparm, "AssetSuper_asset_km_range_sqlparm");
+        return asset_km_range_sqlparm_vc;
+    }
+    public String valAsset_km_range_sqlparmx(BigDecimal value) {
+        this.asset_km_range_sqlparmx = value;
+        asset_km_range_sqlparmx_vc = valEntryBigDecimal("0", asset_km_range_sqlparmx, "AssetSuper_asset_km_range_sqlparmx");
+        return asset_km_range_sqlparmx_vc;
+    }
+    public String valAsset_id(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_id = "";
+            this.asset_id_desc = "";
+        } else {
+            this.asset_id = value;
+        }
+        //  Get Validation Source Code  ggg
+        // External Source Code -----------------
+        if (asset_id.indexOf("-") < 0) {
+            asset_id = asset_nu+"-"+asset_cd_hierarquico+"-"+asset_cd_cfinvty;
+        }
+        if ( asset_nu == null)  {asset_id = "";}
+        return "0";
+    }
+    public String valAsset_tp_cfasttp(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_cfasttp = "";
+            this.asset_tp_cfasttp_desc = "";
+        } else {
+            this.asset_tp_cfasttp = value;
+        }
+        asset_tp_cfasttp_vc = valEntryString("5", value,"AssetSuper_asset_tp_cfasttp");
+        return asset_tp_cfasttp_vc;
+    }
+    public String valAsset_cd_geourl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_geourl = "";
+        } else {
+            this.asset_cd_geourl = value;
+        }
+        asset_cd_geourl_vc = valEntryString("5", value,"AssetSuper_asset_cd_geourl");
+        return asset_cd_geourl_vc;
+    }
+    public String valAsset_cd_geourl_exp(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_geourl_exp = "";
+        } else {
+            this.asset_cd_geourl_exp = value;
+        }
+        asset_cd_geourl_exp_vc = valEntryString("5", value,"AssetSuper_asset_cd_geourl_exp");
+        return asset_cd_geourl_exp_vc;
+    }
+    public String valAsset_nu(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_nu = "";
+        } else {
+            this.asset_nu = value;
+        }
+        asset_nu_vc = valEntryString("5", value,"AssetSuper_asset_nu");
+        return asset_nu_vc;
+    }
+    public String valAsset_cd_hierarquico(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_hierarquico = "";
+        } else {
+            this.asset_cd_hierarquico = value;
+        }
+        asset_cd_hierarquico_vc = valEntryString("5", value,"AssetSuper_asset_cd_hierarquico");
+        return asset_cd_hierarquico_vc;
+    }
+    public String valAsset_cd_cfinvty(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_cfinvty = "";
+            this.asset_cd_cfinvty_desc = "";
+        } else {
+            this.asset_cd_cfinvty = value;
+        }
+        asset_cd_cfinvty_vc = valEntryString("5", value,"AssetSuper_asset_cd_cfinvty");
+        return asset_cd_cfinvty_vc;
+    }
+    public String valAsset_st_operacional_cfoperc(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_st_operacional_cfoperc = "";
+            this.asset_st_operacional_cfoperc_desc = "";
+        } else {
+            this.asset_st_operacional_cfoperc = value;
+        }
+        asset_st_operacional_cfoperc_vc = valEntryString("0", value,"AssetSuper_asset_st_operacional_cfoperc");
+        return asset_st_operacional_cfoperc_vc;
+    }
+    public String valAsset_st_operacional_cfoperc_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_st_operacional_cfoperc_dscl = "";
+        } else {
+            this.asset_st_operacional_cfoperc_dscl = value;
+        }
+        asset_st_operacional_cfoperc_dscl_vc = valEntryString("0", value,"AssetSuper_asset_st_operacional_cfoperc_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_st_operacional_cfoperc_dscl_vc;
+    }
+    public String valAsset_st_operacional_veic(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_st_operacional_veic = "";
+            this.asset_st_operacional_veic_desc = "";
+        } else {
+            this.asset_st_operacional_veic = value;
+        }
+        asset_st_operacional_veic_vc = valEntryString("5", value,"AssetSuper_asset_st_operacional_veic");
+        return asset_st_operacional_veic_vc;
+    }
+    public String valAsset_st_operacional_veic_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_st_operacional_veic_dscl = "";
+        } else {
+            this.asset_st_operacional_veic_dscl = value;
+        }
+        asset_st_operacional_veic_dscl_vc = valEntryString("0", value,"AssetSuper_asset_st_operacional_veic_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_st_operacional_veic_dscl_vc;
+    }
+    public String valAsset_st_cfsitbm(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_st_cfsitbm = "";
+            this.asset_st_cfsitbm_desc = "";
+        } else {
+            this.asset_st_cfsitbm = value;
+        }
+        asset_st_cfsitbm_vc = valEntryString("5", value,"AssetSuper_asset_st_cfsitbm");
+        return asset_st_cfsitbm_vc;
+    }
+    public String valAsset_st_cfsitbm_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_st_cfsitbm_dscl = "";
+        } else {
+            this.asset_st_cfsitbm_dscl = value;
+        }
+        asset_st_cfsitbm_dscl_vc = valEntryString("0", value,"AssetSuper_asset_st_cfsitbm_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_st_cfsitbm_dscl_vc;
+    }
+    public String valAsset_tp_vagao_cfwagtp(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_vagao_cfwagtp = "";
+            this.asset_tp_vagao_cfwagtp_desc = "";
+        } else {
+            this.asset_tp_vagao_cfwagtp = value;
+        }
+        asset_tp_vagao_cfwagtp_vc = valEntryString("5", value,"AssetSuper_asset_tp_vagao_cfwagtp");
+        return asset_tp_vagao_cfwagtp_vc;
+    }
+    public String valAsset_tp_vagao_cfwagtp_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_vagao_cfwagtp_dscl = "";
+        } else {
+            this.asset_tp_vagao_cfwagtp_dscl = value;
+        }
+        asset_tp_vagao_cfwagtp_dscl_vc = valEntryString("0", value,"AssetSuper_asset_tp_vagao_cfwagtp_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_tp_vagao_cfwagtp_dscl_vc;
+    }
+    public String valAsset_cd_vagao_serie_cfwagse(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_vagao_serie_cfwagse = "";
+            this.asset_cd_vagao_serie_cfwagse_desc = "";
+        } else {
+            this.asset_cd_vagao_serie_cfwagse = value;
+        }
+        asset_cd_vagao_serie_cfwagse_vc = valEntryString("5", value,"AssetSuper_asset_cd_vagao_serie_cfwagse");
+        return asset_cd_vagao_serie_cfwagse_vc;
+    }
+    public String valAsset_cd_vagao_serie_cfwagse_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_vagao_serie_cfwagse_dscl = "";
+        } else {
+            this.asset_cd_vagao_serie_cfwagse_dscl = value;
+        }
+        asset_cd_vagao_serie_cfwagse_dscl_vc = valEntryString("0", value,"AssetSuper_asset_cd_vagao_serie_cfwagse_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_cd_vagao_serie_cfwagse_dscl_vc;
+    }
+    public String valAsset_nu_vagao(Integer value) {
+        this.asset_nu_vagao = value;
+        asset_nu_vagao_vc = valEntryNumber("5", value,"AssetSuper_asset_nu_vagao");
+        return asset_nu_vagao_vc;
+    }
+    public String valAsset_nu_vagao_placa(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_nu_vagao_placa = "";
+        } else {
+            this.asset_nu_vagao_placa = value;
+        }
+        asset_nu_vagao_placa_vc = valEntryString("5", value,"AssetSuper_asset_nu_vagao_placa");
+        return asset_nu_vagao_placa_vc;
+    }
+    public String valAsset_cd_vagao_fabr_cfwagmf(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_vagao_fabr_cfwagmf = "";
+            this.asset_cd_vagao_fabr_cfwagmf_desc = "";
+        } else {
+            this.asset_cd_vagao_fabr_cfwagmf = value;
+        }
+        asset_cd_vagao_fabr_cfwagmf_vc = valEntryString("5", value,"AssetSuper_asset_cd_vagao_fabr_cfwagmf");
+        return asset_cd_vagao_fabr_cfwagmf_vc;
+    }
+    public String valAsset_cd_vagao_fabr_cfwagmf_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_vagao_fabr_cfwagmf_dscl = "";
+        } else {
+            this.asset_cd_vagao_fabr_cfwagmf_dscl = value;
+        }
+        asset_cd_vagao_fabr_cfwagmf_dscl_vc = valEntryString("0", value,"AssetSuper_asset_cd_vagao_fabr_cfwagmf_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_cd_vagao_fabr_cfwagmf_dscl_vc;
+    }
+    public String valAsset_tp_locom_cfengtp(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_locom_cfengtp = "";
+            this.asset_tp_locom_cfengtp_desc = "";
+        } else {
+            this.asset_tp_locom_cfengtp = value;
+        }
+        asset_tp_locom_cfengtp_vc = valEntryString("5", value,"AssetSuper_asset_tp_locom_cfengtp");
+        return asset_tp_locom_cfengtp_vc;
+    }
+    public String valAsset_tp_locom_cfengtp_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_locom_cfengtp_dscl = "";
+        } else {
+            this.asset_tp_locom_cfengtp_dscl = value;
+        }
+        asset_tp_locom_cfengtp_dscl_vc = valEntryString("0", value,"AssetSuper_asset_tp_locom_cfengtp_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_tp_locom_cfengtp_dscl_vc;
+    }
+    public String valAsset_cd_locom_model_cfengmd(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_locom_model_cfengmd = "";
+            this.asset_cd_locom_model_cfengmd_desc = "";
+        } else {
+            this.asset_cd_locom_model_cfengmd = value;
+        }
+        asset_cd_locom_model_cfengmd_vc = valEntryString("5", value,"AssetSuper_asset_cd_locom_model_cfengmd");
+        return asset_cd_locom_model_cfengmd_vc;
+    }
+    public String valAsset_cd_locom_model_cfengmd_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_locom_model_cfengmd_dscl = "";
+        } else {
+            this.asset_cd_locom_model_cfengmd_dscl = value;
+        }
+        asset_cd_locom_model_cfengmd_dscl_vc = valEntryString("0", value,"AssetSuper_asset_cd_locom_model_cfengmd_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_cd_locom_model_cfengmd_dscl_vc;
+    }
+    public String valAsset_nu_locomotiva(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_nu_locomotiva = "";
+        } else {
+            this.asset_nu_locomotiva = value;
+        }
+        asset_nu_locomotiva_vc = valEntryString("5", value,"AssetSuper_asset_nu_locomotiva");
+        return asset_nu_locomotiva_vc;
+    }
+    public String valAsset_cd_trecho(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_trecho = "";
+            this.asset_cd_trecho_desc = "";
+        } else {
+            this.asset_cd_trecho = value;
+        }
+        asset_cd_trecho_vc = valEntryString("5", value,"AssetSuper_asset_cd_trecho");
+        return asset_cd_trecho_vc;
+    }
+    public String valAsset_cd_trecho_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_trecho_dscl = "";
+        } else {
+            this.asset_cd_trecho_dscl = value;
+        }
+        asset_cd_trecho_dscl_vc = valEntryString("0", value,"AssetSuper_asset_cd_trecho_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_cd_trecho_dscl_vc;
+    }
+    public String valAsset_cd_subtrecho(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_subtrecho = "";
+            this.asset_cd_subtrecho_desc = "";
+        } else {
+            this.asset_cd_subtrecho = value;
+        }
+        asset_cd_subtrecho_vc = valEntryString("5", value,"AssetSuper_asset_cd_subtrecho");
+        return asset_cd_subtrecho_vc;
+    }
+    public String valAsset_cd_subtrecho_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_subtrecho_dscl = "";
+        } else {
+            this.asset_cd_subtrecho_dscl = value;
+        }
+        asset_cd_subtrecho_dscl_vc = valEntryString("0", value,"AssetSuper_asset_cd_subtrecho_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_cd_subtrecho_dscl_vc;
+    }
+    public String valAsset_cd_cfreslc(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_cfreslc = "";
+            this.asset_cd_cfreslc_desc = "";
+        } else {
+            this.asset_cd_cfreslc = value;
+        }
+        asset_cd_cfreslc_vc = valEntryString("5", value,"AssetSuper_asset_cd_cfreslc");
+        return asset_cd_cfreslc_vc;
+    }
+    public String valAsset_cd_cfreslc_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_cfreslc_dscl = "";
+        } else {
+            this.asset_cd_cfreslc_dscl = value;
+        }
+        asset_cd_cfreslc_dscl_vc = valEntryString("0", value,"AssetSuper_asset_cd_cfreslc_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_cd_cfreslc_dscl_vc;
+    }
+    public String valAsset_km_ini(BigDecimal value) {
+        this.asset_km_ini = value;
+        asset_km_ini_vc = valEntryBigDecimal("5", asset_km_ini, "AssetSuper_asset_km_ini");
+        return asset_km_ini_vc;
+    }
+    public String valAsset_km_fim(BigDecimal value) {
+        this.asset_km_fim = value;
+        asset_km_fim_vc = valEntryBigDecimal("5", asset_km_fim, "AssetSuper_asset_km_fim");
+        return asset_km_fim_vc;
+    }
+    public String valAsset_cd_cfreslc_prx(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_cfreslc_prx = "";
+            this.asset_cd_cfreslc_prx_desc = "";
+        } else {
+            this.asset_cd_cfreslc_prx = value;
+        }
+        asset_cd_cfreslc_prx_vc = valEntryString("5", value,"AssetSuper_asset_cd_cfreslc_prx");
+        return asset_cd_cfreslc_prx_vc;
+    }
+    public String valAsset_cd_cfreslc_prx_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_cfreslc_prx_dscl = "";
+        } else {
+            this.asset_cd_cfreslc_prx_dscl = value;
+        }
+        asset_cd_cfreslc_prx_dscl_vc = valEntryString("0", value,"AssetSuper_asset_cd_cfreslc_prx_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_cd_cfreslc_prx_dscl_vc;
+    }
+    public String valAsset_tp_tipologia(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_tipologia = "";
+            this.asset_tp_tipologia_desc = "";
+        } else {
+            this.asset_tp_tipologia = value;
+        }
+        asset_tp_tipologia_vc = valEntryString("5", value,"AssetSuper_asset_tp_tipologia");
+        return asset_tp_tipologia_vc;
+    }
+    public String valAsset_tp_tipologia_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_tipologia_dscl = "";
+        } else {
+            this.asset_tp_tipologia_dscl = value;
+        }
+        asset_tp_tipologia_dscl_vc = valEntryString("0", value,"AssetSuper_asset_tp_tipologia_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_tp_tipologia_dscl_vc;
+    }
+    public String valAsset_tp_utilizacao(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_utilizacao = "";
+            this.asset_tp_utilizacao_desc = "";
+        } else {
+            this.asset_tp_utilizacao = value;
+        }
+        asset_tp_utilizacao_vc = valEntryString("5", value,"AssetSuper_asset_tp_utilizacao");
+        return asset_tp_utilizacao_vc;
+    }
+    public String valAsset_tp_utilizacao_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_tp_utilizacao_dscl = "";
+        } else {
+            this.asset_tp_utilizacao_dscl = value;
+        }
+        asset_tp_utilizacao_dscl_vc = valEntryString("0", value,"AssetSuper_asset_tp_utilizacao_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_tp_utilizacao_dscl_vc;
+    }
+    public String valAsset_st_geral(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_st_geral = "";
+            this.asset_st_geral_desc = "";
+        } else {
+            this.asset_st_geral = value;
+        }
+        asset_st_geral_vc = valEntryString("5", value,"AssetSuper_asset_st_geral");
+        return asset_st_geral_vc;
+    }
+    public String valAsset_st_geral_dscl(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_st_geral_dscl = "";
+        } else {
+            this.asset_st_geral_dscl = value;
+        }
+        asset_st_geral_dscl_vc = valEntryString("0", value,"AssetSuper_asset_st_geral_dscl");
+        if (value != null) {
+        } // end val 2
+        return asset_st_geral_dscl_vc;
+    }
+    public String valAsset_ds_laudo_avaliacao(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_ds_laudo_avaliacao = "";
+        } else {
+            this.asset_ds_laudo_avaliacao = value;
+        }
+        asset_ds_laudo_avaliacao_vc = valEntryString("5", value,"AssetSuper_asset_ds_laudo_avaliacao");
+        return asset_ds_laudo_avaliacao_vc;
+    }
+    public String valAsset_ds_finalidade_laudo(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_ds_finalidade_laudo = "";
+        } else {
+            this.asset_ds_finalidade_laudo = value;
+        }
+        asset_ds_finalidade_laudo_vc = valEntryString("5", value,"AssetSuper_asset_ds_finalidade_laudo");
+        return asset_ds_finalidade_laudo_vc;
+    }
+    public String valAsset_cd_perito(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_perito = "";
+        } else {
+            this.asset_cd_perito = value;
+        }
+        asset_cd_perito_vc = valEntryString("5", value,"AssetSuper_asset_cd_perito");
+        return asset_cd_perito_vc;
+    }
+    public String valAsset_cd_auxiliar(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_cd_auxiliar = "";
+        } else {
+            this.asset_cd_auxiliar = value;
+        }
+        asset_cd_auxiliar_vc = valEntryString("5", value,"AssetSuper_asset_cd_auxiliar");
+        return asset_cd_auxiliar_vc;
+    }
+    public String valAsset_dt_vistoria(Date value) {
+        this.asset_dt_vistoria = value;
+        asset_dt_vistoria_vc = valEntryDate("5", value,"AssetSuper_asset_dt_vistoria");
+        return asset_dt_vistoria_vc;
+    }
+    public String valAsset_nu_doc_inspecao(String value) {
+        if(value == null || value.trim().equals("")) {
+            this.asset_nu_doc_inspecao = "";
+        } else {
+            this.asset_nu_doc_inspecao = value;
+        }
+        asset_nu_doc_inspecao_vc = valEntryString("5", value,"AssetSuper_asset_nu_doc_inspecao");
+        return asset_nu_doc_inspecao_vc;
+    }
+    
+    protected void reset() {  
+     try {
+        super.reset(); 
+        // Set initial ABA Number
+        getSession().setAttribute("novo", false);
+        getSession().setAttribute("cadbeanx", "cadAssetSuperBean");
+        if (tab_remember == true) {
+            getSession().getAttribute("cadAssetSuperBeanx");
+        } else {
+            getSession().setAttribute("cadAssetSuperBeanx", "1");
+        } 
+        ufmv = "00000000000000000000000000000000000000000000000000";
+        getSession().setAttribute("ufmv", ufmv);
+        // Tabs Validation Status
+        this.tabs_vf = null;
+        this.tabs_vc = null;
+        vf = 0;
+        xmesg_st = "astrg";
+        // Reset of Main Record ii.properties-----------------
+        this.flds_vf = "null";
+        // Set initial tabsvf
+        tabsvf =    "95550050500000000000000000000000000000000000000909";
+        tabsvf_in = "91111111100000000000000000000000000000000000000000";
+        tabsvf_tr = "91111111100000000000000000000000000000000000000000";
+        tabsvf_tp = "9uuuuuuuu00000000000000000000000000000000000000000";
+        // Load flds_vf & chld_vfs into prop vcs;
+        Connection con = DatabaseUtils.getConnection();
+        // Reset Initial Stub Number--------------------------
+        this.xbutn_id = "1";
+        this.imag_vx = "0"; // Initialized
+        this.file_vx = "0"; // Initialized
+        this.geo_vx = "0"; // Initialized
+    
+    // Divn - ccc 
+        if ( resetParms == true) {
+        PreparedStatement ps_min9 = con.prepareStatement("select MIN(invty_cd) AS invty_cd  from wbrl_invty");
+        ResultSet rs_min9 = ps_min9.executeQuery();
+        String invty_cd9_rs = "";
+        if (rs_min9.next()) {
+            invty_cd9_rs = rs_min9.getString("invty_cd");
+        }
+        ps_min9.close(); rs_min9.close();
+        this.p_date_start = invty_cd9_rs;
+        this.p_date_start_vc = "0";
+    //  Reset Fks.33. --
+        this.p_date_start_desc = IIBeanUtils.getInvty_desc(con, p_date_start);
+        }
+        if ( resetParms == true) {
+        PreparedStatement ps_max10 = con.prepareStatement("select MAX(invty_cd) AS invty_cd  from wbrl_invty");
+        ResultSet rs_max10 = ps_max10.executeQuery();
+        String invty_cd10_rs = "";
+        if (rs_max10.next()) {
+            invty_cd10_rs = rs_max10.getString("invty_cd");
+        }
+        ps_max10.close(); rs_max10.close();
+        this.p_date_end = invty_cd10_rs;
+        this.p_date_end_vc = "0";
+    //  Reset Fks.33. --
+        this.p_date_end_desc = IIBeanUtils.getInvty_desc(con, p_date_end);
+        }
+        if ( resetParms == true) {
+        this.asset_km_range_sqlparm_vc = "0"; // Reset param vc to Green 
+        }
+        if ( resetParms == true) {
+        this.asset_km_range_sqlparmx_vc = "0"; // Reset param vc to Green 
+        }
+    
+    // Divn - ccc D00_REGISTER_UV
+    //  Reset Fks.2. --
+        this.asset_id = null; // Reset PK that is FK Unconditionally
+        this.asset_id_desc = null;
+        this.asset_tp_cfasttp = null; // Reset Codf --
+        this.asset_tp_cfasttp_desc = null;
+        this.asset_cd_geourl = null; // Reset of any other variable --
+        this.asset_cd_geourl_exp = null; // Reset of any other variable --
+        this.asset_nu = null; // Reset of any other variable --
+        this.asset_cd_hierarquico = "000"; // simple iniv 
+        PreparedStatement ps_max28 = con.prepareStatement("select MAX(invty_cd) AS invty_cd  from wbrl_invty where invty_tp_"+asset_tp_cfasttp+" = 'X'");
+        ResultSet rs_max28 = ps_max28.executeQuery();
+        String invty_cd28_rs = "";
+        if (rs_max28.next()) {
+            invty_cd28_rs = rs_max28.getString("invty_cd");
+        }
+        ps_max28.close(); rs_max28.close();
+        this.asset_cd_cfinvty = invty_cd28_rs;
+        this.asset_cd_cfinvty_vc = "0";
+        this.asset_cd_cfinvty_sav = null;
+    //  Reset Fks.33. --
+        this.asset_cd_cfinvty_desc = IIBeanUtils.getInvty_desc(con, asset_cd_cfinvty);
+        this.asset_st_operacional_cfoperc = null; // Reset Codf --
+        this.asset_st_operacional_cfoperc_desc = null;
+        this.asset_st_operacional_cfoperc_dscl = null; // Reset of any other variable --
+        this.asset_st_operacional_veic = null; // Reset Codf --
+        this.asset_st_operacional_veic_desc = null;
+        this.asset_st_operacional_veic_dscl = null; // Reset of any other variable --
+        this.asset_st_cfsitbm = null; // Reset Codf --
+        this.asset_st_cfsitbm_desc = null;
+        this.asset_st_cfsitbm_dscl = null; // Reset of any other variable --
+        this.asset_tp_vagao_cfwagtp = null; // Reset Codf --
+        this.asset_tp_vagao_cfwagtp_desc = null;
+        this.asset_tp_vagao_cfwagtp_dscl = null; // Reset of any other variable --
+        this.asset_cd_vagao_serie_cfwagse = null; // Reset Codf --
+        this.asset_cd_vagao_serie_cfwagse_desc = null;
+        this.asset_cd_vagao_serie_cfwagse_dscl = null; // Reset of any other variable --
+        this.asset_nu_vagao = 0;
+        this.asset_nu_vagao_placa = null; // Reset of any other variable --
+        this.asset_cd_vagao_fabr_cfwagmf = null; // Reset Codf --
+        this.asset_cd_vagao_fabr_cfwagmf_desc = null;
+        this.asset_cd_vagao_fabr_cfwagmf_dscl = null; // Reset of any other variable --
+        this.asset_tp_locom_cfengtp = null; // Reset Codf --
+        this.asset_tp_locom_cfengtp_desc = null;
+        this.asset_tp_locom_cfengtp_dscl = null; // Reset of any other variable --
+        this.asset_cd_locom_model_cfengmd = null; // Reset Codf --
+        this.asset_cd_locom_model_cfengmd_desc = null;
+        this.asset_cd_locom_model_cfengmd_dscl = null; // Reset of any other variable --
+        this.asset_nu_locomotiva = null; // Reset of any other variable --
+    
+    // Divn - ccc D00_LOCATION_UV
+        this.asset_cd_trecho = null; // Reset Codf --
+        this.asset_cd_trecho_desc = null;
+        this.asset_cd_trecho_dscl = null; // Reset of any other variable --
+        this.asset_cd_subtrecho = null; // Reset Codf --
+        this.asset_cd_subtrecho_desc = null;
+        this.asset_cd_subtrecho_dscl = null; // Reset of any other variable --
+        this.asset_cd_cfreslc = null; // Reset Codf --
+        this.asset_cd_cfreslc_desc = null;
+        this.asset_cd_cfreslc_dscl = null; // Reset of any other variable --
+        this.asset_km_ini = new BigDecimal(0);
+        this.asset_km_fim = new BigDecimal(0);
+        this.asset_cd_cfreslc_prx = null; // Reset Codf --
+        this.asset_cd_cfreslc_prx_desc = null;
+        this.asset_cd_cfreslc_prx_dscl = null; // Reset of any other variable --
+    
+    // Divn - ccc D00_ATTRIBUTES_UV
+        this.asset_tp_tipologia = null; // Reset Codf --
+        this.asset_tp_tipologia_desc = null;
+        this.asset_tp_tipologia_dscl = null; // Reset of any other variable --
+        this.asset_tp_utilizacao = null; // Reset Codf --
+        this.asset_tp_utilizacao_desc = null;
+        this.asset_tp_utilizacao_dscl = null; // Reset of any other variable --
+        this.asset_st_geral = null; // Reset Codf --
+        this.asset_st_geral_desc = null;
+        this.asset_st_geral_dscl = null; // Reset of any other variable --
+    
+    // Divn - ccc D00_EVALUATION_UV
+        this.asset_ds_laudo_avaliacao = null; // Reset of any other variable --
+        this.asset_ds_finalidade_laudo = null; // Reset of any other variable --
+    
+    // Divn - ccc D00_EXPERTS_UV
+        this.asset_cd_perito = null; // Reset of any other variable --
+        this.asset_cd_auxiliar = null; // Reset of any other variable --
+        this.asset_dt_vistoria = null; // Reset of any other variable --
+        this.asset_nu_doc_inspecao = null; // Reset of any other variable --
+         p_date_end_sav = p_date_end;
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        // Orders-Reset------------------------------------
+        this.ord_asset_tp_cfasttp = false;
+        tipo = (String)getSession().getAttribute("tipo");
+        if (tipo.indexOf("psq") >= 0){
+            mesg_var = getMessageByKey("selectViaFiltersMagGlass");
+            xmesg_rc = 777;
+        } else {
+            mesg_var = "";
+            xmesg_rc = 0;
+        }
+    } catch (Exception ex) { ex.getMessage(); }
+    } // Closing Reset Method
+    // Filters-Reset------------------------------------
+    protected void resetFilters() {  
+        this.fil_tabs_vc = null;
+        this.fil_asset_id = null;
+        this.fil_asset_tp_cfasttp = null;
+        this.fil_asset_cd_cfinvty = null;
+        this.fil_asset_st_operacional_cfoperc = null;
+        this.fil_asset_st_operacional_veic = null;
+        this.fil_asset_st_cfsitbm = null;
+        this.fil_asset_tp_vagao_cfwagtp = null;
+        this.fil_asset_cd_vagao_serie_cfwagse = null;
+        this.fil_asset_nu_vagao_placa = null;
+        this.fil_asset_tp_locom_cfengtp = null;
+        this.fil_asset_cd_locom_model_cfengmd = null;
+        this.fil_asset_nu_locomotiva = null;
+        this.fil_asset_cd_cfreslc = null;
+        this.fil_asset_km_ini = null;
+        this.fil_asset_tp_tipologia = null;
+        this.fil_asset_tp_utilizacao = null;
+    }
+    
+    
+    public String doUpdate() throws SQLException, LoginException {
+        String result = "";
+        if (!asset_cd_cfinvty.equals(asset_cd_cfinvty_sav)) {
+            asset_cd_cfinvty_sav = asset_cd_cfinvty;
+            imag_vx = null;
+            result = doInserir();
+        } else {
+            Connection con = DatabaseUtils.getConnection();
+            PreparedStatement ps_max24 = con.prepareStatement("select MAX(asset_cd_cfinvty) AS vlmax  from wbrl_asset where asset_nu = '"+asset_nu+"'  ");
+            ResultSet rs_max24 = ps_max24.executeQuery();
+            String vlmax_cd24_rs = "";
+            if (rs_max24.next()) {
+                vlmax_cd24_rs = rs_max24.getString("vlmax");
+            }
+            ps_max24.close(); rs_max24.close();
+            String max = vlmax_cd24_rs;
+            max = max.replace("-","");
+            int maxn = Integer.parseInt(max);
+            String thisx = asset_cd_cfinvty.replace("-","");
+            int thisxn = Integer.parseInt(thisx);
+            if (thisxn < maxn) {
+                mesg_var = getMessageByKey("unsuccessfull_version_update");
+                return "success";
+            }
+            result = super.doUpdate();
+        }
+        return result;
+    }
+    
+    public void loadDesc() throws SQLException {
+        Connection con = DatabaseUtils.getConnection();
+        try {
+    
+        // Load FK Desc ------------------------
+        p_date_start_desc = IIBeanUtils.getInvty_desc(con, p_date_start);
+        // Load FK Desc ------------------------
+        p_date_end_desc = IIBeanUtils.getInvty_desc(con, p_date_end);
+        // Load FK Desc ------------------------
+        asset_id_desc = IIBeanUtils.getAsset_desc(con, asset_id);
+         asset_tp_cfasttp_desc = IIBeanUtils.getCodfDesc(con, "ASTTP", asset_tp_cfasttp, getLocale());
+        // Load FK Desc ------------------------
+        asset_cd_cfinvty_desc = IIBeanUtils.getInvty_desc(con, asset_cd_cfinvty);
+         asset_st_operacional_cfoperc_desc = IIBeanUtils.getCodfDesc(con, "OPERC", asset_st_operacional_cfoperc, getLocale());
+         asset_st_operacional_veic_desc = IIBeanUtils.getCodfDesc(con, "STOVC", asset_st_operacional_veic, getLocale());
+         asset_st_cfsitbm_desc = IIBeanUtils.getCodfDesc(con, "SITBM", asset_st_cfsitbm, getLocale());
+         asset_tp_vagao_cfwagtp_desc = IIBeanUtils.getCodfDesc(con, "WAGTP", asset_tp_vagao_cfwagtp, getLocale());
+         asset_cd_vagao_serie_cfwagse_desc = IIBeanUtils.getCodfDesc(con, "WAGSE", asset_cd_vagao_serie_cfwagse, getLocale());
+         asset_cd_vagao_fabr_cfwagmf_desc = IIBeanUtils.getCodfDesc(con, "WAGMF", asset_cd_vagao_fabr_cfwagmf, getLocale());
+         asset_tp_locom_cfengtp_desc = IIBeanUtils.getCodfDesc(con, "ENGTP", asset_tp_locom_cfengtp, getLocale());
+         asset_cd_locom_model_cfengmd_desc = IIBeanUtils.getCodfDesc(con, "ENGMD", asset_cd_locom_model_cfengmd, getLocale());
+         asset_cd_trecho_desc = IIBeanUtils.getCodfDesc(con, "TRCHO", asset_cd_trecho, getLocale());
+         asset_cd_subtrecho_desc = IIBeanUtils.getCodfDesc(con, "SBTCH", asset_cd_subtrecho, getLocale());
+         asset_cd_cfreslc_desc = IIBeanUtils.getCodfDesc(con, "RESLC", asset_cd_cfreslc, getLocale());
+         asset_cd_cfreslc_prx_desc = IIBeanUtils.getCodfDesc(con, "RESLC", asset_cd_cfreslc_prx, getLocale());
+         asset_tp_tipologia_desc = IIBeanUtils.getCodfDesc(con, "TIPOL", asset_tp_tipologia, getLocale());
+         asset_tp_utilizacao_desc = IIBeanUtils.getCodfDesc(con, "TIUTI", asset_tp_utilizacao, getLocale());
+         asset_st_geral_desc = IIBeanUtils.getCodfDesc(con, "CONVE", asset_st_geral, getLocale());
+    
+        } finally { DatabaseUtils.releaseConnection(con); }
+    }  //  End of loadDesc 
+    public String doObterBack() throws SQLException, LoginException { // @getrecd
+        String tbakx = (String) (getSession().getAttribute("tbak"));
+        if (tbakx.contains("cad")) { 
+           String result = super.doObter(); // @getrecd
+        } 
+       return tbakx; // @getrecd
+    } 
+    
+    // Opens a Rec Page with Obj Data from a Sel made on Search Screen--returns record page--
+    public String doObter() throws SQLException, LoginException { // @getrecd
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+       tipo ="assetsupercad";
+       loadBean(); // @getrecd
+       String result = super.doObter(); // @getrecd
+       String goBackBeanx = (String)getSession().getAttribute("goBackBean");
+       if (goBackBeanx != null) {
+           // reset();
+       }
+       result = "assetsupercad"; // @getrecd
+       if (ufmv.substring(0,3).contains("000")){
+           return result; // @getrecd
+       } else {
+           return "success"; // @getrecd
+       } 
+    } 
+    
+    public Object doObterBean() throws SQLException, LoginException {
+        loadBean();
+        return this;
+    }
+    
+    // Loads bean from dao, based on PK value of Object - @param (valor) from Object PK
+    public Object doObterBean(String valor) throws SQLException, LoginException {
+        loadBean(valor);
+        return this;
+    }
+    
+    // Building Divs Validation Map ---------------
+    public void load_i_divns() {
+        i_divns.put("0", flds_vfsb); 
+    }
+    public DataObject setTableAliasBean(DataObject dao) {
+        dao.setTableAlias("ASSETSUPER_ASSET");
+        return dao;
+    }
+    public DataObject setProcedureNameBean(DataObject dao) {
+        dao.setProcedureName("AssetSuperSearchPage_lov");
+        return dao;
+    }
+    // loadBean Get Selection Values from Session  ------------------
+    public void loadBean() throws SQLException, LoginException {
+        String tipox = "";
+        if (tipo.indexOf("psq") >= 0) {
+             tipox = tipo.substring(0,tipo.indexOf("psq"))+"cad";
+        } else {tipox = tipo;}
+        // Used only if not loadFromGIS - Start 
+        String valor = (String) getSession().getAttribute("assetsupercadvalor");
+        int kkk = 0;
+     //   while ( ( valor == null || ( valor != null && valor.length() == 0 ) ) && kkk < 90000000  ) {
+     //       valor = (String) getSession().getAttribute(tipox+"valor"); 
+     //       kkk = kkk + 1;
+     //   } 
+        getSession().setAttribute(tipox+"valor", null); 
+        // Used only if not loadFromGIS - End 
+        getSession().setAttribute("tipo", tipox);
+        loadBean(valor);
+    } // end of loadBean
+    
+    // loadBean - Build Parms---------------------------------------------
+    public void loadBean(String valor) throws SQLException, LoginException {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (ufmv == null) { ufmv = "00000000000000000000000000000000000000000000000000"; }
+        if (valor == null) { return; }
+        Connection con = DatabaseUtils.getConnection();
+        // Build List of Keys --------------------------------------------------------
+        String[] keys_vl = new String[2];
+        int start_ix = 0; int end_ix = 0;
+        int kkv = 1;
+        while(kkv <= 1) {
+            if (kkv == 1) {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                if (valor.length() > 1) {
+                   keys_vl[1] = valor.substring(start_ix,end_ix);
+                } else { keys_vl[1] = valor; }
+                start_ix = end_ix+1;
+            } else {
+                end_ix = valor.indexOf(",",start_ix+1);
+                if (end_ix < 0) {end_ix = valor.length();}
+                keys_vl[kkv] = valor.substring(start_ix,end_ix);
+                start_ix = end_ix+1;
+            }
+            kkv = kkv + 1;
+        }
+        // Logic 2x - if ( ( ii.pcmd.indexOf('recdFromTabl') >= 0 || ii.daoBeanUtils.length() > 0   )  )   
+        String id1 = keys_vl[1];
+        // Logic 5 - if (ii.daoBeanUtils.length() == 0 && ii.dao.length() > 0)  
+        Asset Assetx = new Asset(id1);
+        Assetx.loadUfmv(this);
+        Assetx.setTableAlias("ASSETSUPER_ASSET");
+        Assetx.load(con, null, true);
+        
+        Assetx.saveToBean(this);
+         asset_cd_cfinvty_sav = asset_cd_cfinvty;
+        loadDesc();
+        if (tabs_vf == null) {
+            String tabsvf_ini = tabsvf.substring(0,psvc);
+            String tabsvf_fin = tabsvf.substring(psvc+1, tabsvf.length());
+            tabsvf = tabsvf_ini + "0" + tabsvf_fin;
+            tabs_vf = tabsvf;
+        } else {
+            if (tabs_vf.length() < 50) {
+                int ll = 0;
+                ll = 50 - tabs_vf.length();
+                String zr = "000000000000000000000000000000";
+                String ins = zr.substring(0,ll);
+                String tabs_vf1 = tabs_vf.substring(0,27);
+                String tabs_vf2 = tabs_vf.substring(27,30);
+                tabs_vf = tabs_vf1 + ins + tabs_vf2;
+                ll = tabs_vf.length();
+            }
+            tabsvf = tabs_vf;
+        }
+        loadFieldBean();
+        DatabaseUtils.releaseConnection(con);
+        load_i_divns();
+    }
+    
+    public DataObject setDataValues(DataObject dao) throws SQLException, LoginException {
+        String valor = (String) getSession().getAttribute(tipo+"valor");
+        int llx = 0;
+        if (valor != null ) {
+            // Verify if nb of commas equals nb of parms. If not, skip valor processing
+            // It means that processing is not comming via a pocedure call
+            String valorx = valor.replaceAll(",","");
+            llx = valor.length() - valorx.length() + 1;
+        }
+        if (valor != null ) {
+            resetFilters();
+            reset();
+            valor = valor.replaceAll(",,",",null,");
+            // Build List of Keys --------------------------------------------------------
+            String[] keys_vl = new String[25];
+            int start_ix = 0; int end_ix = 0;
+            int kkv = 1;
+            while(kkv <= 24) {
+                if (kkv == 1) {
+                    end_ix = valor.indexOf(",",start_ix+1);
+                    if (end_ix < 0) {end_ix = valor.length();}
+                    if (valor.length() > 1) {
+                       String vl = valor.substring(start_ix,end_ix);
+                       if (vl.equals("null")) {
+                          keys_vl[1] = null;
+                       } else {
+                          keys_vl[1] = valor.substring(start_ix,end_ix);
+                       } 
+                    } else {
+                       String vl = valor.substring(start_ix,end_ix);
+                       if (vl.equals("null")) {
+                          keys_vl[1] = null;
+                       } else {
+                          keys_vl[1] = valor; 
+                       } 
+                    } 
+                    start_ix = end_ix+1;
+                } else {
+                    end_ix = valor.indexOf(",",start_ix+1);
+                    if (end_ix < 0) {end_ix = valor.length();}
+                    if (end_ix > valor.length()) {end_ix = valor.length();}
+                    String vl = valor.substring(start_ix,end_ix);
+                    if (vl.equals("null")) {
+                       keys_vl[kkv] = null;
+                    } else {
+                        keys_vl[kkv] = valor.substring(start_ix,end_ix);
+                    } 
+                    start_ix = end_ix+1;
+                }
+                kkv = kkv + 1;
+            }
+            Asset asset = (Asset) dao;
+            asset.setP_locale(getLocale());
+            asset.setUserid(getLoginInfo().getUserx_id());
+            String Id1 = keys_vl[1];
+            asset.setP_date_start (Id1); 
+            // not an auto
+            this.p_date_start = Id1;
+            String Id2 = keys_vl[2];
+            asset.setP_date_end (Id2); 
+            // not an auto
+            this.p_date_end = Id2;
+            String Id3 = keys_vl[3];
+            asset.setAsset_nu (Id3); 
+            // not an auto
+            this.asset_nu = Id3;
+            // from work var 
+            this.asset_nu = Id3;
+            String Id4 = keys_vl[4];
+            asset.setAsset_cd_trecho (Id4); 
+            // not an auto
+            this.asset_cd_trecho = Id4;
+            // from work var 
+            this.asset_cd_trecho = Id4;
+            String Id5 = keys_vl[5];
+            asset.setAsset_cd_subtrecho (Id5); 
+            // not an auto
+            this.asset_cd_subtrecho = Id5;
+            // from work var 
+            this.asset_cd_subtrecho = Id5;
+            String Id6 = keys_vl[6];
+            asset.setAsset_cd_cfreslc (Id6); 
+            // not an auto
+            this.asset_cd_cfreslc = Id6;
+            // from work var 
+            this.asset_cd_cfreslc = Id6;
+            BigDecimal Id7 = convertDecimal(keys_vl[7]);
+            asset.setAsset_km_range_sqlparm (Id7); 
+            // not an auto
+            this.asset_km_range_sqlparm = Id7;
+            // from work var 
+            this.asset_km_range_sqlparm = Id7;
+            BigDecimal Id8 = convertDecimal(keys_vl[8]);
+            asset.setAsset_km_range_sqlparmx (Id8); 
+            // not an auto
+            this.asset_km_range_sqlparmx = Id8;
+            // from work var 
+            this.asset_km_range_sqlparmx = Id8;
+            String Id9 = keys_vl[9];
+            asset.setAsset_id (Id9); 
+            // not an auto
+            this.asset_id = Id9;
+            // from work var 
+            this.asset_id = Id9;
+            String Id10 = keys_vl[10];
+            asset.setAsset_tp_cfasttp (Id10); 
+            // not an auto
+            this.asset_tp_cfasttp = Id10;
+            // from work var 
+            this.asset_tp_cfasttp = Id10;
+            String Id11 = keys_vl[11];
+            asset.setAsset_cd_cfinvty (Id11); 
+            // not an auto
+            this.asset_cd_cfinvty = Id11;
+            // from work var 
+            this.asset_cd_cfinvty = Id11;
+            String Id12 = keys_vl[12];
+            asset.setAsset_st_operacional_cfoperc (Id12); 
+            // not an auto
+            this.asset_st_operacional_cfoperc = Id12;
+            // from work var 
+            this.asset_st_operacional_cfoperc = Id12;
+            String Id13 = keys_vl[13];
+            asset.setAsset_st_operacional_veic (Id13); 
+            // not an auto
+            this.asset_st_operacional_veic = Id13;
+            // from work var 
+            this.asset_st_operacional_veic = Id13;
+            String Id14 = keys_vl[14];
+            asset.setAsset_st_cfsitbm (Id14); 
+            // not an auto
+            this.asset_st_cfsitbm = Id14;
+            // from work var 
+            this.asset_st_cfsitbm = Id14;
+            String Id15 = keys_vl[15];
+            asset.setAsset_tp_vagao_cfwagtp (Id15); 
+            // not an auto
+            this.asset_tp_vagao_cfwagtp = Id15;
+            // from work var 
+            this.asset_tp_vagao_cfwagtp = Id15;
+            String Id16 = keys_vl[16];
+            asset.setAsset_cd_vagao_serie_cfwagse (Id16); 
+            // not an auto
+            this.asset_cd_vagao_serie_cfwagse = Id16;
+            // from work var 
+            this.asset_cd_vagao_serie_cfwagse = Id16;
+            String Id17 = keys_vl[17];
+            asset.setAsset_nu_vagao_placa (Id17); 
+            // not an auto
+            this.asset_nu_vagao_placa = Id17;
+            // from work var 
+            this.asset_nu_vagao_placa = Id17;
+            String Id18 = keys_vl[18];
+            asset.setAsset_tp_locom_cfengtp (Id18); 
+            // not an auto
+            this.asset_tp_locom_cfengtp = Id18;
+            // from work var 
+            this.asset_tp_locom_cfengtp = Id18;
+            String Id19 = keys_vl[19];
+            asset.setAsset_cd_locom_model_cfengmd (Id19); 
+            // not an auto
+            this.asset_cd_locom_model_cfengmd = Id19;
+            // from work var 
+            this.asset_cd_locom_model_cfengmd = Id19;
+            String Id20 = keys_vl[20];
+            asset.setAsset_nu_locomotiva (Id20); 
+            // not an auto
+            this.asset_nu_locomotiva = Id20;
+            // from work var 
+            this.asset_nu_locomotiva = Id20;
+            BigDecimal Id21 = convertDecimal(keys_vl[21]);
+            asset.setAsset_km_ini (Id21); 
+            // not an auto
+            this.asset_km_ini = Id21;
+            // from work var 
+            this.asset_km_ini = Id21;
+            String Id22 = keys_vl[22];
+            asset.setAsset_tp_tipologia (Id22); 
+            // not an auto
+            this.asset_tp_tipologia = Id22;
+            // from work var 
+            this.asset_tp_tipologia = Id22;
+            String Id23 = keys_vl[23];
+            asset.setAsset_tp_utilizacao (Id23); 
+            // not an auto
+            this.asset_tp_utilizacao = Id23;
+            // from work var 
+            this.asset_tp_utilizacao = Id23;
+            getSession().setAttribute(tipo+"valor", null);
+            return asset; 
+        } else {
+            Asset asset = (Asset) dao;
+            asset.setP_locale(getLocale());
+            asset.setUserid(getLoginInfo().getUserx_id());
+            if (p_date_start != null && p_date_start.length() == 0 ) {p_date_start = null;} 
+            asset.setP_date_start (p_date_start); 
+            if (p_date_end != null && p_date_end.length() == 0 ) {p_date_end = null;} 
+            asset.setP_date_end (p_date_end); 
+            if (asset_nu != null && asset_nu.length() == 0 ) {asset_nu = null;} 
+            asset.setAsset_nu (asset_nu); 
+            if (asset_cd_trecho != null && asset_cd_trecho.length() == 0 ) {asset_cd_trecho = null;} 
+            asset.setAsset_cd_trecho (asset_cd_trecho); 
+            if (asset_cd_subtrecho != null && asset_cd_subtrecho.length() == 0 ) {asset_cd_subtrecho = null;} 
+            asset.setAsset_cd_subtrecho (asset_cd_subtrecho); 
+            if (fil_asset_cd_cfreslc != null && fil_asset_cd_cfreslc.length() == 0 ) {fil_asset_cd_cfreslc = null;} 
+            asset.setAsset_cd_cfreslc (fil_asset_cd_cfreslc); 
+            
+            asset.setAsset_km_range_sqlparm (asset_km_range_sqlparm); 
+            
+            asset_km_range_sqlparmx = asset_km_range_sqlparm; 
+            if ( fil_asset_km_ini.length() == 0 )  {
+                 asset_km_range_sqlparmx = convertDecimal("999");
+            }
+            if ( fil_asset_km_ini.equals("0") )  {
+                 asset_km_range_sqlparmx = convertDecimal("999");
+            }
+            
+            asset.setAsset_km_range_sqlparmx (asset_km_range_sqlparmx); 
+            if (fil_asset_id != null && fil_asset_id.length() == 0 ) {fil_asset_id = null;} 
+            asset.setAsset_id (fil_asset_id); 
+            if (fil_asset_tp_cfasttp != null && fil_asset_tp_cfasttp.length() == 0 ) {fil_asset_tp_cfasttp = null;} 
+            asset.setAsset_tp_cfasttp (fil_asset_tp_cfasttp); 
+            if (fil_asset_cd_cfinvty != null && fil_asset_cd_cfinvty.length() == 0 ) {fil_asset_cd_cfinvty = null;} 
+            asset.setAsset_cd_cfinvty (fil_asset_cd_cfinvty); 
+            if (fil_asset_st_operacional_cfoperc != null && fil_asset_st_operacional_cfoperc.length() == 0 ) {fil_asset_st_operacional_cfoperc = null;} 
+            asset.setAsset_st_operacional_cfoperc (fil_asset_st_operacional_cfoperc); 
+            if (fil_asset_st_operacional_veic != null && fil_asset_st_operacional_veic.length() == 0 ) {fil_asset_st_operacional_veic = null;} 
+            asset.setAsset_st_operacional_veic (fil_asset_st_operacional_veic); 
+            if (fil_asset_st_cfsitbm != null && fil_asset_st_cfsitbm.length() == 0 ) {fil_asset_st_cfsitbm = null;} 
+            asset.setAsset_st_cfsitbm (fil_asset_st_cfsitbm); 
+            if (fil_asset_tp_vagao_cfwagtp != null && fil_asset_tp_vagao_cfwagtp.length() == 0 ) {fil_asset_tp_vagao_cfwagtp = null;} 
+            asset.setAsset_tp_vagao_cfwagtp (fil_asset_tp_vagao_cfwagtp); 
+            if (fil_asset_cd_vagao_serie_cfwagse != null && fil_asset_cd_vagao_serie_cfwagse.length() == 0 ) {fil_asset_cd_vagao_serie_cfwagse = null;} 
+            asset.setAsset_cd_vagao_serie_cfwagse (fil_asset_cd_vagao_serie_cfwagse); 
+            if (fil_asset_nu_vagao_placa != null && fil_asset_nu_vagao_placa.length() == 0 ) {fil_asset_nu_vagao_placa = null;} 
+            asset.setAsset_nu_vagao_placa (fil_asset_nu_vagao_placa); 
+            if (fil_asset_tp_locom_cfengtp != null && fil_asset_tp_locom_cfengtp.length() == 0 ) {fil_asset_tp_locom_cfengtp = null;} 
+            asset.setAsset_tp_locom_cfengtp (fil_asset_tp_locom_cfengtp); 
+            if (fil_asset_cd_locom_model_cfengmd != null && fil_asset_cd_locom_model_cfengmd.length() == 0 ) {fil_asset_cd_locom_model_cfengmd = null;} 
+            asset.setAsset_cd_locom_model_cfengmd (fil_asset_cd_locom_model_cfengmd); 
+            if (fil_asset_nu_locomotiva != null && fil_asset_nu_locomotiva.length() == 0 ) {fil_asset_nu_locomotiva = null;} 
+            asset.setAsset_nu_locomotiva (fil_asset_nu_locomotiva); 
+            
+            if (fil_asset_km_ini != null && fil_asset_km_ini.length() == 0 ) {fil_asset_km_ini = "0";} 
+            if (fil_asset_km_ini != null  ) {
+                asset.setAsset_km_ini(convertDecimal(fil_asset_km_ini)); 
+            }
+            if (fil_asset_tp_tipologia != null && fil_asset_tp_tipologia.length() == 0 ) {fil_asset_tp_tipologia = null;} 
+            asset.setAsset_tp_tipologia (fil_asset_tp_tipologia); 
+            if (fil_asset_tp_utilizacao != null && fil_asset_tp_utilizacao.length() == 0 ) {fil_asset_tp_utilizacao = null;} 
+            asset.setAsset_tp_utilizacao (fil_asset_tp_utilizacao); 
+            return asset; 
+        }
+    }
+    
+    
+    public void loadFieldBean() {
+        p_date_start_vc = valP_date_start(p_date_start); 
+        p_date_end_vc = valP_date_end(p_date_end); 
+        asset_km_range_sqlparm_vc = valAsset_km_range_sqlparm(asset_km_range_sqlparm); 
+        asset_km_range_sqlparmx_vc = valAsset_km_range_sqlparmx(asset_km_range_sqlparmx); 
+        asset_id_vc = valAsset_id(asset_id); 
+        asset_tp_cfasttp_vc = valAsset_tp_cfasttp(asset_tp_cfasttp); 
+        asset_cd_geourl_vc = valAsset_cd_geourl(asset_cd_geourl); 
+        asset_cd_geourl_exp_vc = valAsset_cd_geourl_exp(asset_cd_geourl_exp); 
+        asset_nu_vc = valAsset_nu(asset_nu); 
+        asset_cd_hierarquico_vc = valAsset_cd_hierarquico(asset_cd_hierarquico); 
+        asset_cd_cfinvty_vc = valAsset_cd_cfinvty(asset_cd_cfinvty); 
+        asset_st_operacional_cfoperc_vc = valAsset_st_operacional_cfoperc(asset_st_operacional_cfoperc); 
+        asset_st_operacional_veic_vc = valAsset_st_operacional_veic(asset_st_operacional_veic); 
+        asset_st_cfsitbm_vc = valAsset_st_cfsitbm(asset_st_cfsitbm); 
+        asset_tp_vagao_cfwagtp_vc = valAsset_tp_vagao_cfwagtp(asset_tp_vagao_cfwagtp); 
+        asset_cd_vagao_serie_cfwagse_vc = valAsset_cd_vagao_serie_cfwagse(asset_cd_vagao_serie_cfwagse); 
+        asset_nu_vagao_vc = valAsset_nu_vagao(asset_nu_vagao); 
+        asset_nu_vagao_placa_vc = valAsset_nu_vagao_placa(asset_nu_vagao_placa); 
+        asset_cd_vagao_fabr_cfwagmf_vc = valAsset_cd_vagao_fabr_cfwagmf(asset_cd_vagao_fabr_cfwagmf); 
+        asset_tp_locom_cfengtp_vc = valAsset_tp_locom_cfengtp(asset_tp_locom_cfengtp); 
+        asset_cd_locom_model_cfengmd_vc = valAsset_cd_locom_model_cfengmd(asset_cd_locom_model_cfengmd); 
+        asset_nu_locomotiva_vc = valAsset_nu_locomotiva(asset_nu_locomotiva); 
+        asset_cd_trecho_vc = valAsset_cd_trecho(asset_cd_trecho); 
+        asset_cd_subtrecho_vc = valAsset_cd_subtrecho(asset_cd_subtrecho); 
+        asset_cd_cfreslc_vc = valAsset_cd_cfreslc(asset_cd_cfreslc); 
+        asset_km_ini_vc = valAsset_km_ini(asset_km_ini); 
+        asset_km_fim_vc = valAsset_km_fim(asset_km_fim); 
+        asset_cd_cfreslc_prx_vc = valAsset_cd_cfreslc_prx(asset_cd_cfreslc_prx); 
+        asset_tp_tipologia_vc = valAsset_tp_tipologia(asset_tp_tipologia); 
+        asset_tp_utilizacao_vc = valAsset_tp_utilizacao(asset_tp_utilizacao); 
+        asset_st_geral_vc = valAsset_st_geral(asset_st_geral); 
+        asset_ds_laudo_avaliacao_vc = valAsset_ds_laudo_avaliacao(asset_ds_laudo_avaliacao); 
+        asset_ds_finalidade_laudo_vc = valAsset_ds_finalidade_laudo(asset_ds_finalidade_laudo); 
+        asset_cd_perito_vc = valAsset_cd_perito(asset_cd_perito); 
+        asset_cd_auxiliar_vc = valAsset_cd_auxiliar(asset_cd_auxiliar); 
+        asset_dt_vistoria_vc = valAsset_dt_vistoria(asset_dt_vistoria); 
+        asset_nu_doc_inspecao_vc = valAsset_nu_doc_inspecao(asset_nu_doc_inspecao); 
+    } // end of loadFieldBean
+     
+    public String selMaxVc(String divn) {
+        String vc = "0"; String vc5 = "0"; 
+        Integer divni = Integer.parseInt(divn);
+            vc = p_date_start_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = p_date_end_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_km_range_sqlparm_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_km_range_sqlparmx_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        // Divn - ddd D00_REGISTER_UV
+        if (divni == 1 ) { 
+            vc = asset_id_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_tp_cfasttp_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_geourl_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_geourl_exp_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_nu_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_hierarquico_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_cfinvty_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_st_operacional_cfoperc_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_st_operacional_veic_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_st_cfsitbm_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_tp_vagao_cfwagtp_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_vagao_serie_cfwagse_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_nu_vagao_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_nu_vagao_placa_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_vagao_fabr_cfwagmf_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_tp_locom_cfengtp_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_locom_model_cfengmd_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_nu_locomotiva_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        } else 
+        // Divn - ddd D00_LOCATION_UV
+        if (divni == 2 ) { 
+            vc = asset_cd_trecho_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_subtrecho_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_cfreslc_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_km_ini_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_km_fim_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_cfreslc_prx_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        } else 
+        // Divn - ddd D00_ATTRIBUTES_UV
+        if (divni == 3 ) { 
+            vc = asset_tp_tipologia_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_tp_utilizacao_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_st_geral_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        } else 
+        // Divn - ddd D00_EVALUATION_UV
+        if (divni == 6 ) { 
+            vc = asset_ds_laudo_avaliacao_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_ds_finalidade_laudo_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        } else 
+        // Divn - ddd D00_EXPERTS_UV
+        if (divni == 8 ) { 
+            vc = asset_cd_perito_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_cd_auxiliar_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_dt_vistoria_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+            vc = asset_nu_doc_inspecao_vc; 
+            if (vc.equals("9")) {return vc;}
+            if (vc.equals("5")) {vc5 = "5";}
+        } 
+        if (vc5.equals("5")) {vc = "5";}
+        return vc;
+    } 
+    
+    protected void mountFilter() {
+        ufmv = (String) getSession().getAttribute("ufmv");
+        if (fil_asset_id == null) { fil_asset_id = "";}
+        if (fil_asset_tp_cfasttp == null) { fil_asset_tp_cfasttp = "";}
+        if (fil_asset_cd_cfinvty == null) { fil_asset_cd_cfinvty = "";}
+        if (fil_asset_st_operacional_cfoperc == null) { fil_asset_st_operacional_cfoperc = "";}
+        if (fil_asset_st_operacional_veic == null) { fil_asset_st_operacional_veic = "";}
+        if (fil_asset_st_cfsitbm == null) { fil_asset_st_cfsitbm = "";}
+        if (fil_asset_tp_vagao_cfwagtp == null) { fil_asset_tp_vagao_cfwagtp = "";}
+        if (fil_asset_cd_vagao_serie_cfwagse == null) { fil_asset_cd_vagao_serie_cfwagse = "";}
+        if (fil_asset_nu_vagao_placa == null) { fil_asset_nu_vagao_placa = "";}
+        if (fil_asset_tp_locom_cfengtp == null) { fil_asset_tp_locom_cfengtp = "";}
+        if (fil_asset_cd_locom_model_cfengmd == null) { fil_asset_cd_locom_model_cfengmd = "";}
+        if (fil_asset_nu_locomotiva == null) { fil_asset_nu_locomotiva = "";}
+        if (fil_asset_cd_cfreslc == null) { fil_asset_cd_cfreslc = "";}
+        if (fil_asset_km_ini == null) { fil_asset_km_ini = "";}
+        if (fil_asset_tp_tipologia == null) { fil_asset_tp_tipologia = "";}
+        if (fil_asset_tp_utilizacao == null) { fil_asset_tp_utilizacao = "";}
+        if (fil_asset_id.length() == 0
+            && fil_asset_tp_cfasttp.length() == 0
+            && fil_asset_cd_cfinvty.length() == 0
+            && fil_asset_st_operacional_cfoperc.length() == 0
+            && fil_asset_st_operacional_veic.length() == 0
+            && fil_asset_st_cfsitbm.length() == 0
+            && fil_asset_tp_vagao_cfwagtp.length() == 0
+            && fil_asset_cd_vagao_serie_cfwagse.length() == 0
+            && fil_asset_nu_vagao_placa.length() == 0
+            && fil_asset_tp_locom_cfengtp.length() == 0
+            && fil_asset_cd_locom_model_cfengmd.length() == 0
+            && fil_asset_nu_locomotiva.length() == 0
+            && fil_asset_cd_cfreslc.length() == 0
+            && fil_asset_km_ini.length() == 0
+            && fil_asset_tp_tipologia.length() == 0
+            && fil_asset_tp_utilizacao.length() == 0
+        ) {
+            if (pesqData != null) { pesqData.clear(); } 
+            reload = 1; return;
+        }
+    } // end of mountFilter
+    
+    // doOrd_asset_tp_cfasttp--------------------------------------------------------
+    public String doOrd_asset_tp_cfasttp() throws SQLException, LoginException {
+        setOrder("");
+        addFieldToOrder("upper(" + Asset.ASSET_TP_CFASTTP + ")", !ord_asset_tp_cfasttp);
+        ord_asset_tp_cfasttp = !ord_asset_tp_cfasttp;
+        return super.doSelecionar();
+    }
+    
+    public String doRetornaPesquisa() {
+        getSession().setAttribute("novainclusao", false);
+        return super.tipo;
+    }
+    public boolean isCanMenu() throws SQLException, LoginException {
+        tipo1 = "*assetsuper";
+        return super.isCanPesquisar();
+    }
+    
+    // getAssistnovo------------------------------------------------
+    // Verifies whether record selection button is to be rendered right after record insertion
+    public Boolean getAssistnovo() {
+        assistnovo = false;
+        Boolean bb = (Boolean) (getSession().getAttribute(super.tipo));
+        Boolean an = (Boolean) (getSession().getAttribute("novainclusao"));
+        if (bb == null) {bb = false;}
+        if (an == null) {an = false;}
+        if (bb == true && an == true) {assistnovo = true;}
+        return assistnovo;
+    }
+    
+    public String doReturn() throws SQLException, LoginException {
+            tbakcad = tbakloc;
+            return super.doReturn();
+    }
+     
+    public String doSelecionar() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "assetsuperpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } else {
+        	       mesg_var = getMessageByKey("msg_noSpreadSheetPlan1");
+            }
+        }
+        return "assetsuperpsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarOnly() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "assetsuperpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (fil_asset_id != null && fil_asset_id.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_cfasttp != null && fil_asset_tp_cfasttp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_cfinvty != null && fil_asset_cd_cfinvty.length()> 0) {filterx = 1;}
+        if (fil_asset_st_operacional_cfoperc != null && fil_asset_st_operacional_cfoperc.length()> 0) {filterx = 1;}
+        if (fil_asset_st_operacional_veic != null && fil_asset_st_operacional_veic.length()> 0) {filterx = 1;}
+        if (fil_asset_st_cfsitbm != null && fil_asset_st_cfsitbm.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_vagao_cfwagtp != null && fil_asset_tp_vagao_cfwagtp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_vagao_serie_cfwagse != null && fil_asset_cd_vagao_serie_cfwagse.length()> 0) {filterx = 1;}
+        if (fil_asset_nu_vagao_placa != null && fil_asset_nu_vagao_placa.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_locom_cfengtp != null && fil_asset_tp_locom_cfengtp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_locom_model_cfengmd != null && fil_asset_cd_locom_model_cfengmd.length()> 0) {filterx = 1;}
+        if (fil_asset_nu_locomotiva != null && fil_asset_nu_locomotiva.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_cfreslc != null && fil_asset_cd_cfreslc.length()> 0) {filterx = 1;}
+        if (fil_asset_km_ini != null && fil_asset_km_ini.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_tipologia != null && fil_asset_tp_tipologia.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_utilizacao != null && fil_asset_tp_utilizacao.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarOnly();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } else {
+        	       mesg_var = getMessageByKey("msg_noSpreadSheetPlan1");
+            }
+        }
+        return "assetsuperpsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarNullOnly() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "assetsuperpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        if (fil_asset_id != null && fil_asset_id.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_cfasttp != null && fil_asset_tp_cfasttp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_cfinvty != null && fil_asset_cd_cfinvty.length()> 0) {filterx = 1;}
+        if (fil_asset_st_operacional_cfoperc != null && fil_asset_st_operacional_cfoperc.length()> 0) {filterx = 1;}
+        if (fil_asset_st_operacional_veic != null && fil_asset_st_operacional_veic.length()> 0) {filterx = 1;}
+        if (fil_asset_st_cfsitbm != null && fil_asset_st_cfsitbm.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_vagao_cfwagtp != null && fil_asset_tp_vagao_cfwagtp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_vagao_serie_cfwagse != null && fil_asset_cd_vagao_serie_cfwagse.length()> 0) {filterx = 1;}
+        if (fil_asset_nu_vagao_placa != null && fil_asset_nu_vagao_placa.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_locom_cfengtp != null && fil_asset_tp_locom_cfengtp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_locom_model_cfengmd != null && fil_asset_cd_locom_model_cfengmd.length()> 0) {filterx = 1;}
+        if (fil_asset_nu_locomotiva != null && fil_asset_nu_locomotiva.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_cfreslc != null && fil_asset_cd_cfreslc.length()> 0) {filterx = 1;}
+        if (fil_asset_km_ini != null && fil_asset_km_ini.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_tipologia != null && fil_asset_tp_tipologia.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_utilizacao != null && fil_asset_tp_utilizacao.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNullOnly();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } else {
+        	       mesg_var = getMessageByKey("msg_noSpreadSheetPlan1");
+            }
+        }
+        return "assetsuperpsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarBackx() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "assetsuperpsq");
+        pageLength = 999;
+        String ret = "";
+        int filterx = 0;
+        ret = super.doSelecionar();
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } else {
+        	       mesg_var = getMessageByKey("msg_noSpreadSheetPlan1");
+            }
+        }
+        return "assetsuperpsq"; // updbutton != 1 - end
+    }
+    
+    public String doSelecionarNull() throws LoginException, SQLException { // @search ccc
+        setOrder("");
+        getSession().setAttribute("tipo", "assetsuperpsq");
+        tbakloc = (String) (getSession().getAttribute("tbak"));
+        pageLength = 999;
+        tipo = "assetsuperpsqxxx";
+        String ret = "";
+        int filterx = 0;
+        if (fil_asset_id != null && fil_asset_id.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_cfasttp != null && fil_asset_tp_cfasttp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_cfinvty != null && fil_asset_cd_cfinvty.length()> 0) {filterx = 1;}
+        if (fil_asset_st_operacional_cfoperc != null && fil_asset_st_operacional_cfoperc.length()> 0) {filterx = 1;}
+        if (fil_asset_st_operacional_veic != null && fil_asset_st_operacional_veic.length()> 0) {filterx = 1;}
+        if (fil_asset_st_cfsitbm != null && fil_asset_st_cfsitbm.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_vagao_cfwagtp != null && fil_asset_tp_vagao_cfwagtp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_vagao_serie_cfwagse != null && fil_asset_cd_vagao_serie_cfwagse.length()> 0) {filterx = 1;}
+        if (fil_asset_nu_vagao_placa != null && fil_asset_nu_vagao_placa.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_locom_cfengtp != null && fil_asset_tp_locom_cfengtp.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_locom_model_cfengmd != null && fil_asset_cd_locom_model_cfengmd.length()> 0) {filterx = 1;}
+        if (fil_asset_nu_locomotiva != null && fil_asset_nu_locomotiva.length()> 0) {filterx = 1;}
+        if (fil_asset_cd_cfreslc != null && fil_asset_cd_cfreslc.length()> 0) {filterx = 1;}
+        if (fil_asset_km_ini != null && fil_asset_km_ini.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_tipologia != null && fil_asset_tp_tipologia.length()> 0) {filterx = 1;}
+        if (fil_asset_tp_utilizacao != null && fil_asset_tp_utilizacao.length()> 0) {filterx = 1;}
+        if (filterx == 1) {
+            ret = super.doSelecionar();
+        } else {
+            ret = super.doSelecionarNull();
+        }
+        if(mesg_var == null) { mesg_var = "";}  
+        if (reload == 0 && codfqt == 0) {
+            xmesg_rc = 1;
+            if (mesg_var.length() == 0) {
+                mesg_var = getMessageByKey("msg_noRecordsFound");
+            } else {
+        	       mesg_var = getMessageByKey("msg_noSpreadSheetPlan1");
+            }
+        }
+        return "assetsuperpsq"; // updbutton != 1 - end
+    }
+    
+    protected void reloadPesqData(Connection con) throws SQLException, LoginException {
+        loadDesc(); boolean res = true;
+        String valor = (String) getSession().getAttribute(tipo+"valor");
+        if (valor == null ) {
+            res = validateParms();
+        }
+        if (res) {
+            super.reloadPesqData(con);
+            if (pesqData.size() == maxResults) {
+                mesg_var = getMessageByKey("maxResultsExceededWithReport");
+            }
+        } else {
+            pesqData = null;
+        }
+    } // tttt
+
+} // End of Code

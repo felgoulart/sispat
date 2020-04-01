@@ -1,0 +1,50 @@
+/* Scroll space */
+.grid-header th:nth-child(1), .grid-filter td:nth-child(1) { width: 17px;}
+/* Prop:convs_cd */
+.grid-header th:nth-child(2),
+.grid-filter td:nth-child(2), .grid-filter td:nth-child(2) input,
+.grid-result td:nth-child(1) { width: 182px;;text-align: left;}
+/* Prop:convs_sq */
+.grid-header th:nth-child(3),
+.grid-filter td:nth-child(3), .grid-filter td:nth-child(3) input,
+.grid-result td:nth-child(2) { width: 47px;;text-align: left;}
+/* Prop:convs_tt_orgdes */
+.grid-header th:nth-child(4),
+.grid-filter td:nth-child(4), .grid-filter td:nth-child(4) input,
+.grid-result td:nth-child(3) { width: 272px;;text-align: left;}
+/* Prop:convs_tp_sispat */
+.grid-header th:nth-child(5),
+.grid-filter td:nth-child(5), .grid-filter td:nth-child(5) input,
+.grid-result td:nth-child(4) { width: 47px;;text-align: left;}
+/* Prop:convs_tp_orgdes */
+.grid-header th:nth-child(6),
+.grid-filter td:nth-child(6), .grid-filter td:nth-child(6) input,
+.grid-result td:nth-child(5) { width: 47px;;text-align: left;}
+/* Prop:convs_tp_regra */
+.grid-header th:nth-child(7),
+.grid-filter td:nth-child(7), .grid-filter td:nth-child(7) input,
+.grid-result td:nth-child(6) { width: 47px;;text-align: left;}
+/* Prop:convs_cd_codffk */
+.grid-header th:nth-child(8),
+.grid-filter td:nth-child(8), .grid-filter td:nth-child(8) input,
+.grid-result td:nth-child(7) { width: 92px;;text-align: left;}
+/* Prop:convs_lg */
+.grid-header th:nth-child(9),
+.grid-filter td:nth-child(9), .grid-filter td:nth-child(9) input,
+.grid-result td:nth-child(8) { width: 92px;;text-align: left;}
+/* Prop:convs_in_ativo */
+.grid-header th:nth-child(10),
+.grid-filter td:nth-child(10), .grid-filter td:nth-child(10) input,
+.grid-result td:nth-child(9) { width: 29px;;text-align: left;}
+/* Prop:tabs_vc */
+.grid-header th:nth-child(11),
+.grid-filter td:nth-child(11), .grid-filter td:nth-child(11) input,
+.grid-result td:nth-child(10) { width: 25px;;text-align: left;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(12),
+.grid-filter td:nth-child(12), .grid-filter td:nth-child(12) input,
+.grid-result td:nth-child(11) { width: 0px;;text-align: left;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(13),
+.grid-filter td:nth-child(13), .grid-filter td:nth-child(13) input,
+.grid-result td:nth-child(12) { width: 0px;;text-align: left;}

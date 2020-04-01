@@ -1,0 +1,447 @@
+package wins.render;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import javax.faces.render.Renderer;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ * <p>Title: </p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2004</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author not attributable
+ * @version 1.0
+ */
+public class PsOneToManyBoxRenderer extends Renderer {
+
+    public Integer ii = 0;
+
+    protected static Log log = LogFactory.getLog(PsOneToManyBoxRenderer.class);
+
+    public PsOneToManyBoxRenderer() {
+    }
+
+    private void writeHidden(ResponseWriter writer, String name, Object value, String type) throws IOException {
+        writer.write('\n');
+        writer.startElement("input", null);
+        writer.writeAttribute("type", "hidden", null);
+        writer.writeAttribute("name", name, null);
+        if (value == null) {
+            writer.writeAttribute("value", "", "value");
+        } else if (type.equalsIgnoreCase("date")) {
+            writer.writeAttribute("value", ConvertUtils.lookup(String.class).convert(Date.class, value), "value");
+        } else if (type.equalsIgnoreCase("datetime")) {
+            writer.writeAttribute("value", ConvertUtils.lookup(String.class).convert(Timestamp.class, value), "value");
+        } else if (type.equalsIgnoreCase("text") || type.equalsIgnoreCase("hidden") || type.equalsIgnoreCase("span")) {
+            writer.writeAttribute("value", ConvertUtils.lookup(String.class).convert(String.class, value), "value");
+        } else if (type.equalsIgnoreCase("checkbox")) {
+            writer.writeAttribute("value", ConvertUtils.lookup(String.class).convert(Boolean.class, value), "value");
+        } else if (type.equalsIgnoreCase("image")) {
+            writer.writeAttribute("value", value.toString(), "value");
+        } else {
+            writer.writeAttribute("value", value.toString(), "value");
+            log.warn("Tipo desconhecido para o campo '" + name + "':" + value.getClass() + ", " + type);
+        }
+        writer.endElement("input");
+    }
+
+    private void writeHiddens(ResponseWriter writer, String id, String[] fields, Object values, String[] types) throws
+        IOException {
+        try {
+            for (int i = 0; i < fields.length; i++) {
+                try {
+                    Object value = (values != null) ? PropertyUtils.getProperty(values, fields[i]) : null;
+                    writeHidden(writer, id + ":" + fields[i], value, types[i]);
+                } catch (NoSuchMethodException ex) {
+                    log.error("O bean '" + values + "' não possui getter para o atributo '" +
+                              fields[i] + "'.", ex);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void writeArray(ResponseWriter writer, String id, String[] array) throws IOException {
+        writer.write("var " + id + " = [");
+        if (array.length > 0) {
+            writer.write("'" + array[0] + "'");
+            for (int i = 1; i < array.length; i++) {
+                writer.write(", '" + array[i] + "'");
+            }
+        }
+        writer.write("];\n");
+    }
+
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+
+        // inicio da tabela com borda
+        writer.write("<table border=0 width=\"100%\">\n<tr>\n<td align=center>\n");
+
+        super.encodeBegin(context, component);
+    }
+
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+        super.encodeEnd(context, component);
+
+        ResponseWriter writer = context.getResponseWriter();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        Map msg = (Map) request.getAttribute("msg");
+
+        // dados iniciais
+        String id = component.getClientId(context);
+        String _id = id.replace(':', '_');
+        List value;
+        Object ovalue = component.getAttributes().get("value");
+        if (ovalue instanceof List) {
+            value = (List) ovalue;
+        } else {
+            throw new RuntimeException("Value need to be a List.");
+        }
+        String[] fields = (String[]) component.getAttributes().get("fields");
+        String[] headers = (String[]) component.getAttributes().get("headers");
+        String[] requireds = (String[]) component.getAttributes().get("requireds");
+        String[] fieldTypes = (String[]) component.getAttributes().get("fieldTypes");
+        boolean useListbox = (Boolean) component.getAttributes().get("useListboxKeyField");
+        String listboxKeyField = (String) component.getAttributes().get("listboxKeyField");
+        String listboxDescField = (String) component.getAttributes().get("listboxDescField");
+        String dependence = (String) component.getAttributes().get("dependence");
+
+        // botão adicionar
+        writer.startElement("a", null);
+        writer.writeAttribute("onclick", _id + "_add();", null);
+        writer.writeAttribute("id", _id + "_botaoAdicionar", null);
+        writer.writeAttribute("href", "#", null);
+        writer.writeAttribute("class", "tip", null);
+        writer.writeAttribute("style", "color: #0060B0; font-size: 12pt; display:block;", null);
+        writer.writeText("Adicionar", null);
+        writer.endElement("a");
+        writer.write('\n');
+
+        writer.startElement("table", null);
+        writer.writeAttribute("id", _id + "_tableUpdate", null);
+        writer.writeAttribute("border", "0", null);
+        writer.writeAttribute("style", "color: #0060B0; font-size: 12pt; display: none;", null);
+        writer.write('\n');
+        writer.startElement("tr", null);
+        writer.write('\n');
+        writer.startElement("td", null);
+        writer.writeAttribute("width", "90", null);
+
+        // botão atualizar
+        writer.startElement("a", null);
+        writer.writeAttribute("onclick", _id + "_update();", null);
+        writer.writeAttribute("id", _id + "_botaoAtualizar", null);
+        writer.writeAttribute("href", "#", null);
+        writer.writeAttribute("class", "tip", null);
+        writer.writeAttribute("style", "color: #0060B0; font-size: 12pt;", null);
+        writer.writeText("Atualizar", null);
+        writer.endElement("a");
+        writer.write('\n');
+
+        writer.endElement("td");
+        writer.write('\n');
+        writer.startElement("td", null);
+        writer.writeAttribute("width", "90", null);
+
+        // botão cancelar
+        writer.startElement("a", null);
+        writer.writeAttribute("onclick", _id + "_cancelUpdate();", null);
+        writer.writeAttribute("id", _id + "_botaoCancelar", null);
+        writer.writeAttribute("href", "#", null);
+        writer.writeAttribute("class", "tip", null);
+        writer.writeAttribute("style", "color: #0060B0; font-size: 12pt;", null);
+        writer.writeText("Cancelar", null);
+        writer.endElement("a");
+        writer.write('\n');
+
+        writer.endElement("td");
+        writer.write('\n');
+        writer.endElement("tr");
+        writer.write('\n');
+        writer.endElement("table");
+        writer.write('\n');
+
+        // tabela de dados
+        writer.startElement("div", null);
+        writer.writeAttribute("id", _id + "_divtabeladados", null);
+        writer.writeAttribute("style", "position: relative; width: 100%;", null);
+        writer.endElement("div");
+        writer.write('\n');
+
+        // lista de campos
+        writer.startElement("div", null);
+        writer.writeAttribute("id", id + ":listacampos", null);
+        writer.writeAttribute("style", "display: none", null);
+
+        writeHiddens(writer, id, fields, null, fieldTypes);
+
+        writer.endElement("div");
+        writer.write('\n');
+
+        // campos com dados
+        writer.startElement("div", null);
+        writer.writeAttribute("id", id + ":campos", null);
+        writer.writeAttribute("style", "display: none", null);
+
+        for (int i = 0; i < value.size(); i++) {
+            writeHiddens(writer, id, fields, value.get(i), fieldTypes);
+        }
+
+        writer.endElement("div");
+        writer.write('\n');
+
+        // fim da tabela com borda
+        writer.write("</td>\n</tr>\n</table>\n");
+
+        // script
+        writer.startElement("script", null);
+        writer.write('\n');
+
+        writer.write("var " + _id + "_onChange = new Array();\n");
+        writer.write("var " + _id + "_count = " + value.size() + ";\n");
+        writeArray(writer, _id + "_ls", fields);
+        writeArray(writer, _id + "_lsh", headers);
+        writeArray(writer, _id + "_lsr", requireds);
+        writeArray(writer, _id + "_lsf", fieldTypes);
+
+        // função doOnChange
+        writer.write("function " + _id + "_doOnChange() {\n");
+        writer.write("    for (var i = 0; i < " + _id + "_onChange.length; i++) {\n");
+        writer.write("        " + _id + "_onChange[i]();\n");
+        writer.write("    }\n");
+        writer.write("}\n");
+
+        // função refresh
+        writer.write("function " + _id + "_refresh() {\n");
+
+        writer.write("  div = el('" + _id + "_divtabeladados');\n");
+        writer.write("  div.innerHTML = '';\n");
+        writer.write("  tb = div.appendChild(document.createElement('table'));\n");
+        writer.write("  tb.setAttribute('className', 'tb');\n");
+        writer.write("  tb.setAttribute('border', '1');\n");
+        writer.write("  tb.setAttribute('cellpadding', '1');\n");
+        writer.write("  tb.setAttribute('cellspacing', '1');\n");
+        writer.write("  tb.setAttribute('width', '100%');\n");
+
+        writer.write("  head = tb.appendChild(document.createElement('thead'));\n");
+        writer.write("  trh = head.appendChild(document.createElement('tr'));\n");
+        writer.write("  trh.setAttribute('className', 'tbh');\n");
+        for (int i = 0; i < headers.length; i++) {
+            writer.write("  th = trh.appendChild(document.createElement('th'));\n");
+            writer.write("  th.appendChild(document.createTextNode('" + msg.get(headers[i]) + "'));\n");
+        }
+        writer.write("  tha = trh.appendChild(document.createElement('th'));\n");
+        writer.write("  tha.setAttribute('width', '12');\n");
+        writer.write("  tha.appendChild(document.createTextNode(' '));\n");
+
+        writer.write("  body = tb.appendChild(document.createElement('tbody'));\n");
+
+        writer.write("  for (i = 1; i < da('" + id + ":" + fields[0] + "').length; i++) {\n");
+        writer.write("    da('" + id + ":" + fields[1] + "')[i].value = i - 1;\n");
+        writer.write("    tr = body.appendChild(document.createElement('tr'));\n");
+        writer.write("    tr.setAttribute('id', 'tr' + i);\n");
+        writer.write("    tr.setAttribute('className', 'tr');\n");
+        writer.write("    for (j = 0; j < " + _id + "_lsh.length; j++) {\n");
+        writer.write("      td = tr.appendChild(document.createElement('td'));\n");
+        writer.write("      a = td.appendChild(document.createElement('a'));\n");
+        writer.write("      a.onclick = function() { " + _id + "_selectToUpdate(this.valor); };\n");
+        writer.write("      a.setAttribute('valor', i);\n");
+        writer.write("      a.setAttribute('href', '#');\n");
+        writer.write("      a.appendChild(document.createTextNode(da('" + id + ":' + " + _id +
+                     "_lsh[j])[i].value));\n");
+        writer.write("    }\n");
+        writer.write("    tda = tr.appendChild(document.createElement('td'));\n");
+        writer.write("    a = tda.appendChild(document.createElement('a'));\n");
+        writer.write("    a.onclick = function() { " + _id + "_remove(this); };\n");
+        writer.write("    a.setAttribute('valor', i);\n");
+        writer.write("    a.setAttribute('href', '#');\n");
+        writer.write("    img = a.appendChild(document.createElement('img'));\n");
+        writer.write("    img.setAttribute('className', 'iex');\n");
+        writer.write("    img.setAttribute('src', '../imagens/btExcluir.gif');\n");
+        writer.write("  }\n");
+        if (useListbox) {
+            writer.write("  " + _id + "_createOptions();\n");
+        }
+        if (dependence != null) {
+            writer.write("  try {\n");
+            writer.write("    " + dependence + "_createOptions();\n");
+            writer.write("  } catch (ex) {};\n");
+        }
+        writer.write("}\n");
+
+        //função remove
+        writer.write("function " + _id + "_remove(a) {\n");
+        writer.write("  for (i = 0; i < " + _id + "_ls.length; i++) {\n");
+        writer.write("    el('" + id + ":campos').removeChild(da('" + id + ":' + " + _id +
+                     "_ls[i])[a.valor]);\n");
+        writer.write("  }\n");
+        writer.write("  " + _id + "_count--;\n");
+        writer.write("  " + _id + "_refresh();\n");
+        writer.write("  " + _id + "_doOnChange();\n");
+        writer.write("}\n");
+
+        //função selectToUpdate
+        writer.write("function " + _id + "_selectToUpdate(valor) {\n");
+        writer.write("  el('cadForm:alterando').value = valor;\n");
+        writer.write("  da('" + _id + "_tableUpdate').style.display = 'block';\n");
+        writer.write("  da('" + _id + "_botaoAdicionar').style.display = 'none';\n");
+        // pegando valores de volta
+        writer.write("  for (i = 0; i < " + _id + "_ls.length; i++) {\n");
+        writer.write("    davs('" + id + ":' + " + _id + "_ls[i] + '0', " + _id + "_lsf[i], da('" + id +
+                     ":' + " + _id + "_ls[i])[valor].value);\n");
+        writer.write("  }\n");
+        writer.write("}\n");
+
+        //função cancelUpdate
+        writer.write("function " + _id + "_cancelUpdate() {\n");
+        writer.write("  el('cadForm:alterando').value = '';\n");
+        writer.write("  da('" + _id + "_tableUpdate').style.display = 'none';\n");
+        writer.write("  da('" + _id + "_botaoAdicionar').style.display = 'block';\n");
+        writer.write("  " + _id + "_reset();\n");
+        writer.write("}\n");
+
+        //função update
+        writer.write("function " + _id + "_update() {\n");
+        writer.write("  el('cadForm:alterando').value = '';\n");
+        writer.write("  da('" + _id + "_tableUpdate').style.display = 'none';\n");
+        writer.write("  da('" + _id + "_botaoAdicionar').style.display = 'block';\n");
+        writer.write("  for (var i = 2; i < " + _id + "_ls.length; i++) {\n");
+        //+1 abaixo porque o primeiro item do array não contém nada >< //parseInt porque 1+"1" = "11" ><
+        writer.write("    da('" + id + ":' + " + _id + "_ls[i])[1+parseInt(da('" + id + ":' + " + _id +
+                     "_ls[1] + '0').value)].value = " +
+                     "dav('" + id + ":' + " + _id + "_ls[i] + '0', " + _id + "_lsf[i]);\n");
+        writer.write("  }\n");
+        writer.write("  " + _id + "_reset();\n");
+        writer.write("  " + _id + "_refresh();\n");
+        writer.write("  " + _id + "_doOnChange();\n");
+        writer.write("}\n");
+
+        // função validate
+        writer.write("function " + _id + "_validate() {\n");
+
+        // verificando se os campos obrigatórios foram preenchidos
+        writer.write("  for (i = 0; i < " + _id + "_lsr.length; i++) {\n");
+        writer.write("    if (da('" + id + ":' + " + _id + "_lsr[i] + '0').value == '') {\n");
+        writer.write("      alert('Dados preenchidos incorretamente. Verifique.');\n");
+        writer.write("      da('" + id + ":' + " + _id + "_lsr[i] + '0').focus();\n");
+        writer.write("      return false;\n");
+        writer.write("    }\n");
+        writer.write("  }\n");
+
+        // verificando se os campos de data foram preenchidos corretamente
+        writer.write("  for (i = 2; i < " + _id + "_ls.length; i++) {\n");
+        writer.write("    if (" + _id + "_lsf[i] == 'date' && !isDate(dav('" + id + ":' + " + _id +
+                     "_ls[i] + '0','date'))) {\n");
+        writer.write("      da('" + id + ":' + " + _id + "_ls[i] + '0').focus();\n");
+        writer.write("      return false;\n");
+        writer.write("    }\n");
+        writer.write("  }\n");
+
+        writer.write("  return true;\n");
+        writer.write("}\n");
+
+        // função add
+        writer.write("function " + _id + "_add() {\n");
+        writer.write("  if (!" + _id + "_validate()) return;");
+        writer.write("  " + _id + "_count++;\n");
+        writer.write("  da('" + id + ":campos').innerHTML = da('" + id +
+                     ":campos').innerHTML + da('" + id + ":listacampos').innerHTML;\n");
+
+        // setar valores
+        writer.write("  da('" + id + ":" + fields[0] + "')[" + _id + "_count].value = '';\n");
+        writer.write("  da('" + id + ":" + fields[1] + "')[" + _id + "_count].value = " +
+                     _id + "_count-1;\n");
+
+        writer.write("  for (i = 2; i < " + _id + "_ls.length; i++) {\n");
+        writer.write("    da('" + id + ":' + " + _id + "_ls[i])[" + _id + "_count].value = " +
+                     "dav('" + id + ":' + " + _id + "_ls[i] + '0', " + _id + "_lsf[i]);\n");
+        writer.write("  }\n");
+
+        writer.write("  " + _id + "_reset();\n");
+        writer.write("  " + _id + "_refresh();\n");
+        writer.write("  " + _id + "_doOnChange();\n");
+        writer.write("}\n");
+
+        // função reset
+        writer.write("function " + _id + "_reset() {\n");
+        writer.write("  for (i = 0; i < " + _id + "_ls.length; i++) {\n");
+        writer.write("    davs('" + id + ":' + " + _id + "_ls[i] + '0', " + _id + "_lsf[i], '');\n");
+        writer.write("  }\n");
+        writer.write("}\n");
+
+        // função createOptions
+        if (useListbox) {
+            writer.write("function " + _id + "_createOptions() {\n");
+            writer.write("  createOptions('" + listboxKeyField + "', '" + id + ":" + fields[2] + "0', '" + listboxDescField + "');\n");
+            writer.write("}\n");
+        }
+
+        writer.write(_id + "_refresh();\n");
+
+        // suporte a mudança de página
+        // writer.write("array1[ii+1] = function (){\n");
+        writer.write("function " + _id + "_onLoad() {\n");
+        writer.write("if (el('cadForm:alterando').value) {\n");
+        writer.write("  da('" + _id + "_tableUpdate').style.display = 'block';\n");
+        writer.write("  da('" + _id + "_botaoAdicionar').style.display = 'none';\n");
+        writer.write("  for (i = 0; i < 2; i++) {\n");
+        writer.write("    davs('" + id + ":' + " + _id + "_ls[i] + '0', " + _id + "_lsf[i], da('" +
+                     id + ":' + " + _id + "_ls[i])[el('cadForm:alterando').value].value);\n");
+        writer.write("  }\n");
+        writer.write("}\n");
+        writer.write("}\n");
+
+        writer.endElement("script");
+        writer.write('\n');
+    }
+
+    public void decode(FacesContext context, UIComponent component) {
+        super.decode(context, component);
+        String[] fields = (String[]) component.getAttributes().get("fields");
+        String id = component.getClientId(context);
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+
+        Vector<HashMap> v = new Vector<HashMap>();
+        for (int i = 0; i < fields.length; i++) {
+            String[] values = request.getParameterValues(id + ":" + fields[i]);
+            if (values != null) {
+                for (int j = 1; j < values.length; j++) {
+                    if (i == 0) {
+                        v.add(new HashMap());
+                    }
+                    if (j > v.size()) {
+                        log.warn("Field name can be wrong: " + id + ":" + fields[i]);
+                    } else {
+                        HashMap bean = (HashMap) v.get(j - 1);
+                        bean.put(fields[i], values[j]);
+                    }
+                }
+            } else {
+                log.warn("Field '" + id + ":" + fields[i] + "' is null");
+            }
+        }
+
+        component.getValueBinding("value").setValue(context, v);
+    }
+}

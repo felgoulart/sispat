@@ -1,0 +1,19 @@
+/* Prop:codf_id */
+.grid-header th:nth-child(1),
+.grid-filter td:nth-child(1),
+.grid-filter td:nth-child(1) input,
+.grid-result td:nth-child(1) { width: 70px;text-align: left;}
+/* Prop:codf_ds */
+.grid-header th:nth-child(2),
+.grid-filter td:nth-child(2),
+.grid-filter td:nth-child(2) input,
+.grid-result td:nth-child(2) { width: 300px;text-align: left;}
+/* Prop:codf_ds */
+.grid-header th:nth-child(3),
+.grid-filter td:nth-child(3),
+.grid-filter td:nth-child(3) input,
+.grid-result td:nth-child(3) { width: 0px;text-align: left;}
+/* Scroll space css right */
+.grid-header th:nth-child(4),
+.grid-filter td:nth-child(4) { width: 17px;}
+#div_dtDados {direction: ltr;}

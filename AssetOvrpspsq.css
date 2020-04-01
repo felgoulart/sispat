@@ -1,0 +1,129 @@
+/* Prop:asset_nu */
+.grid-header th:nth-child(1),
+.grid-filter td:nth-child(1),
+.grid-filter td:nth-child(1) input,
+.grid-result td:nth-child(1) { width: 90px;text-align: left;}
+/* Prop:asset_st_operacional_cfoperc */
+.grid-header th:nth-child(2),
+.grid-filter td:nth-child(2),
+.grid-filter td:nth-child(2) input,
+.grid-result td:nth-child(2) { width: 29px;text-align: left;}
+/* Prop:asset_tp_propriedade */
+.grid-header th:nth-child(3),
+.grid-filter td:nth-child(3),
+.grid-filter td:nth-child(3) input,
+.grid-result td:nth-child(3) { width: 40px;text-align: left;}
+/* Prop:asset_cd_ccusto */
+.grid-header th:nth-child(4),
+.grid-filter td:nth-child(4),
+.grid-filter td:nth-child(4) input,
+.grid-result td:nth-child(4) { width: 56px;text-align: left;}
+/* Prop:asset_cd_uf */
+.grid-header th:nth-child(5),
+.grid-filter td:nth-child(5),
+.grid-filter td:nth-child(5) input,
+.grid-result td:nth-child(5) { width: 29px;text-align: left;}
+/* Prop:asset_cd_cfresid */
+.grid-header th:nth-child(6),
+.grid-filter td:nth-child(6),
+.grid-filter td:nth-child(6) input,
+.grid-result td:nth-child(6) { width: 100px;text-align: left;}
+/* Prop:asset_cd_trecho */
+.grid-header th:nth-child(7),
+.grid-filter td:nth-child(7),
+.grid-filter td:nth-child(7) input,
+.grid-result td:nth-child(7) { width: 40px;text-align: left;}
+/* Prop:asset_cd_subtrecho */
+.grid-header th:nth-child(8),
+.grid-filter td:nth-child(8),
+.grid-filter td:nth-child(8) input,
+.grid-result td:nth-child(8) { width: 30px;text-align: left;}
+/* Prop:asset_km_ini */
+.grid-header th:nth-child(9),
+.grid-filter td:nth-child(9),
+.grid-filter td:nth-child(9) input,
+.grid-result td:nth-child(9) { width: 40px;text-align: right;}
+/* Prop:asset_in_esconsidade */
+.grid-header th:nth-child(10),
+.grid-filter td:nth-child(10),
+.grid-filter td:nth-child(10) input,
+.grid-result td:nth-child(10) { width: 29px;text-align: left;}
+/* Prop:asset_tp_passagem */
+.grid-header th:nth-child(11),
+.grid-filter td:nth-child(11),
+.grid-filter td:nth-child(11) input,
+.grid-result td:nth-child(11) { width: 47px;text-align: left;}
+/* Prop:asset_in_pass_rodov */
+.grid-header th:nth-child(12),
+.grid-filter td:nth-child(12),
+.grid-filter td:nth-child(12) input,
+.grid-result td:nth-child(12) { width: 29px;text-align: left;}
+/* Prop:asset_tp_transp_rodov */
+.grid-header th:nth-child(13),
+.grid-filter td:nth-child(13),
+.grid-filter td:nth-child(13) input,
+.grid-result td:nth-child(13) { width: 29px;text-align: left;}
+/* Prop:asset_st_geral */
+.grid-header th:nth-child(14),
+.grid-filter td:nth-child(14),
+.grid-filter td:nth-child(14) input,
+.grid-result td:nth-child(14) { width: 20px;text-align: left;}
+/* Prop:asset_in_manut */
+.grid-header th:nth-child(15),
+.grid-filter td:nth-child(15),
+.grid-filter td:nth-child(15) input,
+.grid-result td:nth-child(15) { width: 29px;text-align: left;}
+/* Prop:asset_cd_termo_devolucao_ckb */
+.grid-header th:nth-child(16),
+.grid-filter td:nth-child(16),
+.grid-filter td:nth-child(16) input,
+.grid-result td:nth-child(16) { width: 30px;text-align: left;}
+/* Prop:asset_cd_termo_entrega_ckb */
+.grid-header th:nth-child(17),
+.grid-filter td:nth-child(17),
+.grid-filter td:nth-child(17) input,
+.grid-result td:nth-child(17) { width: 30px;text-align: left;}
+/* Prop:asset_cd_tombamento_ckb */
+.grid-header th:nth-child(18),
+.grid-filter td:nth-child(18),
+.grid-filter td:nth-child(18) input,
+.grid-result td:nth-child(18) { width: 30px;text-align: left;}
+/* Prop:asset_dt_vistoria */
+.grid-header th:nth-child(19),
+.grid-filter td:nth-child(19),
+.grid-filter td:nth-child(19) input,
+.grid-result td:nth-child(19) { width: 60px;text-align: left;}
+/* Prop:asset_images_ongrid */
+.grid-header th:nth-child(20),
+.grid-filter td:nth-child(20),
+.grid-filter td:nth-child(20) input,
+.grid-result td:nth-child(20) { width: 30px;text-align: center;}
+/* Prop:asset_docs_ongrid */
+.grid-header th:nth-child(21),
+.grid-filter td:nth-child(21),
+.grid-filter td:nth-child(21) input,
+.grid-result td:nth-child(21) { width: 30px;text-align: center;}
+/* Prop:asset_ocrs_ongrid */
+.grid-header th:nth-child(22),
+.grid-filter td:nth-child(22),
+.grid-filter td:nth-child(22) input,
+.grid-result td:nth-child(22) { width: 30px;text-align: center;}
+/* Prop:asset_geo_ongrid */
+.grid-header th:nth-child(23),
+.grid-filter td:nth-child(23),
+.grid-filter td:nth-child(23) input,
+.grid-result td:nth-child(23) { width: 30px;text-align: center;}
+/* Prop:tabs_vc */
+.grid-header th:nth-child(24),
+.grid-filter td:nth-child(24),
+.grid-filter td:nth-child(24) input,
+.grid-result td:nth-child(24) { width: 25px;text-align: left;}
+/* Prop:recd_wd */
+.grid-header th:nth-child(25),
+.grid-filter td:nth-child(25),
+.grid-filter td:nth-child(25) input,
+.grid-result td:nth-child(25) { width: 30px;text-align: center;}
+/* Scroll space css right */
+.grid-header th:nth-child(26),
+.grid-filter td:nth-child(26) { width: 17px;}
+#div_dtDados {direction: ltr;}

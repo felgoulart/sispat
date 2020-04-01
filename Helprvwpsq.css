@@ -1,0 +1,17 @@
+/* Scroll space */
+.grid-header th:nth-child(1), .grid-filter td:nth-child(1) { width: 17px;}
+/* Prop:helpr_cd_help_rel */
+.grid-header th:nth-child(2),
+.grid-filter td:nth-child(2), .grid-filter td:nth-child(2) input,
+.tre9 td:nth-child(1), .tro9 td:nth-child(1),
+.tbh9 td:nth-child(1), .tbf9 td:nth-child(1) { width: 180px;}
+/* Prop:help_nm */
+.grid-header th:nth-child(3),
+.grid-filter td:nth-child(3), .grid-filter td:nth-child(3) input,
+.tre9 td:nth-child(2), .tro9 td:nth-child(2),
+.tbh9 td:nth-child(2), .tbf9 td:nth-child(2) { width: 600px;}
+/* Prop:buttonHelp */
+.grid-header th:nth-child(4),
+.grid-filter td:nth-child(4), .grid-filter td:nth-child(4) input,
+.tre9 td:nth-child(3), .tro9 td:nth-child(3),
+.tbh9 td:nth-child(3), .tbf9 td:nth-child(3) { width: 30px;}

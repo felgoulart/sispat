@@ -1,0 +1,24 @@
+[PropertyInfo]
+filtroBaiNo,String,false,false, , ,false,<default>
+filtroCep,String,false,false, , ,false,<default>
+filtroLocNo,String,false,false, , ,false,<default>
+filtroLogCompl,String,false,false, , ,false,<default>
+filtroLogNo,String,false,false, , ,false,<default>
+filtroLogTipo,String,false,false, , ,false,<default>
+filtroUfeSg,String,false,false, , ,false,<default>
+orderBaiNo,boolean,false,false, , ,false,<default>
+orderCep,boolean,false,false, , ,false,<default>
+orderCepDesc,boolean,false,false, , ,true,<default>
+orderLocNo,boolean,false,false, , ,false,<default>
+orderLocNoDesc,boolean,false,false, , ,true,<default>
+orderLogCompl,boolean,false,false, , ,false,<default>
+orderLogNo,boolean,false,false, , ,false,<default>
+orderLogNoDesc,boolean,false,false, , ,true,<default>
+orderLogTipo,boolean,false,false, , ,false,<default>
+orderLogTipoDesc,boolean,false,false, , ,true,<default>
+orderUfeSg,boolean,false,false, , ,false,<default>
+[IconNames]
+
+
+
+
