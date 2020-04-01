@@ -125,6 +125,7 @@ mesgStyleAsst(rel('cadForm:xmesg_rc'));
 				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
 				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
 				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
+				<th scope="col"style="width: 400px;padding: 0.75rem 0;background-color:black">.</th>
 				</tr>
 			</thead>
 		</table>
@@ -135,7 +136,7 @@ mesgStyleAsst(rel('cadForm:xmesg_rc'));
 				value="#{cadAssetBldngBean.pesqData}"
 				var="Asset"
 				binding="#{cadAssetBldngBean.pesqTable}"
-				rowClasses="tre9mod, tro9mod"
+				rowClasses="tre9mod, tre9mod"
 				headerClass="tbh9"
 				footerClass="tbf9"
 				id="dtDados"
