@@ -11,7 +11,7 @@
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 	
-		<h:inputText id="p_asset_nu" tabindex="1"  value="#{cadAssetBldngBean.p_asset_nu}" size="25" maxlength="23"  styleClass="form-control form-control-sm" onchange="bv('','p_asset_nu','0',this.value);"/>
+		<h:inputText id="p_asset_nu" tabindex="1"  value="#{cadAssetBldngBean.p_asset_nu}" size="25" maxlength="320"  styleClass="form-control form-control-sm" onchange="bv('','p_asset_nu','0',this.value);"/>
 	   </div>
 	  </div>
 
@@ -38,18 +38,6 @@
 	  </div>
     </div>
 
-
-
-		<div class="rowFiltro">
-			<h:outputLabel  styleClass="h6"  id="lbl_p_asset_cd_proprietaria_erp" for="p_asset_cd_proprietaria_erp"  value="#{iimsg.AssetBldng_p_asset_cd_proprietaria_erp_tt}"/>
-
-	</div>
-	<div class="rowFiltro">
-	  <div class="input-group input-group-sm mb-2">
-	  	<h:inputText  id="p_asset_cd_proprietaria_erp" onclick="clf(this);" value="#{cadAssetBldngBean.p_asset_cd_proprietaria_erp}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"  tabindex="5" />
-	   	<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_cd_proprietaria_erp_xsel" immediate="true" onmousedown="pw('CX'+'EMPRR', tran, this.id, 'yes');" />
-	  </div>
-    </div>
 
 		<div class="rowFiltro">
 			<h:outputLabel  styleClass="h6"  id="lbl_p_asset_cd_uf" for="p_asset_cd_uf"  value="#{iimsg.AssetBldng_p_asset_cd_uf_tt}"/>

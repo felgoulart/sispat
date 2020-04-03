@@ -51,7 +51,7 @@ mesgStyleAsst(rel('cadForm:xmesg_rc'));
 <h:form id="cadForm">
 <%@include file="projHeader1.jsp"%>
 <div class="row-offcanvas row-offcanvas-left">
-  <div id="sidebar" class="sidebar-offcanvas" style="max-width:222px">
+  <div id="sidebar2" class="sidebar-offcanvas" style="max-width:222px">
        <div style="vertical-align:middle"> <h2 class="tituloFiltro">Filtros</h2> </div>
 
 		<%@include file="AssetBldngpsq_param2.jsp"%>
@@ -125,12 +125,11 @@ mesgStyleAsst(rel('cadForm:xmesg_rc'));
 				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
 				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
 				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
-				<th scope="col"style="width: 400px;padding: 0.75rem 0;background-color:black">.</th>
 				</tr>
 			</thead>
 		</table>
 		<div id="div_dtDados_hor_" class="table-responsive containerShadow">
-			<div id="div_dtDados" class="grid-result  table-responsive" style="height:461px;">
+			<div id="div_dtDados" class="grid-result  table-responsive" style="height:400px;">
 				<!-- Dados -->
 				<h:dataTable
 				value="#{cadAssetBldngBean.pesqData}"
@@ -318,8 +317,8 @@ mesgStyleAsst(rel('cadForm:xmesg_rc'));
 </h:form>
 <script>
   function exibeFiltro() {
-    var mySidebar = document.getElementById('sidebar');
-    var displaySetting = sidebar.style.maxWidth;
+    var mySidebar = document.getElementById('sidebar2');
+    var displaySetting = sidebar2.style.maxWidth;
     if (displaySetting == '222px') {
       mySidebar.style.maxWidth = '0px';
     }

@@ -169,11 +169,32 @@ TABLE { color: #D3D4D8; font-family: Verdana, Arial, Helvetica, sans-serif; }
 .ps_cle { background-color: #FFFFFF; text-align: center; border-right: #D3D4D8 1px solid; border-left: #D3D4D8 1px solid; border-top: #D3D4D8 1px solid; border-bottom: #D3D4D8 1px solid; }
 .ps_lnk { font-size: 18px; color: #5F6D84; font-family: Verdana, Arial; padding-left: 3px; padding-right: 3px; text-decoration: none; text-align: left; vertical-align: middle; }
 a.ps_lnk:hover { font-size: 11px; color: #353C6A; font-family: Verdana, Arial; text-decoration: underline; }
-.act_a { background-color:white; padding-top: 10px; padding-bottom: 10px; padding-left: 5px;  border-bottom: #D3D4D8 4px solid;}
+.act_a { 
+    background-color:white; 
+    padding-top: 10px; 
+    padding-bottom: 10px; 
+    border-bottom: #D3D4D8 4px solid;
+    padding-left: 30px;
+    padding-right: 30px;
+}
 .act_b { background-color:white; padding-top: 10px; padding-bottom: 10px; padding-left: 5px;  border-bottom: #D3D4D8 4px solid;}
 .act_c { background-color:white; padding-top: 10px; padding-bottom: 10px; padding-left: 5px;  border-bottom: #D3D4D8 4px solid;}
-.tbab { color: #D3D4D8; font-family: Verdana, Arial, Helvetica, sans-serif; border-left: #D3D4D8 1px solid; }
-.abs { font-weight: bold; border-right: #D3D4D8 1px solid; border-top: #D3D4D8 1px solid; border-bottom: #D3D4D8 1px solid;border-left: #D3D4D8 1px solid; border-bottom: #3777bc 4px solid; padding-left: 5px;}
+.tbab { 
+    color: #D3D4D8; 
+    font-family: Verdana, Arial, Helvetica, sans-serif; 
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.abs { 
+    font-weight: bold; 
+    border-right: #D3D4D8 1px solid; 
+    border-top: #D3D4D8 1px solid; 
+    border-bottom: #D3D4D8 1px solid;
+    border-left: #D3D4D8 1px solid; 
+    border-bottom: #3777bc 4px solid; 
+    padding-left: 30px;
+    padding-right: 30px;
+}
 .absfinal { border-right: #D3D4D8 1px solid; border-top: #D3D4D8 1px solid; border-bottom: #D3D4D8 1px solid;border-left: #D3D4D8 1px solid; padding-left: 5px;}
 .ab { background-color: #E7F3F8; border-right: #D3D4D8 1px solid; border-top: #D3D4D8 1px solid; border-bottom: #D3D4D8 1px solid; }
 .abm { background-color: #FAFDFF; border-right: #D3D4D8 1px solid; border-top: #D3D4D8 1px solid; border-bottom: #D3D4D8 1px solid; }

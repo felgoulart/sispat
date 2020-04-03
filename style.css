@@ -62,16 +62,26 @@ body,html,.row-offcanvas {
 
 
 #sidebar {
-  width: inherit;
-  max-width: 220px;
-  background-color:#4b4b4b;
+  max-width: 222px;
+  min-width: 222px;
+  background: #7386D5;
+  color: #fff;
+  transition: all 0.3s;
   float: left;
-  height:100%;
-  position:relative;
-  overflow-y:auto;
-  overflow-x:hidden;
-  transition: max-width 0.2s;
+  height: 100%;
+  overflow: hidden;
 }
+
+#sidebar2 {
+  max-width: 222px;
+  background: #7386D5;
+  color: #fff;
+  transition: all 0.3s;
+  float: left;
+  height: 100%;
+  overflow: hidden;
+}
+
 #main {
   height:100%;
   overflow:auto;
@@ -108,7 +118,7 @@ body,html,.row-offcanvas {
 .tituloFiltro {
   padding-top: 12px;
   color: white;
-  align: center;
+  text-align: center;
   font-size: 25px;
   text-align: center;
   background: #0000007a;
@@ -123,7 +133,7 @@ body,html,.row-offcanvas {
     flex-wrap: wrap;
     margin-right: 0px;
     margin-left:  0px;
-    color: #ffffffa6;
+    color: #ffffffdb;
 }
 	
 
@@ -136,7 +146,7 @@ body,html,.row-offcanvas {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   font-size: 25px;
-  color: #gray;
+  color: gray;
   display: block;
 }
 /* When you mouse over the navigation links, change their color */
@@ -167,4 +177,44 @@ body,html,.row-offcanvas {
   outline: 0;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
+}
+
+.navbarmod {
+  background-color: #f7f7f7;
+  border-bottom: #5170b3;
+  border-style: solid;
+  border-left: none;
+  border-top: none;
+  border-right: none;
+
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: rgba(0,0,0,.7);
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+  color: rgba(68, 114, 192, 0.7);
+}
+
+.navbar-light .navbar-nav .nav-link:focus {
+  color: rgb(81, 112, 179);
+  font-weight: bold;
+}
+
+.navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .nav-link.active {
+  color: rgba(80, 80, 80, 0.81);
+  font-weight: bold;
+}
+
+.btnvoltar {
+  background-color: #22317242;
+  border-style: solid;
+  border-width: thin;
+  border-radius: 6px;
+  padding: 7px 72px;
+  border-color: #ffffff00;
+  color: white;
+  font-size: 14;
+  text-align: left;
 }
