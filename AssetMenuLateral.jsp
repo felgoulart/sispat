@@ -7,7 +7,7 @@
             </div>
 
             <ul class="list-unstyled components">
-                <li class="active">
+                <li>
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle" >
                         <i class="fas fa-train"></i>
                         Material Rodante
@@ -27,11 +27,13 @@
                         </li>
                     </ul>
                 </li>
-                <li>
+                <li class="active">
                     <a href="#">
                         <i class="fas fa-warehouse"></i>
                         Edificação
                     </a>
+                </li>
+                <li>
                     <a href="#" >
                         <i class="fas fa-road"></i>
                         Invasão de Faixa de Domínio

@@ -127,9 +127,6 @@ if (number == 5) { AlternarFlag(xxtabsvf); }
 					<div class="col-sm-10">
 						<h2 class="title" style="font-size: 35px;">
 							<h:outputText styleClass="h2 mt-3"  value="#{cadAssetBldngBean.trans_tt}"/>
-							<h:outputLabel for="asset_id11" >
-							<h:outputText value="#{iimsg.AssetBldng_asset_nu_tt}"/>
-							</h:outputLabel> 
 						</h2>		
 					</div>
 					<div class="col-sm-1">

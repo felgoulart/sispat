@@ -107,13 +107,13 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-4">
-					<img src="" id="img_grande1" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />
+					<img src="" id="img_grande1" height="null" style="float: left; width: 65%; margin-right: 1%; margin-bottom: 0.5em;" />
 				</div>
 				<div class="col-sm-4">
-					<img src="" id="img_grande2" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />			
+					<img src="" id="img_grande2" height="null" style="float: left; width: 65%; margin-right: 1%; margin-bottom: 0.5em;" />			
 				</div>
 				<div class="col-sm-4">
-					<img src="" id="img_grande3" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />			
+					<img src="" id="img_grande3" height="null" style="float: left; width: 65%; margin-right: 1%; margin-bottom: 0.5em;" />			
 				</div>
 			</div>
 	</div>

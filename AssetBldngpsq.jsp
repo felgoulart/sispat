@@ -106,28 +106,29 @@ mesgStyleAsst(rel('cadForm:xmesg_rc'));
 				</div>
 			</div>
  		</div>
-
-		<table class="table tablemod px-0">
-			<thead >
-				<tr>
-				<th scope="col" style="width: 5%; padding: 0.75rem 0"> BP</th>
-				<th scope="col"style="width: 6%; padding: 0.75rem 0">Tipo</th>
-				<th scope="col"style="width: 7%; padding: 0.75rem 0">Util.</th>
-				<th scope="col"style="width: 7%; padding: 0.75rem 0">Propr.</th>
-				<th scope="col"style="width: 7%; padding: 0.75rem 0">Vistoria</th>
-				<th scope="col"style="width: 13%; padding: 0.75rem 0">Pátio</th>
-				<th scope="col"style="width: 13%; padding: 0.75rem 0">Município</th>
-				<th scope="col"style="width: 2%; padding: 0.75rem 0">UF</th>
-				<th scope="col"style="width: 9%;padding: 0.75rem 0">Corredor</th>
-				<th scope="col"style="width: 16%;padding: 0.75rem 0">Trecho</th>
-				<th scope="col"style="width: 7%;padding: 0.75rem 0">KM Inicial</th>
-				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
-				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
-				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
-				<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
-				</tr>
-			</thead>
-		</table>
+		<div style="overflow-y:scroll">
+			<table class="table tablemod px-0">
+				<thead >
+					<tr>
+					<th scope="col" style="width: 5%; padding: 0.75rem 0"> BP</th>
+					<th scope="col"style="width: 6%; padding: 0.75rem 0">Tipo</th>
+					<th scope="col"style="width: 7%; padding: 0.75rem 0">Util.</th>
+					<th scope="col"style="width: 7%; padding: 0.75rem 0">Propr.</th>
+					<th scope="col"style="width: 7%; padding: 0.75rem 0">Vistoria</th>
+					<th scope="col"style="width: 13%; padding: 0.75rem 0">Pátio</th>
+					<th scope="col"style="width: 13%; padding: 0.75rem 0">Município</th>
+					<th scope="col"style="width: 2%; padding: 0.75rem 0">UF</th>
+					<th scope="col"style="width: 9%;padding: 0.75rem 0">Corredor</th>
+					<th scope="col"style="width: 16%;padding: 0.75rem 0">Trecho</th>
+					<th scope="col"style="width: 7%;padding: 0.75rem 0">KM Inicial</th>
+					<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
+					<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
+					<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
+					<th scope="col"style="width: 2%;padding: 0.75rem 0"></th>
+					</tr>
+				</thead>
+			</table>
+		</div>
 		<div id="div_dtDados_hor_" class="table-responsive containerShadow">
 			<div id="div_dtDados" class="grid-result  table-responsive" style="height:400px;">
 				<!-- Dados -->
