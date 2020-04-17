@@ -5,7 +5,7 @@
 
 <h:inputHidden id="p_date_end" value="#{cadAssetVhwagBean.p_date_end}"/>
 
-<div class="bg-transparent mt-3">
+<div class="bg-transparent mt-3 internoFiltro">
   
 	<div class="rowFiltro">
 	<h:outputLabel  styleClass="h6"  id="lbl_p_asset_nu_ident" for="p_asset_nu_ident"  value="#{iimsg.AssetVhwag_p_asset_nu_ident_tt}"/>
@@ -31,8 +31,8 @@
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 	   
-		<h:inputText  id="p_asset_cd_vagao_serie_cfwagse" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_vagao_serie_cfwagse}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm"  tabindex="3" />
-	   		<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_cd_vagao_serie_cfwagse_xsel" immediate="true" onmousedown="pw('CX'+'WAGSE', tran, this.id, 'yes');" />
+		<h:inputText  id="p_asset_cd_vagao_serie_cfwagse" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_vagao_serie_cfwagse}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"  tabindex="3" />
+	   		<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_cd_vagao_serie_cfwagse_xsel" immediate="true" onmousedown="pw('CX'+'WAGSE', tran, this.id, 'yes');" />
 			
 			
 		</div>
@@ -44,8 +44,8 @@
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 
-	<h:inputText  id="p_asset_tp_vagao_cfwagtp" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_tp_vagao_cfwagtp}" onkeydown="keypress=1;" onchange="bdcd('','asset_tp_vagao_cfwagtp','1','WAGTP',this.value);;"  styleClass="form-control form-control-sm"  tabindex="4" />
-	<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_tp_vagao_cfwagtp_xsel" immediate="true" onmousedown="pw('CX'+'WAGTP', tran, this.id, 'yes');" />
+	<h:inputText  id="p_asset_tp_vagao_cfwagtp" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_tp_vagao_cfwagtp}" onkeydown="keypress=1;" onchange="bdcd('','asset_tp_vagao_cfwagtp','1','WAGTP',this.value);;"  styleClass="form-control form-control-sm inputcodf"  tabindex="4" />
+	<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_tp_vagao_cfwagtp_xsel" immediate="true" onmousedown="pw('CX'+'WAGTP', tran, this.id, 'yes');" />
 	</div>
 	</div>
 	<div class="rowFiltro">
@@ -54,8 +54,8 @@
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 	   
-	<h:inputText  id="p_asset_cd_operacional_vg_unl" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_operacional_vg_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm"  tabindex="5" />
-	<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_cd_operacional_vg_unl_xsel" immediate="true" onmousedown="pw('CX'+'CDOPU', tran, this.id, 'yes');" />
+	<h:inputText  id="p_asset_cd_operacional_vg_unl" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_operacional_vg_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"  tabindex="5" />
+	<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_cd_operacional_vg_unl_xsel" immediate="true" onmousedown="pw('CX'+'CDOPU', tran, this.id, 'yes');" />
 	</div>
 	</div>
 	<div class="rowFiltro">
@@ -63,8 +63,8 @@
 	</div>
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
-	   		<h:inputText  id="p_asset_cd_operacional_vg" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_operacional_vg}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm"  tabindex="6" />
-			<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_cd_operacional_vg_xsel" immediate="true" onmousedown="pw('CX'+'CDOPR', tran, this.id, 'yes');" />
+	   		<h:inputText  id="p_asset_cd_operacional_vg" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_operacional_vg}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"  tabindex="6" />
+			<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_cd_operacional_vg_xsel" immediate="true" onmousedown="pw('CX'+'CDOPR', tran, this.id, 'yes');" />
 	</div>
   </div>
 
@@ -76,8 +76,8 @@
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 	   
-		<h:inputText  id="p_asset_cd_corredor" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_corredor}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm"  tabindex="7" />
-				<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_cd_corredor_xsel" immediate="true" onmousedown="pw('CX'+'CDCRR', tran, this.id, 'yes');" />
+		<h:inputText  id="p_asset_cd_corredor" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_corredor}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"  tabindex="7" />
+				<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_cd_corredor_xsel" immediate="true" onmousedown="pw('CX'+'CDCRR', tran, this.id, 'yes');" />
 		</div>
 		</div>
 	<div class="rowFiltro">
@@ -86,8 +86,8 @@
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 	   
-	<h:inputText  id="p_asset_cd_corredor_unl" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_corredor_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm"  tabindex="8" />
-	<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_cd_corredor_unl_xsel" immediate="true" onmousedown="pw('CX'+'CDCRR', tran, this.id, 'yes');" />
+	<h:inputText  id="p_asset_cd_corredor_unl" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_corredor_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"  tabindex="8" />
+	<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_cd_corredor_unl_xsel" immediate="true" onmousedown="pw('CX'+'CDCRR', tran, this.id, 'yes');" />
 	</div>
   </div>
 	<div class="rowFiltro">
@@ -96,8 +96,8 @@
   	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 	   
-	<h:inputText  id="p_asset_px_local_vistoria" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_px_local_vistoria}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm"  tabindex="9" />
-	<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_px_local_vistoria_xsel" immediate="true" onmousedown="pw('CX'+'CDLMR', tran, this.id, 'yes');" />
+	<h:inputText  id="p_asset_px_local_vistoria" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_px_local_vistoria}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"  tabindex="9" />
+	<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_px_local_vistoria_xsel" immediate="true" onmousedown="pw('CX'+'CDLMR', tran, this.id, 'yes');" />
 	</div>
 	</div>
   
@@ -109,8 +109,8 @@
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 	   
-	<h:inputText  id="p_asset_tp_propriedade" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_tp_propriedade}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm"  tabindex="10" />
-	<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_tp_propriedade_xsel" immediate="true" onmousedown="pw('CX'+'TPPRP', tran, this.id, 'yes');" />
+	<h:inputText  id="p_asset_tp_propriedade" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_tp_propriedade}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"   tabindex="10" />
+	<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_tp_propriedade_xsel" immediate="true" onmousedown="pw('CX'+'TPPRP', tran, this.id, 'yes');" />
 	</div>
   </div>
 	<div class="rowFiltro">
@@ -119,8 +119,8 @@
 	<div class="rowFiltro">
 	  <div class="input-group input-group-sm mb-2">
 	   
-	<h:inputText  id="p_asset_cd_proprietaria_erp" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_proprietaria_erp}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm"  tabindex="11" />
-	<h:commandButton  styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png" id="p_asset_cd_proprietaria_erp_xsel" immediate="true" onmousedown="pw('CX'+'EMPRR', tran, this.id, 'yes');" />
+	<h:inputText  id="p_asset_cd_proprietaria_erp" onclick="clf(this);" value="#{cadAssetVhwagBean.p_asset_cd_proprietaria_erp}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf"  tabindex="11" />
+	<h:commandButton  styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png" id="p_asset_cd_proprietaria_erp_xsel" immediate="true" onmousedown="pw('CX'+'EMPRR', tran, this.id, 'yes');" />
 	</div>
 	</div>
 	<div class="rowFiltro">
