@@ -1,3 +1,5 @@
+<h:inputHidden id="asset_cd_cfinvty" value="#{cadAssetVhwagBean.asset_cd_cfinvty}"/>
+<h:inputHidden id="asset_cd_hierarquico" value="#{cadAssetVhwagBean.asset_cd_hierarquico}"/>
 <div class="card m-3">
 	<div class="card-header rowreader ">   
 		<h:outputText value="#{iimsg.AssetVhwag_infger_tt_tt}"/>
@@ -43,8 +45,8 @@
 			</div>
 			<div class="col-sm-2">
 				<div class="input-group input-group-sm mb-2">
-					<h:inputText  id="asset_cd_vagao_serie_cfwagse" value="#{cadAssetVhwagBean.asset_cd_vagao_serie_cfwagse}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_cd_vagao_serie_cfwagse','1','WAGSE',this.value);;" size="7" maxlength="5" tabindex="6" />
-					<h:commandButton id="asset_cd_vagao_serie_cfwagse_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'WAGSE', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
+					<h:inputText  id="asset_cd_vagao_serie_cfwagse" value="#{cadAssetVhwagBean.asset_cd_vagao_serie_cfwagse}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_cd_vagao_serie_cfwagse','1','WAGSE',this.value);;" size="7" maxlength="5" tabindex="6" />
+					<h:commandButton id="asset_cd_vagao_serie_cfwagse_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'WAGSE', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
 				</div>	
 			</div>				
 			<div class="col-sm-2">
@@ -55,8 +57,8 @@
 			</div>
 			<div class="col-sm-2">
 				<div class="input-group input-group-sm mb-2">
-					<h:inputText  id="asset_tp_vagao_cfwagtp" value="#{cadAssetVhwagBean.asset_tp_vagao_cfwagtp}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_tp_vagao_cfwagtp','1','WAGTP',this.value);;" size="5" maxlength="3" tabindex="7" />
-					<h:commandButton id="asset_tp_vagao_cfwagtp_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'WAGTP', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
+					<h:inputText  id="asset_tp_vagao_cfwagtp" value="#{cadAssetVhwagBean.asset_tp_vagao_cfwagtp}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_tp_vagao_cfwagtp','1','WAGTP',this.value);;" size="5" maxlength="3" tabindex="7" />
+					<h:commandButton id="asset_tp_vagao_cfwagtp_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'WAGTP', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
 				</div>
 			</div>
 			<div class="col-sm-2">
@@ -69,8 +71,8 @@
 			</div>
 			<div class="col-sm-2">
 				<div class="input-group input-group-sm mb-2">
-					<h:inputText  id="asset_tp_propriedade" value="#{cadAssetVhwagBean.asset_tp_propriedade}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_tp_propriedade','1','TPPRP',this.value);;" size="5" maxlength="3" tabindex="8" />
-					<h:commandButton id="asset_tp_propriedade_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TPPRP', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
+					<h:inputText  id="asset_tp_propriedade" value="#{cadAssetVhwagBean.asset_tp_propriedade}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_tp_propriedade','1','TPPRP',this.value);;" size="5" maxlength="3" tabindex="8" />
+					<h:commandButton id="asset_tp_propriedade_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TPPRP', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
 				</div>	
 			</div>				
 			<div class="col-sm-2">
@@ -81,8 +83,8 @@
 			</div>
 			<div class="col-sm-2">
 				<div class="input-group input-group-sm mb-2">
-					<h:inputText  id="asset_cd_operacional_vg" value="#{cadAssetVhwagBean.asset_cd_operacional_vg}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_cd_operacional_vg','1','CDOPR',this.value);;" size="5" maxlength="3" tabindex="9" />
-					<h:commandButton id="asset_cd_operacional_vg_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDOPR', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
+					<h:inputText  id="asset_cd_operacional_vg" value="#{cadAssetVhwagBean.asset_cd_operacional_vg}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_cd_operacional_vg','1','CDOPR',this.value);;" size="5" maxlength="3" tabindex="9" />
+					<h:commandButton id="asset_cd_operacional_vg_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDOPR', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
 				</div>
 			</div>
 			<div class="col-sm-2">
@@ -93,7 +95,63 @@
 </div>
 <div class="card m-3">
 	<div class="card-header rowreader ">   
-		<h:outputText value="#{iimsg.AssetVhwag_loca_unl_tt_tt}"/>	</div>
+		<h:outputText value="Localização"/>	
+	</div>
+		<div class="card-body">
+			<div class="row mb-2 text-left">
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_cd_corredor" for="asset_cd_corredor"  value="#{iimsg.AssetVhwag_asset_cd_corredor_tt}"/>  
+				</div>
+				<div class="col-sm-2">
+					<div class="input-group input-group-sm mb-2">
+						<h:inputText  id="asset_cd_corredor" value="#{cadAssetVhwagBean.asset_cd_corredor}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_cd_corredor','1','CDCRR',this.value);;" size="7" maxlength="5" tabindex="21" />
+						<h:commandButton id="asset_cd_corredor_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDCRR', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
+					</div>
+				</div>				
+				<div class="col-sm-2">
+					<h:inputText id="asset_cd_corredor_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetVhwagBean.asset_cd_corredor_desc}" styleClass="dscCodfCad"/>
+				</div>
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_tp_posmatrodante" for="asset_tp_posmatrodante"  value="#{iimsg.AssetVhwag_asset_tp_posmatrodante_tt}"/>  
+				</div>
+				<div class="col-sm-2">
+					<div class="input-group input-group-sm mb-2">
+						<h:inputText  id="asset_tp_posmatrodante" value="#{cadAssetVhwagBean.asset_tp_posmatrodante}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_tp_posmatrodante','1','PMTDT',this.value);;" size="7" maxlength="5" tabindex="22" />
+						<h:commandButton id="asset_tp_posmatrodante_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'PMTDT', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
+					</div>
+				</div>				
+				<div class="col-sm-2">
+					<h:inputText id="asset_tp_posmatrodante_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetVhwagBean.asset_tp_posmatrodante_desc}"  styleClass="dscCodfCad"/>
+				</div>
+			</div>
+			<div class="row mb-2 text-left">
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_px_local_vistoria" for="asset_px_local_vistoria"  value="#{iimsg.AssetVhwag_asset_px_local_vistoria_tt}"/>  
+				</div>
+				<div class="col-sm-4">
+					<h:inputText id="asset_ds_acesso_rodv" tabindex="24"  value="#{cadAssetVhwagBean.asset_ds_acesso_rodv}" size="22" maxlength="20"  styleClass="form-control form-control-sm" onchange="bv('','asset_ds_acesso_rodv','1',this.value);"/>
+				</div>				
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_km_fim" for="asset_km_fim"  value="#{iimsg.AssetVhwag_asset_km_fim_tt}"/>  
+				</div>
+				<div class="col-sm-4">
+					<h:inputText id="asset_km_fim" tabindex="25"  value="#{cadAssetVhwagBean.asset_km_fim_str}"  styleClass="form-control form-control-sm" size="12" maxlength="10" onchange="bv('','asset_km_fim','1',valDec(this.value));"/>
+				</div>
+			</div>
+			<div class="row mb-2 text-left">
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_vl_coords" for="asset_vl_coords"  value="#{iimsg.AssetVhwag_asset_vl_coords_tt}"/>  
+				</div>
+				<div class="col-sm-4">
+					<h:inputText id="asset_vl_coords" tabindex="26"  value="#{cadAssetVhwagBean.asset_vl_coords}" size="24" maxlength="22"  styleClass="form-control form-control-sm" onchange="bv('','asset_vl_coords','1',this.value);"/>
+				</div>				
+			</div>
+		</div>
+</div>
+<div class="card m-3">
+	<div class="card-header rowreader ">   
+		<h:outputText value="#{iimsg.AssetVhwag_loca_unl_tt_tt}"/>
+	</div>
 		<div class="card-body">
 			<div class="row mb-2 text-left">
 				<div class="col-sm-2">
@@ -107,8 +165,8 @@
 				</div>
 				<div class="col-sm-2">
 					<div class="input-group input-group-sm mb-2">
-						<h:inputText  id="asset_cd_corredor_unl" value="#{cadAssetVhwagBean.asset_cd_corredor_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_cd_corredor_unl','1','CDCRR',this.value);;" size="7" maxlength="5" tabindex="11" />
-						<h:commandButton id="asset_cd_corredor_unl_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDCRR', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
+						<h:inputText  id="asset_cd_corredor_unl" value="#{cadAssetVhwagBean.asset_cd_corredor_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_cd_corredor_unl','1','CDCRR',this.value);;" size="7" maxlength="5" tabindex="11" />
+						<h:commandButton id="asset_cd_corredor_unl_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDCRR', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
 					</div>
 				</div>
 				<div class="col-sm-2">
@@ -141,8 +199,8 @@
 				</div>
 				<div class="col-sm-2">
 					<div class="input-group input-group-sm mb-2">
-						<h:inputText  id="asset_cd_operacional_vg_unl" value="#{cadAssetVhwagBean.asset_cd_operacional_vg_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_cd_operacional_vg_unl','1','CDOPU',this.value);;" size="5" maxlength="3" tabindex="15" />
-						<h:commandButton id="asset_cd_operacional_vg_unl_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDOPU', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
+						<h:inputText  id="asset_cd_operacional_vg_unl" value="#{cadAssetVhwagBean.asset_cd_operacional_vg_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_cd_operacional_vg_unl','1','CDOPU',this.value);;" size="5" maxlength="3" tabindex="15" />
+						<h:commandButton id="asset_cd_operacional_vg_unl_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDOPU', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
 					</div>
 				</div>
 				<div class="col-sm-2">
@@ -155,8 +213,8 @@
 				</div>
 				<div class="col-sm-2">
 					<div class="input-group input-group-sm mb-2">
-						<h:inputText  id="asset_cd_propriedade_unl" value="#{cadAssetVhwagBean.asset_cd_propriedade_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_cd_propriedade_unl','1','TPPRU',this.value);;" size="27" maxlength="25" tabindex="16" />
-						<h:commandButton id="asset_cd_propriedade_unl_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TPPRU', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
+						<h:inputText  id="asset_cd_propriedade_unl" value="#{cadAssetVhwagBean.asset_cd_propriedade_unl}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm inputcodf" onchange="bdcd('','asset_cd_propriedade_unl','1','TPPRU',this.value);;" size="27" maxlength="25" tabindex="16" />
+						<h:commandButton id="asset_cd_propriedade_unl_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'TPPRU', tran, this.id, 'yes');" styleClass="btn btncodf" image="../fa/svgs/solid/searchgray.png"/>
 					</div>
 				</div>
 				<div class="col-sm-2">
@@ -170,183 +228,77 @@
 				</div>
 			</div>
 		</div>
-	</div>
 </div>
 
-	
- 
-  
-
-
-		
-	
-	
-
-
-
-
-
-
-
-
-
-
-
-
-<h:outputText value="#{iimsg.AssetVhwag_ifcpl_tt_tt}"/>
-
-
-
-
-
-
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_cd_carta_subst" for="asset_cd_carta_subst"  value="#{iimsg.AssetVhwag_asset_cd_carta_subst_tt}"/>  
-
-
-
-<h:inputText id="asset_cd_carta_subst" tabindex="17"  value="#{cadAssetVhwagBean.asset_cd_carta_subst}" size="27" maxlength="25"  styleClass="form-control form-control-sm" onchange="bv('','asset_cd_carta_subst','1',this.value);"/>
-
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_st_pcm" for="asset_st_pcm"  value="#{iimsg.AssetVhwag_asset_st_pcm_tt}"/>  
-
-
-
-<h:inputText id="asset_st_pcm" tabindex="18"  value="#{cadAssetVhwagBean.asset_st_pcm}" size="27" maxlength="25"  styleClass="form-control form-control-sm" onchange="bv('','asset_st_pcm','1',this.value);"/>
-
-
-
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_vl_indez_dnit" for="asset_vl_indez_dnit"  value="#{iimsg.AssetVhwag_asset_vl_indez_dnit_tt}"/>  
-
-<h:inputText id="asset_vl_indez_dnit" tabindex="19"  value="#{cadAssetVhwagBean.asset_vl_indez_dnit_str}"  styleClass="form-control form-control-sm" size="14" maxlength="12" onchange="bv('','asset_vl_indez_dnit','1',valDec(this.value));"/>
-
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_vl_indez_mrc" for="asset_vl_indez_mrc"  value="#{iimsg.AssetVhwag_asset_vl_indez_mrc_tt}"/>  
-
-<h:inputText id="asset_vl_indez_mrc" tabindex="20"  value="#{cadAssetVhwagBean.asset_vl_indez_mrc_str}"  styleClass="form-control form-control-sm" size="14" maxlength="12" onchange="bv('','asset_vl_indez_mrc','1',valDec(this.value));"/>
-
-
-
-
-
-<h:inputHidden id="asset_cd_hierarquico" value="#{cadAssetVhwagBean.asset_cd_hierarquico}"/>
-
-<h:outputText value="#{iimsg.AssetVhwag_loca_zp_tt_tt}"/>
-
-
-
-
-
-
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_cd_corredor" for="asset_cd_corredor"  value="#{iimsg.AssetVhwag_asset_cd_corredor_tt}"/>  
-
-
+<div class="card m-3">
+	<div class="card-header rowreader ">   
+		<h:outputText value="#{iimsg.AssetVhwag_ifcpl_tt_tt}"/>	
+	</div>
+		<div class="card-body">
+			<div class="row mb-2 text-left">
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_cd_carta_subst" for="asset_cd_carta_subst"  value="#{iimsg.AssetVhwag_asset_cd_carta_subst_tt}"/>  
+				</div>
+				<div class="col-sm-4">
+					<h:inputText id="asset_cd_carta_subst" tabindex="17"  value="#{cadAssetVhwagBean.asset_cd_carta_subst}" size="27" maxlength="25"  styleClass="form-control form-control-sm" onchange="bv('','asset_cd_carta_subst','1',this.value);"/>
+				</div>				
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_st_pcm" for="asset_st_pcm"  value="#{iimsg.AssetVhwag_asset_st_pcm_tt}"/>  
+				</div>
+				<div class="col-sm-4">
+					<h:inputText id="asset_st_pcm" tabindex="18"  value="#{cadAssetVhwagBean.asset_st_pcm}" size="27" maxlength="25"  styleClass="form-control form-control-sm" onchange="bv('','asset_st_pcm','1',this.value);"/>
+				</div>
+			</div>
+			<div class="row mb-2 text-left">
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_vl_indez_dnit" for="asset_vl_indez_dnit"  value="#{iimsg.AssetVhwag_asset_vl_indez_dnit_tt}"/>  
+				</div>
+				<div class="col-sm-4">
+					<h:inputText id="asset_vl_indez_dnit" tabindex="19"  value="#{cadAssetVhwagBean.asset_vl_indez_dnit_str}"  styleClass="form-control form-control-sm" size="14" maxlength="12" onchange="bv('','asset_vl_indez_dnit','1',valDec(this.value));"/>
+				</div>				
+				<div class="col-sm-2">
+					<h:outputLabel  styleClass="h7"  id="lbl_asset_vl_indez_mrc" for="asset_vl_indez_mrc"  value="#{iimsg.AssetVhwag_asset_vl_indez_mrc_tt}"/>  
+				</div>
+				<div class="col-sm-4">
+					<h:inputText id="asset_vl_indez_mrc" tabindex="20"  value="#{cadAssetVhwagBean.asset_vl_indez_mrc_str}"  styleClass="form-control form-control-sm" size="14" maxlength="12" onchange="bv('','asset_vl_indez_mrc','1',valDec(this.value));"/>
+				</div>
+			</div>
+		</div>
+</div>
 
 
 	
-	  
-	    
-<h:inputText  id="asset_cd_corredor" value="#{cadAssetVhwagBean.asset_cd_corredor}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_cd_corredor','1','CDCRR',this.value);;" size="7" maxlength="5" tabindex="21" />
+<div class="card m-3">
+	<div class="card-header rowreader"> 	
+		<div class = "row">
+			<div class="col-sm-6" align="left">					
+				<h:outputText    value="#{iimsg.AssetVhwag_asset_im_tt_tt}"/>
+			</div>
+			<div class="col-sm-6" align="right">	
+				<h:commandButton id="obimg" style="vertical-align:bottom" tabindex="-1" immediate="true" action="#{cadObimgBean.doObternull}" onmousedown="wtran='obimgcad';el('hiddenform').target=tran;valor1=el('cadForm:asset_id').value;msgwr();el('fiiSaveTypex').src = 'iiSaveTypex.jsp?tbak=assetvhwagcad&tipo='+wtran+'&valor='+valor1;"  image="fa/svgs/solid/imagedark.png"  onmouseup="this.form.target='_blank';" onblur="this.form.target='_self';"/>
+				<h:commandButton id="asset_docs_xsel" style="vertical-align:bottom" immediate="true" action="#{cadObdocBean.doSelecionarFromMenu}" onmousedown="msgwr();el('fiiSaveFieldx').src='iiSaveFieldx.jsp?tbak=assetvhwagcad&campo=campo1&valor='+el('cadForm:asset_id').value;"  image="fa/svgs/solid/folderopendark.png" title="#{iimsg.obdoc_TT}" onmouseup="this.form.target='_blank';" onblur="this.form.target='_self';"/>
+				<h:outputLink id="flag_imggeo_asset_geo_ongrid" value="mapa.jsp?bp=" target="_blank" onclick="aa=this.id.slice(0,this.id.search('flag_img'));valor1=el(aa+'sel_asset_idasset_geo_ongrid_bt').value;valor1=valor1.slice(0,valor1.length - 5);this.href='mapa.jsp?bp='+valor1+'&type=WG';">				<h:graphicImage id="flag_imggeo_asset_geo_ongrid2" value="fa/svgs/solid/globedark.png" /></h:outputLink>
+				<h:inputHidden id="sel_asset_idasset_geolink_bt" value="#{cadAssetVhwagBean.asset_id}"/>
+			</div>		
+		</div>
+	</div>
+	<div class="card-body">
+			<div class="row">
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<img src="" id="img_grande1" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />
+				</div>
+				<div class="col-sm-4">
+					<img src="" id="img_grande2" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />			
+				</div>
+				<div class="col-sm-4">
+					<img src="" id="img_grande3" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />			
+				</div>
+			</div>
+	</div>
+</div> 
 
-		<h:commandButton id="asset_cd_corredor_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDCRR', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
-
-
-<h:inputText id="asset_cd_corredor_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetVhwagBean.asset_cd_corredor_desc}" styleClass="dscCodfCad"/>
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_tp_posmatrodante" for="asset_tp_posmatrodante"  value="#{iimsg.AssetVhwag_asset_tp_posmatrodante_tt}"/>  
-
-
-
-
-	
-	  
-	    
-<h:inputText  id="asset_tp_posmatrodante" value="#{cadAssetVhwagBean.asset_tp_posmatrodante}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_tp_posmatrodante','1','PMTDT',this.value);;" size="7" maxlength="5" tabindex="22" />
-
-		<h:commandButton id="asset_tp_posmatrodante_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'PMTDT', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
-
-
-<h:inputText id="asset_tp_posmatrodante_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetVhwagBean.asset_tp_posmatrodante_desc}"  styleClass="dscCodfCad"/>
-		
-	
-
-
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_px_local_vistoria" for="asset_px_local_vistoria"  value="#{iimsg.AssetVhwag_asset_px_local_vistoria_tt}"/>  
-
-
-
-
-	
-	  
-	    
-<h:inputText  id="asset_px_local_vistoria" value="#{cadAssetVhwagBean.asset_px_local_vistoria}" onkeydown="keypress=1;"  styleClass="form-control form-control-sm" onchange="bdcd('','asset_px_local_vistoria','1','CDLMR',this.value);;" size="7" maxlength="5" tabindex="23" />
-
-		<h:commandButton id="asset_px_local_vistoria_xsel" tabindex="-1" immediate="true" onmousedown="pw('C'+'CDLMR', tran, this.id, 'yes');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/>
-
-
-<h:inputText id="asset_px_local_vistoria_desc" tabindex="-1" onfocus="this.blur()" value="#{cadAssetVhwagBean.asset_px_local_vistoria_desc}" styleClass="dscCodfCad"/>
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_ds_acesso_rodv" for="asset_ds_acesso_rodv"  value="#{iimsg.AssetVhwag_asset_ds_acesso_rodv_tt}"/>  
-
-
-
-<h:inputText id="asset_ds_acesso_rodv" tabindex="24"  value="#{cadAssetVhwagBean.asset_ds_acesso_rodv}" size="22" maxlength="20"  styleClass="form-control form-control-sm" onchange="bv('','asset_ds_acesso_rodv','1',this.value);"/>
-
-
-
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_km_fim" for="asset_km_fim"  value="#{iimsg.AssetVhwag_asset_km_fim_tt}"/>  
-
-<h:inputText id="asset_km_fim" tabindex="25"  value="#{cadAssetVhwagBean.asset_km_fim_str}"  styleClass="form-control form-control-sm" size="12" maxlength="10" onchange="bv('','asset_km_fim','1',valDec(this.value));"/>
-
-
-
-
-<h:outputLabel  styleClass="h7"  id="lbl_asset_vl_coords" for="asset_vl_coords"  value="#{iimsg.AssetVhwag_asset_vl_coords_tt}"/>  
-
-
-
-<h:inputText id="asset_vl_coords" tabindex="26"  value="#{cadAssetVhwagBean.asset_vl_coords}" size="24" maxlength="22"  styleClass="form-control form-control-sm" onchange="bv('','asset_vl_coords','1',this.value);"/>
-
-
-
-
-
-<h:outputLabel  styleClass="ttsmod"  value="#{iimsg.AssetVhwag_asset_im_tt_tt}"/>
-
-
-		<h:commandButton id="obimg" tabindex="-1" immediate="true" action="#{cadObimgBean.doObternull}" onmousedown="wtran='obimgcad';el('hiddenform').target=tran;valor1=el('cadForm:asset_id').value;msgwr();el('fiiSaveTypex').src = 'iiSaveTypex.jsp?tbak=assetvhwagcad&tipo='+wtran+'&valor='+valor1;"  image="imagens/picture2.png"  onmouseup="this.form.target='_blank';" onblur="this.form.target='_self';"/>
-		<h:commandButton id="asset_docs_xsel" immediate="true" action="#{cadObdocBean.doSelecionarFromMenu}" onmousedown="msgwr();el('fiiSaveFieldx').src='iiSaveFieldx.jsp?tbak=assetvhwagcad&campo=campo1&valor='+el('cadForm:asset_id').value;"  image="#{cadAssetVhwagBean.file_im}" title="#{iimsg.obdoc_TT}" onmouseup="this.form.target='_blank';" onblur="this.form.target='_self';"/>
-
-
-			<%-- <h:commandButton id="asset_id_xsel" tabindex="-1" immediate="true" onmousedown="pw('assetpsq', tran, this.id, 'no');" styleClass="btn btn-outline-secondary" image="../imagens/btPesquisar16.png"/> --%>
-			<%-- <h:commandLink id="asset_id_desc" value="#{cadAssetVhwagBean.asset_id_desc}" styleClass="dsp" onmousedown="pwfk(''assetpsq'cad', tran, this.id, 'no');"/> --%>
-			<h:inputHidden id="asset_cd_cfinvty" value="#{cadAssetVhwagBean.asset_cd_cfinvty}"/>
-
-<img src="" id="img_grande1" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />
-<img src="" id="img_grande2" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />
-<img src="" id="img_grande3" height="null" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" />
 
 
 <script>
